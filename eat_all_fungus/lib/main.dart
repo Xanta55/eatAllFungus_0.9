@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  //Hier kommt eventuell die initialisierung der Datenbank rein
+  // TODO: init db here probably
   runApp(MyApp());
 }
 
