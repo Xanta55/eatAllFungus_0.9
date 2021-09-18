@@ -1,74 +1,44 @@
+import 'package:eat_all_fungus/views/auth/login.dart';
+import 'package:eat_all_fungus/views/various/loadingScreen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  // TODO: init db here probably
+// Get the google-services.json
+// Run "pub get" after every pull
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  final Future<FirebaseApp> _firebaseApp = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Eat All Fungus',
       theme: ThemeData(
-          // Amber
+          //Colortheme: Amber
           primarySwatch: Colors.amber,
           accentColor: Colors.amberAccent,
           brightness: Brightness.dark),
-      // TODO: Add 'Gate' for Authorization
-      home: MyHomePage(title: 'Splash Screen'),
-    );
-  }
-}
-
-//TODO: remove all this
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            ElevatedButton(
-                onPressed: () => null,
-                child:
-                    Text('Ganz viele Sachen bekommen halt diese Farbe :\'\)')),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+      home: FutureBuilder(
+          future: _firebaseApp,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.hasData) {
+              return Login();
+            } else if (snapshot.hasError) {
+              print(snapshot.error);
+              return LoadingScreen(loadingText: '${snapshot.error}');
+            } else if (snapshot.connectionState == ConnectionState.waiting) {
+              return LoadingScreen(
+                  loadingText: 'Getting connection to Database');
+            } else {
+              return LoadingScreen(
+                  loadingText: 'Seems like we shouldnt be here...');
+            }
+          }),
     );
   }
 }
