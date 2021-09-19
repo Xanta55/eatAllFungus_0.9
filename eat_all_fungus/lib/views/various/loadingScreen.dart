@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 
-class LoadingScreen extends StatelessWidget {
+import 'package:flutter_hooks/flutter_hooks.dart';
+
+class LoadingScreen extends HookWidget {
   final String loadingText;
   const LoadingScreen({Key? key, required this.loadingText}) : super(key: key);
 
@@ -10,17 +12,28 @@ class LoadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Eat All Fungus'),
+        title: Text(
+          'Eat All Fungus',
+          textAlign: TextAlign.center,
+        ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Platform.isIOS
-              ? CupertinoActivityIndicator()
-              : CircularProgressIndicator(),
-          Text(loadingText),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Platform.isIOS
+                ? CupertinoActivityIndicator()
+                : CircularProgressIndicator(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                loadingText,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

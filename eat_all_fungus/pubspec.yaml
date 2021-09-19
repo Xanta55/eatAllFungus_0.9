@@ -19,7 +19,9 @@ dependencies:
   firebase_storage: ^10.0.3
   flutter:
     sdk: flutter
-  get: ^4.3.8
+  flutter_hooks: ^0.17.0
+  freezed: ^0.14.2
+  hooks_riverpod: ^0.14.0+4
 
 dev_dependencies:
   flutter_test:
