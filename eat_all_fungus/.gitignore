@@ -9,6 +9,18 @@
 *.ap_
 *.aab
 
+
+### Firebase ###
+.idea
+**/node_modules/*
+**/.firebaserc
+**/google-services.json
+**/GoogleService-Info.plist
+
+### Firebase Patch ###
+.runtimeconfig.json
+.firebase/
+
 # Files for the ART/Dalvik VM
 *.dex
 
@@ -317,5 +329,6 @@ fabric.properties
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
+
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,flutter,dart,android,androidstudio
