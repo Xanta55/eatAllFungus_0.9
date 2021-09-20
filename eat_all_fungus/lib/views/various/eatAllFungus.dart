@@ -1,4 +1,5 @@
 import 'package:eat_all_fungus/controllers/authController.dart';
+import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/views/auth/login.dart';
 import 'package:eat_all_fungus/views/various/loadingScreen.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -25,18 +26,16 @@ class SplashScreen extends HookWidget {
   Widget build(BuildContext context) {
     // getting/ setting up the provider
     final authControllerState = useProvider(authControllerProvider);
+    final profileControllerState = useProvider(profileControllerProvider);
 
     // checking if provider is initialized
     if (authControllerState != null) {
-      if (!authControllerState.isAnonymous) {
-        return LoadingScreen(loadingText: 'TBD');
-      } else {
-        return Login();
-      }
-
+      return LoadingScreen(
+          loadingText:
+              'displayName: ${profileControllerState.data?.value.name}\nUID: ${authControllerState.uid}');
       // for now we just return a loading screen instead of splash
     } else {
-      return LoadingScreen(loadingText: 'Loading Database Connection');
+      return Login();
     }
   }
 }

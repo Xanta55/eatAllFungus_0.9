@@ -29,5 +29,6 @@ class MapTile with _$MapTile {
     return MapTile.fromJson(data).copyWith(id: doc.id);
   }
 
+  Map<String, dynamic> toDocumentNoID() => toJson()..remove('id');
   Map<String, dynamic> toDocument() => toJson();
 }
