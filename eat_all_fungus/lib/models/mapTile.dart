@@ -9,6 +9,7 @@ part 'mapTile.g.dart';
 
 @freezed
 class MapTile with _$MapTile {
+  const MapTile._();
   const factory MapTile({
     required String description,
     required List<String> inventory,
