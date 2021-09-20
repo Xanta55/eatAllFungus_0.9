@@ -24,6 +24,6 @@ For pulling packages and plugins, after specifying these in the pubspec.yaml
 # Generating Dataclasses
 
 ```
-flutter packages pub run build_runner watch --delete-conflicting-outputs
+flutter pub run build_runner build
 ```
 This will generate the freezed Dataclasses
