@@ -10,6 +10,7 @@ version: 1.0.0+1
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
+  
 dependencies:
   cloud_firestore: ^2.5.3
   cupertino_icons: ^1.0.2
@@ -20,12 +21,16 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.17.0
-  freezed: ^0.14.2
   hooks_riverpod: ^0.14.0+4
 
+
+# dev_dependencies are used for running generators and such and will not be present in production
 dev_dependencies:
+  freezed: ^0.14.2
+  build_runner: ^2.1.2
   flutter_test:
     sdk: flutter
+  json_serializable: ^4.1.4
 
 # The following section is specific to Flutter.
 flutter:

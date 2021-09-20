@@ -330,5 +330,9 @@ fabric.properties
 
 !/gradle/wrapper/gradle-wrapper.jar
 
+# Freezed
+*.freezed.dart
+*.g.dart
+
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,flutter,dart,android,androidstudio
