@@ -27,3 +27,18 @@ For pulling packages and plugins, after specifying these in the pubspec.yaml
 flutter pub run build_runner build
 ```
 This will generate the freezed Dataclasses
+
+
+## Explanation on different Models
+
+# User
+This is a Firebasemodel and holds for example the email and is responsible for a Login.
+The User is implemented with the help of Auth-Classes
+
+# Userprofile
+This holds the Metadata of each unique User.
+For example the In-Game name is stored in that model
+
+# Player
+This is a Player in an ongoing world.
+This Model holds Data like the inventory or current Position
