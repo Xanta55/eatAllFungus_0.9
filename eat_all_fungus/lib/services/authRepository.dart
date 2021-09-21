@@ -8,6 +8,7 @@ abstract class BaseAuthRepository {
   Stream<User?> get authStateChanges;
   Future<void> signInWithEmailAndPassword(String email, String password);
   Future<void> signInAnonymously();
+  Future<void> signUp(String email, String password);
   User? getCurrentUser();
   Future<void> signOut();
 }
@@ -49,6 +50,16 @@ class AuthRepository implements BaseAuthRepository {
     }
   }
 
+  @override
+  Future<void> signUp(String email, String password) async {
+    try {
+      await _read(firebaseAuthProvider)
+          .createUserWithEmailAndPassword(email: email, password: password);
+    } on FirebaseAuthException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
   /// Returns the current User of Firebase_Auth
   @override
   User? getCurrentUser() {
@@ -64,7 +75,6 @@ class AuthRepository implements BaseAuthRepository {
   Future<void> signOut() async {
     try {
       await _read(firebaseAuthProvider).signOut();
-      await _read(firebaseAuthProvider).signInAnonymously();
     } on FirebaseAuthException catch (error) {
       throw CustomException(message: error.message);
     }
