@@ -8,7 +8,7 @@ To Connect a Database, the according Firebasedocuments have to be installed
 
 ## Commands you may need
 
-# Flutter
+### Flutter
 
 ```
 flutter doctor
@@ -21,7 +21,7 @@ dart pub get
 ```
 For pulling packages and plugins, after specifying these in the pubspec.yaml
 
-# Generating Dataclasses
+### Generating Dataclasses
 
 ```
 flutter pub run build_runner build
@@ -31,14 +31,20 @@ This will generate the freezed Dataclasses
 
 ## Explanation on different Models
 
-# User
+### User
 This is a Firebasemodel and holds for example the email and is responsible for a Login.
 The User is implemented with the help of Auth-Classes
 
-# Userprofile
+A quick explanation - [FireFlutterDev](https://firebase.flutter.dev/docs/auth/usage)
+
+### Userprofile
 This holds the Metadata of each unique User.
 For example the In-Game name is stored in that model
 
-# Player
+Modelfile - [UserProfile](lib/models/userProfile.dart)
+
+### Player
 This is a Player in an ongoing world.
 This Model holds Data like the inventory or current Position
+
+Modelfile - TBD
