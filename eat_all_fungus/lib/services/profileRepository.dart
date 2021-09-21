@@ -25,7 +25,6 @@ class ProfileRepository implements BaseProfileRepository {
   Future<String> createEmptyProfile({required String name}) async {
     try {
       final _id = _read(authControllerProvider)!.uid;
-      print('ProfileRepo - $_id');
       await _read(databaseProvider)!
           .collection('profiles')
           .doc(_id)

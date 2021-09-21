@@ -1,6 +1,8 @@
 import 'package:eat_all_fungus/controllers/authController.dart';
 import 'package:eat_all_fungus/controllers/profileController.dart';
-import 'package:eat_all_fungus/views/auth/login.dart';
+import 'package:eat_all_fungus/models/customException.dart';
+import 'package:eat_all_fungus/views/auth/loginScreen.dart';
+import 'package:eat_all_fungus/views/overview/overviewScreen.dart';
 import 'package:eat_all_fungus/views/various/loadingScreen.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -30,12 +32,21 @@ class SplashScreen extends HookWidget {
 
     // checking if provider is initialized
     if (authControllerState != null) {
-      return LoadingScreen(
-          loadingText:
-              'displayName: ${profileControllerState.data?.value.name}\nUID: ${authControllerState.uid}');
+      return ProviderListener(
+          provider: userProfileExceptionProvider,
+          onChange: (BuildContext context,
+              StateController<CustomException?> customException) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                backgroundColor: Colors.red[400],
+                content: Text(customException.state!.message!)));
+          },
+          child: profileControllerState.data == null
+              ? LoadingScreen(loadingText: 'Loading Profile')
+              : OverviewScreen());
       // for now we just return a loading screen instead of splash
+
     } else {
-      return Login();
+      return LoginScreen();
     }
   }
 }
