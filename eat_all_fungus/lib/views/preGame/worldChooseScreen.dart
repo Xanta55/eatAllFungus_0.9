@@ -40,13 +40,13 @@ class WorldChooseScreen extends HookWidget {
   }
 }
 
+/// To save some space in the build function above, we export the List to external Widget
 class WorldList extends HookWidget {
   const WorldList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final worldListState = useProvider(worldListControllerProvider);
-    //final worldState = useProvider(worldControllerProvider);
     return worldListState.when(
         data: (worlds) => worlds.isEmpty
             ? Center(
@@ -83,6 +83,8 @@ class WorldList extends HookWidget {
   }
 }
 
+/// Each Card holds a few values and can be exported aswell
+/// This Widget may be interesting for the 'onTap' function
 class WorldCard extends HookWidget {
   final World world;
   const WorldCard({Key? key, required this.world}) : super(key: key);
@@ -100,7 +102,6 @@ class WorldCard extends HookWidget {
                   .copyWith(currentWorld: world.id!));
           await context.read(profileControllerProvider.notifier).getProfile();
           context.read(worldControllerProvider.notifier).getWorld();
-          //print('ChooseScreen - ${context.read(worldControllerProvider).data}');
           context
               .read(worldControllerProvider.notifier)
               .insertPlayer(playerID: '');
@@ -116,6 +117,8 @@ class WorldCard extends HookWidget {
   }
 }
 
+/// This will probably be removed later on
+/// Nonetheless, here is a button, which creates a new empty world
 class NewWorldButton extends HookWidget {
   const NewWorldButton({Key? key}) : super(key: key);
 

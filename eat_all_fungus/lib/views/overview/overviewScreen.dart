@@ -12,7 +12,6 @@ class OverviewScreen extends HookWidget {
   Widget build(BuildContext context) {
     final profileControllerState = useProvider(profileControllerProvider);
     final worldControllerState = useProvider(worldControllerProvider);
-    // final authControllerState = useProvider(authControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text('OVERVIEW'),

@@ -11,7 +11,6 @@ final worldControllerProvider =
     StateNotifierProvider<WorldController, AsyncValue<World>>((ref) {
   // Here the Controller gets the userID!
   final profile = ref.watch(profileControllerProvider);
-  print('${profile.data?.value.currentWorld}');
   return WorldController(ref.read, profile.data?.value.currentWorld);
 });
 
@@ -25,6 +24,8 @@ class WorldController extends StateNotifier<AsyncValue<World>> {
     }
   }
 
+  /// Refresh Method for internal world
+  /// Only call when user has world
   Future<void> getWorld({bool isRefreshing = false}) async {
     if (isRefreshing) state = AsyncValue.loading();
     try {
@@ -37,6 +38,7 @@ class WorldController extends StateNotifier<AsyncValue<World>> {
     }
   }
 
+  /// Call to increase currPlayers of the internal world by 1
   Future<void> insertPlayer({required String playerID}) async {
     try {
       await getWorld();
@@ -50,6 +52,8 @@ class WorldController extends StateNotifier<AsyncValue<World>> {
     }
   }
 
+  /// Overwrites the entire internal world by the updatedWorld and writes changes to database
+  /// Recommended usage: updateWorld(internalWorld.copyWith(name: 'New Name')); - changes only the name to 'New Name'
   Future<void> updateWorld({required World updatedWorld}) async {
     try {
       await _read(worldRepository)
@@ -61,6 +65,7 @@ class WorldController extends StateNotifier<AsyncValue<World>> {
     }
   }
 
+  /// Deletes a world by ID - probably not used in Frontend later on
   Future<void> deleteWorld({required String worldId}) async {
     try {
       await _read(worldRepository).deleteWorld(id: worldId);
