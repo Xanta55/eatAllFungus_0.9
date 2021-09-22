@@ -11,6 +11,7 @@ final worldControllerProvider =
     StateNotifierProvider<WorldController, AsyncValue<World>>((ref) {
   // Here the Controller gets the userID!
   final profile = ref.watch(profileControllerProvider);
+  print('${profile.data?.value.currentWorld}');
   return WorldController(ref.read, profile.data?.value.currentWorld);
 });
 
@@ -27,12 +28,25 @@ class WorldController extends StateNotifier<AsyncValue<World>> {
   Future<void> getWorld({bool isRefreshing = false}) async {
     if (isRefreshing) state = AsyncValue.loading();
     try {
-      final world = await _read(worldRepository).getWorld(id: _worldID!);
+      final world = await _read(worldRepository).getWorld(id: _worldID ?? '');
       if (mounted) {
         state = AsyncValue.data(world);
       }
     } on CustomException catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
+    }
+  }
+
+  Future<void> insertPlayer({required String playerID}) async {
+    try {
+      await getWorld();
+      await _read(worldRepository).updateWorld(
+          id: _worldID!,
+          worldInput: state.data!.value
+              .copyWith(currentPlayers: state.data!.value.currentPlayers + 1));
+      state.whenData((value) => value);
+    } on CustomException catch (error) {
+      _read(worldExceptionProvider).state = error;
     }
   }
 

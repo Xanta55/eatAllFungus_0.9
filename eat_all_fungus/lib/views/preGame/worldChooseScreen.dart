@@ -1,15 +1,15 @@
 import 'package:eat_all_fungus/constValues/constSizes.dart';
+import 'package:eat_all_fungus/controllers/profileController.dart';
+import 'package:eat_all_fungus/controllers/worldController.dart';
 import 'package:eat_all_fungus/controllers/worldListController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/models/world.dart';
-import 'package:eat_all_fungus/services/worldRepository.dart';
 import 'package:eat_all_fungus/views/loadings/loadingScreen.dart';
 import 'package:eat_all_fungus/views/loadings/loadingsWidget.dart';
 import 'package:eat_all_fungus/views/widgets/buttons/logoutButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class WorldChooseScreen extends HookWidget {
@@ -20,7 +20,6 @@ class WorldChooseScreen extends HookWidget {
     // getting/ setting up the provider
     final worldListControllerState = useProvider(worldListControllerProvider);
 
-    // checking if provider is initialized
     return Scaffold(
       appBar: AppBar(
         title: Text('CHOOSE A WORLD'),
@@ -47,6 +46,7 @@ class WorldList extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final worldListState = useProvider(worldListControllerProvider);
+    //final worldState = useProvider(worldControllerProvider);
     return worldListState.when(
         data: (worlds) => worlds.isEmpty
             ? Center(
@@ -56,26 +56,7 @@ class WorldList extends HookWidget {
                     Text(
                         'Seems like there are no worlds (yet or just at the moment...)'),
                     SizedBox(height: spacingSize),
-                    ElevatedButton(
-                        onPressed: () => context
-                            .read(worldListControllerProvider.notifier)
-                            .createEmptyWorld(
-                                world: World(
-                                    name: 'Tester',
-                                    description:
-                                        'A wholly golly World where nothing goes wrong',
-                                    depth: 1,
-                                    isOpen: true,
-                                    currentPlayers: 0,
-                                    mapTiles: [
-                                  MapTile(
-                                      description: 'Empty Tile',
-                                      inventory: ['plank', 'plank'],
-                                      isHidden: false,
-                                      xCoord: 0,
-                                      yCoord: 0)
-                                ])),
-                        child: const Text('Create Empty World'))
+                    NewWorldButton()
                   ],
                 ),
               )
@@ -85,38 +66,13 @@ class WorldList extends HookWidget {
                   if (index == worlds.length) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                          onPressed: () => context
-                              .read(worldListControllerProvider.notifier)
-                              .createEmptyWorld(
-                                  world: World(
-                                      name: 'Tester',
-                                      description:
-                                          'A wholly golly World where nothing goes wrong',
-                                      depth: 1,
-                                      isOpen: true,
-                                      currentPlayers: 0,
-                                      mapTiles: [
-                                    MapTile(
-                                        description: 'Empty Tile',
-                                        inventory: ['plank', 'plank'],
-                                        isHidden: false,
-                                        xCoord: 0,
-                                        yCoord: 0)
-                                  ])),
-                          child: const Text('Create Empty World')),
+                      child: NewWorldButton(),
                     );
                   }
                   final world = worlds[index];
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Card(
-                      child: ListTile(
-                        key: ValueKey(world.id),
-                        title: Text(world.name),
-                        subtitle: Text(world.description),
-                      ),
-                    ),
+                    child: WorldCard(world: world),
                   );
                 }),
         loading: () => LoadingScreen(loadingText: 'loading Worlds'),
@@ -124,6 +80,67 @@ class WorldList extends HookWidget {
             message: error is CustomException
                 ? error.message!
                 : 'Something went wrong!'));
+  }
+}
+
+class WorldCard extends HookWidget {
+  final World world;
+  const WorldCard({Key? key, required this.world}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        onTap: () async {
+          await context.read(profileControllerProvider.notifier).updateProfile(
+              updatedProfile: context
+                  .read(profileControllerProvider)
+                  .data!
+                  .value
+                  .copyWith(currentWorld: world.id!));
+          await context.read(profileControllerProvider.notifier).getProfile();
+          context.read(worldControllerProvider.notifier).getWorld();
+          //print('ChooseScreen - ${context.read(worldControllerProvider).data}');
+          context
+              .read(worldControllerProvider.notifier)
+              .insertPlayer(playerID: '');
+          // TODO: Add Player to World
+        },
+        child: ListTile(
+          key: ValueKey(world.id),
+          title: Text(world.name),
+          subtitle: Text(world.description),
+        ),
+      ),
+    );
+  }
+}
+
+class NewWorldButton extends HookWidget {
+  const NewWorldButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: () => context
+            .read(worldListControllerProvider.notifier)
+            .createEmptyWorld(
+                world: World(
+                    name: 'Tester',
+                    description:
+                        'A wholly golly World where nothing goes wrong',
+                    depth: 1,
+                    isOpen: true,
+                    currentPlayers: 0,
+                    mapTiles: [
+                  MapTile(
+                      description: 'Empty Tile',
+                      inventory: ['plank', 'plank'],
+                      isHidden: false,
+                      xCoord: 0,
+                      yCoord: 0)
+                ])),
+        child: const Text('Create Empty World'));
   }
 }
 
