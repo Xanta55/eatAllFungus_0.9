@@ -14,10 +14,8 @@ class MapTile with _$MapTile {
     required String description,
     required List<String> inventory,
     required bool isHidden,
-    required String world,
     required int xCoord,
     required int yCoord,
-    // The id will be generated in a certain way (we create our own - WORLD;xCoord;yCoord)
     String? id,
   }) = _MapTile;
 

@@ -3,7 +3,9 @@ import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/views/auth/loginScreen.dart';
 import 'package:eat_all_fungus/views/overview/overviewScreen.dart';
-import 'package:eat_all_fungus/views/various/loadingScreen.dart';
+import 'package:eat_all_fungus/views/preGame/getIntoGameWrapper.dart';
+import 'package:eat_all_fungus/views/preGame/worldChooseScreen.dart';
+import 'package:eat_all_fungus/views/loadings/loadingScreen.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +44,7 @@ class SplashScreen extends HookWidget {
           },
           child: profileControllerState.data == null
               ? LoadingScreen(loadingText: 'Loading Profile')
-              : OverviewScreen());
+              : GetIntoGameWrapper());
       // for now we just return a loading screen instead of splash
 
     } else {
