@@ -13,7 +13,7 @@ class MapTile with _$MapTile {
   const factory MapTile({
     required String description,
     required List<String> inventory,
-    required bool isHidden,
+    //required bool isHidden,
     required int xCoord,
     required int yCoord,
     String? id,
