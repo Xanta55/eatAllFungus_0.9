@@ -1,5 +1,4 @@
 import 'package:eat_all_fungus/models/customException.dart';
-import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/models/world.dart';
 import 'package:eat_all_fungus/services/worldRepository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

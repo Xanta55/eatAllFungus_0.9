@@ -94,18 +94,12 @@ class WorldCard extends HookWidget {
     return Card(
       child: InkWell(
         onTap: () async {
-          await context.read(profileControllerProvider.notifier).updateProfile(
-              updatedProfile: context
-                  .read(profileControllerProvider)
-                  .data!
-                  .value
-                  .copyWith(currentWorld: world.id!));
-          await context.read(profileControllerProvider.notifier).getProfile();
-          context.read(worldControllerProvider.notifier).getWorld();
-          context
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Entering Round')));
+          //await context.read(profileControllerProvider.notifier).getProfile();
+          await context
               .read(worldControllerProvider.notifier)
-              .insertPlayer(playerID: '');
-          // TODO: Add Player to World
+              .insertPlayer(world: world);
         },
         child: ListTile(
           key: ValueKey(world.id),

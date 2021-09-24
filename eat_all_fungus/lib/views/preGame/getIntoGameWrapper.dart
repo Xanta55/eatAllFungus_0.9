@@ -1,8 +1,6 @@
 import 'package:eat_all_fungus/constValues/constSizes.dart';
 import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/controllers/worldController.dart';
-import 'package:eat_all_fungus/models/customException.dart';
-import 'package:eat_all_fungus/views/loadings/loadingScreen.dart';
 import 'package:eat_all_fungus/views/overview/overviewScreen.dart';
 import 'package:eat_all_fungus/views/preGame/worldChooseScreen.dart';
 import 'package:flutter/material.dart';
