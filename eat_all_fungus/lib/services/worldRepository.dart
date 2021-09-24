@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
+import 'package:eat_all_fungus/models/userProfile.dart';
 import 'package:eat_all_fungus/models/world.dart';
 import 'package:eat_all_fungus/providers/firebaseProviders.dart';
+import 'package:eat_all_fungus/services/profileRepository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -21,6 +23,8 @@ abstract class BaseWorldRepository {
       {required String id, required List<MapTile> mapTiles});
   Future<void> updateWorldTile({required String id, required MapTile mapTile});
   Future<void> createWorldTile({required String id, required MapTile mapTile});
+  Future<void> removePlayerFromWorld(
+      {required World world, required UserProfile profile});
   Future<void> deleteWorld({required String id});
 }
 
@@ -163,9 +167,51 @@ class WorldRepository implements BaseWorldRepository {
   }
 
   @override
+  Future<void> removePlayerFromWorld(
+      {required World world, required UserProfile profile}) async {
+    try {
+      //Get profile with this world in field and update
+      await _read(userProfileRepository).updateProfile(
+          id: profile.id!, profile: profile.copyWith(currentWorld: ''));
+
+      // Then we get all players in that world...
+      await _read(databaseProvider)!
+          .collection('players')
+          .doc(profile.id!)
+          .delete();
+
+      await updateWorld(
+          id: world.id!,
+          worldInput: world.copyWith(currentPlayers: world.currentPlayers - 1));
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
   Future<void> deleteWorld({required String id}) async {
     try {
       await _read(databaseProvider)!.collection('worlds').doc(id).delete();
+      //Get all profiles with this world in field
+      final profileSnapshot = await _read(databaseProvider)!
+          .collection('profiles')
+          .where('currentWorld', isEqualTo: id)
+          .get();
+      // for each doc, we update the profile
+      for (var doc in profileSnapshot.docs) {
+        final profile = UserProfile.fromDocument(doc);
+        await _read(userProfileRepository).updateProfile(
+            id: profile.id!, profile: profile..copyWith(currentWorld: ''));
+      }
+      // Then we get all players in that world...
+      final playerSnapshot = await _read(databaseProvider)!
+          .collection('players')
+          .where('worldID', isEqualTo: id)
+          .get();
+      // ... and delete them
+      for (var doc in playerSnapshot.docs) {
+        await doc.reference.delete();
+      }
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
     }

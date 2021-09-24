@@ -1,7 +1,6 @@
 import 'package:eat_all_fungus/views/loadings/loadingsWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:io' show Platform;
 
 import 'package:flutter_hooks/flutter_hooks.dart';
 

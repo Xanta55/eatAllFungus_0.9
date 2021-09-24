@@ -1,7 +1,10 @@
 import 'package:eat_all_fungus/controllers/authController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/userProfile.dart';
+import 'package:eat_all_fungus/models/world.dart';
+import 'package:eat_all_fungus/services/playerRepository.dart';
 import 'package:eat_all_fungus/services/profileRepository.dart';
+import 'package:eat_all_fungus/services/worldRepository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final userProfileExceptionProvider =
@@ -46,6 +49,17 @@ class ProfileController extends StateNotifier<AsyncValue<UserProfile>> {
     }
   }
 
+  Future<void> createPlayerInWorld({required String worldID}) async {
+    try {
+      await _read(playerRepository)
+          .createPlayerInWorld(worldID: worldID, profile: state.data!.value);
+      await getProfile();
+      state.whenData((value) => state = AsyncValue.data(value));
+    } on CustomException catch (error, stackTrace) {
+      state = AsyncValue.error(error, stackTrace);
+    }
+  }
+
   Future<void> updateProfile({required UserProfile updatedProfile}) async {
     try {
       await _read(userProfileRepository)
@@ -53,6 +67,17 @@ class ProfileController extends StateNotifier<AsyncValue<UserProfile>> {
       // m8 wtf idk either :<<
       state.whenData(
           (value) => value.id == updatedProfile.id ? updatedProfile : value);
+    } on CustomException catch (error) {
+      _read(userProfileExceptionProvider).state = error;
+    }
+  }
+
+  Future<void> removePlayerFromWorld({required World world}) async {
+    try {
+      await _read(worldRepository)
+          .removePlayerFromWorld(world: world, profile: state.data!.value);
+      await getProfile();
+      state.whenData((value) => AsyncValue.data(value));
     } on CustomException catch (error) {
       _read(userProfileExceptionProvider).state = error;
     }

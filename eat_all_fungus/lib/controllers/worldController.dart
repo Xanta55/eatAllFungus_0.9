@@ -1,6 +1,7 @@
+import 'package:eat_all_fungus/controllers/playerController.dart';
 import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
-import 'package:eat_all_fungus/models/mapTile.dart';
+import 'package:eat_all_fungus/models/userProfile.dart';
 import 'package:eat_all_fungus/models/world.dart';
 import 'package:eat_all_fungus/services/worldRepository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,15 +12,16 @@ final worldControllerProvider =
     StateNotifierProvider<WorldController, AsyncValue<World>>((ref) {
   // Here the Controller gets the userID!
   final profile = ref.watch(profileControllerProvider);
-  return WorldController(ref.read, profile.data?.value.currentWorld);
+  return WorldController(ref.read, profile);
 });
 
 class WorldController extends StateNotifier<AsyncValue<World>> {
   final Reader _read;
-  final String? _worldID;
+  final AsyncValue<UserProfile> _profile;
 
-  WorldController(this._read, this._worldID) : super(AsyncValue.loading()) {
-    if (_worldID != null) {
+  WorldController(this._read, this._profile) : super(AsyncValue.loading()) {
+    if (_profile.data?.value.currentWorld != null &&
+        _profile.data!.value.currentWorld.isNotEmpty) {
       getWorld();
     }
   }
@@ -29,7 +31,8 @@ class WorldController extends StateNotifier<AsyncValue<World>> {
   Future<void> getWorld({bool isRefreshing = false}) async {
     if (isRefreshing) state = AsyncValue.loading();
     try {
-      final world = await _read(worldRepository).getWorld(id: _worldID ?? '');
+      final world = await _read(worldRepository)
+          .getWorld(id: _profile.data!.value.currentWorld);
       if (mounted) {
         state = AsyncValue.data(world);
       }
@@ -38,15 +41,22 @@ class WorldController extends StateNotifier<AsyncValue<World>> {
     }
   }
 
-  /// Call to increase currPlayers of the internal world by 1
-  Future<void> insertPlayer({required String playerID}) async {
+  /// Call to increase currPlayers of the internal world by 1 and creates a Player
+  Future<void> insertPlayer({required World world}) async {
     try {
-      await getWorld();
+      final worldTemp = await _read(worldRepository).getWorld(id: world.id!);
+
+      await _read(profileControllerProvider.notifier)
+          .createPlayerInWorld(worldID: worldTemp.id!);
+
       await _read(worldRepository).updateWorld(
-          id: _worldID!,
-          worldInput: state.data!.value
-              .copyWith(currentPlayers: state.data!.value.currentPlayers + 1));
-      state.whenData((value) => value);
+          id: world.id!,
+          worldInput: world.copyWith(currentPlayers: world.currentPlayers + 1));
+
+      if (mounted) {
+        state = AsyncValue.data(
+            await _read(worldRepository).getWorld(id: world.id!));
+      }
     } on CustomException catch (error) {
       _read(worldExceptionProvider).state = error;
     }
@@ -56,10 +66,21 @@ class WorldController extends StateNotifier<AsyncValue<World>> {
   /// Recommended usage: updateWorld(internalWorld.copyWith(name: 'New Name')); - changes only the name to 'New Name'
   Future<void> updateWorld({required World updatedWorld}) async {
     try {
-      await _read(worldRepository)
-          .updateWorld(id: _worldID!, worldInput: updatedWorld);
+      await _read(worldRepository).updateWorld(
+          id: _profile.data!.value.currentWorld, worldInput: updatedWorld);
       state.whenData(
           (value) => value.id == updatedWorld.id ? updatedWorld : value);
+    } on CustomException catch (error) {
+      _read(worldExceptionProvider).state = error;
+    }
+  }
+
+  Future<void> removePlayerFromWorld() async {
+    try {
+      //Get profile with this world in field and update
+      await _read(profileControllerProvider.notifier)
+          .removePlayerFromWorld(world: state.data!.value);
+      state.whenData((value) => AsyncValue.data(value));
     } on CustomException catch (error) {
       _read(worldExceptionProvider).state = error;
     }
