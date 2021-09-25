@@ -2,7 +2,7 @@ import 'package:eat_all_fungus/constValues/constSizes.dart';
 import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/controllers/worldController.dart';
 import 'package:eat_all_fungus/views/inGame/inGameScaffolding.dart';
-import 'package:eat_all_fungus/views/inGame/overview/overviewScreen.dart';
+import 'package:eat_all_fungus/views/inGame/overview/overviewWidget.dart';
 import 'package:eat_all_fungus/views/preGame/worldChooseScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
