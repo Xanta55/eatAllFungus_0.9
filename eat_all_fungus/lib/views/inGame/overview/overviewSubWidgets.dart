@@ -1,5 +1,5 @@
 import 'package:eat_all_fungus/controllers/playerController.dart';
-import 'package:eat_all_fungus/controllers/tileController.dart';
+import 'package:eat_all_fungus/providers/tileStream.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +53,7 @@ class _buildTilePreview extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tileController = useProvider(mapTileControllerProvider);
+    final tileController = useProvider(mapTileStreamProvider);
     return Panel(
       child: Container(
         color: Colors.grey[colorIntensity],
@@ -127,7 +127,7 @@ class _buildTileInfo extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tileController = useProvider(mapTileControllerProvider);
+    final tileController = useProvider(mapTileStreamProvider);
     return Panel(
       child: Container(
         color: Colors.grey[colorIntensity],

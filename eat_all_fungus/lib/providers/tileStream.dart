@@ -7,17 +7,17 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final tileExceptionProvider = StateProvider<CustomException?>((_) => null);
 
-final mapTileControllerProvider =
-    StateNotifierProvider<MapTileController, Stream<MapTile>>((ref) {
+final mapTileStreamProvider =
+    StateNotifierProvider<MapTileStreamer, Stream<MapTile>>((ref) {
   final player = ref.watch(playerControllerProvider);
-  return MapTileController(ref.read, player);
+  return MapTileStreamer(ref.read, player);
 });
 
-class MapTileController extends StateNotifier<Stream<MapTile>> {
+class MapTileStreamer extends StateNotifier<Stream<MapTile>> {
   final Reader _read;
   final AsyncValue<Player> _player;
 
-  MapTileController(this._read, this._player) : super(Stream.empty()) {
+  MapTileStreamer(this._read, this._player) : super(Stream.empty()) {
     _player.when(data: (data) {
       getTileStream();
     }, loading: () {
