@@ -133,6 +133,7 @@ class NewWorldButton extends HookWidget {
                   MapTile(
                       description: 'Empty Tile',
                       inventory: ['plank', 'plank'],
+                      timesDug: 0,
                       xCoord: 0,
                       yCoord: 0)
                 ])),

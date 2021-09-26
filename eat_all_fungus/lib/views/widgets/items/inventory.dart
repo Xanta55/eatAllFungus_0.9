@@ -3,7 +3,7 @@ import 'package:eat_all_fungus/services/imageRepository.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-List<Widget> buildInventoryList() {
+List<Widget> buildPlayerInventoryList() {
   final playerState = useProvider(playerControllerProvider);
   final outputList = <Widget>[];
   playerState.when(
@@ -34,7 +34,6 @@ Widget ItemBox({required String item}) {
               future: imageProvider.getItemImageUrl(itemImageName: item),
               builder: (context, futureImage) {
                 if (futureImage.connectionState == ConnectionState.done) {
-                  print(futureImage);
                   return Container(
                     child: Image.network(
                       futureImage.data.toString(),

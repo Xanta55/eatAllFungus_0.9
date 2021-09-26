@@ -1,4 +1,6 @@
 import 'package:eat_all_fungus/controllers/playerController.dart';
+import 'package:eat_all_fungus/controllers/tileController.dart';
+import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -46,17 +48,37 @@ class _buildToDoList extends StatelessWidget {
   }
 }
 
-class _buildTilePreview extends StatelessWidget {
+class _buildTilePreview extends HookWidget {
   const _buildTilePreview();
 
   @override
   Widget build(BuildContext context) {
+    final tileController = useProvider(mapTileControllerProvider);
     return Panel(
       child: Container(
         color: Colors.grey[colorIntensity],
         child: Center(
-          child: Text('Tile Preview'),
+          child: StreamBuilder(
+            stream: tileController,
+            builder: (context, snapshot) {
+              return snapshot.connectionState == ConnectionState.active
+                  ? TilePreview(tile: snapshot.data as MapTile)
+                  : CircularProgressIndicator();
+            },
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget TilePreview({required MapTile tile}) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('X: ${tile.xCoord} - Y: ${tile.yCoord}'),
+          Text('${tile.description}')
+        ],
       ),
     );
   }
@@ -82,7 +104,7 @@ class _buildInventory extends HookWidget {
                     Expanded(
                       child: ListView(
                         scrollDirection: Axis.horizontal,
-                        children: buildInventoryList(),
+                        children: buildPlayerInventoryList(),
                       ),
                     ),
                   ],
@@ -95,19 +117,6 @@ class _buildInventory extends HookWidget {
             error: (error, stackTrace) => Center(
                   child: Text(error.toString()),
                 )),
-        /*
-        Column(
-          children: [
-            Text('Inventory: ${playerState.data!.value.Inventory.length}/${playerState.data!.value.inventorySize}'),
-            Center(
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: buildInventoryList(),
-              ),
-            ),
-          ],
-        ),
-        */
       ),
     );
   }
