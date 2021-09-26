@@ -2,7 +2,7 @@ import 'package:eat_all_fungus/controllers/playerController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/models/player.dart';
-import 'package:eat_all_fungus/services/TileRepository.dart';
+import 'package:eat_all_fungus/services/tileRepository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final tileExceptionProvider = StateProvider<CustomException?>((_) => null);

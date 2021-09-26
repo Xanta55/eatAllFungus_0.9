@@ -15,6 +15,10 @@ class ImageRepository {
     return await getImageUrl(imagePath: 'items/$itemImageName.png');
   }
 
+  Future<String?> getStatusImageUrl({required String statusImageName}) async {
+    return await getImageUrl(imagePath: 'effects/$statusImageName.png');
+  }
+
   Future<String?> getImageUrl({required String imagePath}) async {
     try {
       final url =

@@ -1,7 +1,12 @@
 import 'package:eat_all_fungus/controllers/playerController.dart';
+import 'package:eat_all_fungus/models/news.dart';
+import 'package:eat_all_fungus/models/player.dart';
+import 'package:eat_all_fungus/providers/newsStream.dart';
 import 'package:eat_all_fungus/providers/tileStream.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
+import 'package:eat_all_fungus/views/widgets/newspaper/miniNewspaper.dart';
+import 'package:eat_all_fungus/views/widgets/status/statusWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -164,32 +169,67 @@ class _buildTileInfo extends HookWidget {
   }
 }
 
-class _buildPlayerStatus extends StatelessWidget {
+class _buildPlayerStatus extends HookWidget {
   const _buildPlayerStatus();
 
   @override
   Widget build(BuildContext context) {
+    final playerState = useProvider(playerControllerProvider.notifier);
     return Panel(
       child: Container(
         color: Colors.grey[colorIntensity],
         child: Center(
-          child: Text('Player Status'),
+          child: StreamBuilder(
+            stream: playerState.getPlayerStream(),
+            builder: (context, player) {
+              if (player.connectionState == ConnectionState.active) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Text('Current Statuseffects:'),
+                      Expanded(
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: buildPlayerStatusList(
+                              statusEffects:
+                                  (player.data as Player).statusEffects),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return CircularProgressIndicator();
+              }
+            },
+          ),
         ),
       ),
     );
   }
 }
 
-class _buildNews extends StatelessWidget {
+class _buildNews extends HookWidget {
   const _buildNews();
 
   @override
   Widget build(BuildContext context) {
+    final newsStream = useProvider(newsStreamProvider);
     return Panel(
       child: Container(
         color: Colors.grey[colorIntensity],
         child: Center(
-          child: Text('News'),
+          child: StreamBuilder(
+            stream: newsStream,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.active) {
+                return MiniNewspaper(newsInput: snapshot.data as List<News>);
+              } else {
+                return CircularProgressIndicator();
+              }
+            },
+          ),
         ),
       ),
     );
