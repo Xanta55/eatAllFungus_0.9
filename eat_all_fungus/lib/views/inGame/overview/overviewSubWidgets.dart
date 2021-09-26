@@ -122,16 +122,42 @@ class _buildInventory extends HookWidget {
   }
 }
 
-class _buildTileInfo extends StatelessWidget {
+class _buildTileInfo extends HookWidget {
   const _buildTileInfo();
 
   @override
   Widget build(BuildContext context) {
+    final tileController = useProvider(mapTileControllerProvider);
     return Panel(
       child: Container(
         color: Colors.grey[colorIntensity],
         child: Center(
-          child: Text('Tile Infos'),
+          child: StreamBuilder(
+            stream: tileController,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.active) {
+                final itemWidgetList = buildTileInventoryList(
+                    tileInventory: (snapshot.data as MapTile).inventory);
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Text('Items on Tile:'),
+                      Expanded(
+                        child: ListView(
+                          shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
+                          children: itemWidgetList,
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              } else {
+                return CircularProgressIndicator();
+              }
+            },
+          ),
         ),
       ),
     );
