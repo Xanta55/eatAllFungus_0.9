@@ -12,6 +12,8 @@ abstract class BaseTileRepository {
       {required String worldID,
       required int xCoord,
       required int yCoord,
+      required int sporeLevel,
+      required int buffshrooms,
       required String description});
   Future<void> updateTile({required MapTile tile});
   Future<void> deleteTile({required String id});
@@ -46,6 +48,8 @@ class MapTileRepository implements BaseTileRepository {
       {required String worldID,
       required int xCoord,
       required int yCoord,
+      required int sporeLevel,
+      required int buffshrooms,
       required String description}) async {
     try {
       await _read(databaseProvider)!
@@ -57,6 +61,9 @@ class MapTileRepository implements BaseTileRepository {
                   description: description,
                   inventory: [],
                   timesDug: 0,
+                  buffShrooms: buffshrooms,
+                  sporeLevel: sporeLevel,
+                  visibleFor: [],
                   xCoord: xCoord,
                   yCoord: yCoord)
               .toDocumentNoID());

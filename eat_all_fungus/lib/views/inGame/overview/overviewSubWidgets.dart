@@ -80,10 +80,11 @@ class _buildToDoList extends HookWidget {
   Widget buildTodoWidget({required List<String> todoList}) {
     if (todoList.isEmpty) {
       return ListView(children: [
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Seems like there is nothing to do right now'),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'All done for today!',
+            textAlign: TextAlign.center,
           ),
         ),
       ]);

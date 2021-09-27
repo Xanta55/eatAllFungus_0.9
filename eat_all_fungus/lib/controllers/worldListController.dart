@@ -71,6 +71,9 @@ class WorldListController extends StateNotifier<AsyncValue<List<World>>> {
               description: description,
               inventory: [],
               timesDug: 0,
+              buffShrooms: 0,
+              sporeLevel: 0,
+              visibleFor: [],
               xCoord: x,
               yCoord: y));
         }
