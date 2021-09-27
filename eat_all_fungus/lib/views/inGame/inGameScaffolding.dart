@@ -1,9 +1,12 @@
 import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/controllers/worldController.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
+import 'package:eat_all_fungus/models/town.dart';
 import 'package:eat_all_fungus/providers/inGameNavigationProvider.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
+import 'package:eat_all_fungus/providers/streams/townStream.dart';
 import 'package:eat_all_fungus/services/authRepository.dart';
+import 'package:eat_all_fungus/services/townRepository.dart';
 import 'package:eat_all_fungus/views/inGame/overview/overviewWidget.dart';
 import 'package:eat_all_fungus/views/inGame/town/townWidget.dart';
 import 'package:eat_all_fungus/views/widgets/buttons/logoutButton.dart';
@@ -45,7 +48,9 @@ class InGameScaffolding extends HookWidget {
             children: <Widget>[
               _buildDrawerButton(context, 'Overview'),
               _buildDrawerButton(context, 'Map'),
-              _buildDrawerButton(context, 'Town'),
+              (tileStream != null && tileStream.townOnTile != '')
+                  ? _buildDrawerButton(context, 'Town')
+                  : Container(),
               _buildDrawerButton(context, 'Player'),
               _buildDrawerButton(context, 'Radio'),
               Divider(color: Colors.amber[200]),

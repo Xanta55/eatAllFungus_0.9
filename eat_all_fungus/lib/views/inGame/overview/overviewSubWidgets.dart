@@ -70,10 +70,6 @@ class _buildToDoList extends HookWidget {
       return Panel(
         child: Container(
           color: Colors.grey[colorIntensity],
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircularProgressIndicator(),
-          ),
         ),
       );
     }
@@ -162,9 +158,7 @@ class _buildInventory extends HookWidget {
                 ),
               );
             },
-            loading: () => Center(
-                  child: CircularProgressIndicator(),
-                ),
+            loading: () => Container(),
             error: (error, stackTrace) => Center(
                   child: Text(error.toString()),
                 )),

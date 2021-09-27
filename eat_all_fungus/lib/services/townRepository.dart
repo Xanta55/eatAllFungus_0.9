@@ -55,6 +55,7 @@ class TownRepository implements BaseTownRepository {
   Future<Town> getTownOnTile(
       {required String worldID, required int x, required int y}) async {
     try {
+      print('TownRepository - X:$x - Y:$y');
       final query = await _read(databaseProvider)!
           .collection('worlds')
           .doc(worldID)
