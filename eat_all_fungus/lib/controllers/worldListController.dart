@@ -73,7 +73,7 @@ class WorldListController extends StateNotifier<AsyncValue<List<World>>> {
               timesDug: 0,
               buffShrooms: 0,
               sporeLevel: 0,
-              visibleFor: [],
+              visibleFor: (x == 0 && y == 0) ? ['all'] : [],
               xCoord: x,
               yCoord: y));
         }
