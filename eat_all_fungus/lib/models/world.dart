@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
+import 'package:eat_all_fungus/models/news.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
@@ -16,6 +17,7 @@ class World with _$World {
     required int depth,
     required bool isOpen,
     List<MapTile>? mapTiles,
+    List<News>? news,
     String? id,
   }) = _World;
 
@@ -33,6 +35,7 @@ class World with _$World {
         currentPlayers: 0,
         depth: 1,
         mapTiles: [],
+        news: [],
         isOpen: false,
       );
     }

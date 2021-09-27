@@ -36,6 +36,10 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
     }
   }
 
+  Stream<Player> getPlayerStream() {
+    return _read(playerRepository).getPlayerStream(profile: _player!);
+  }
+
   Future<void> updatePlayer({required Player updatedPlayer}) async {
     try {
       await _read(playerRepository).updatePlayer(player: updatedPlayer);

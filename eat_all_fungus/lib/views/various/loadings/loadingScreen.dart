@@ -1,4 +1,4 @@
-import 'package:eat_all_fungus/views/loadings/loadingsWidget.dart';
+import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

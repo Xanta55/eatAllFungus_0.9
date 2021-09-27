@@ -12,6 +12,7 @@ class Player with _$Player {
   const factory Player({
     required List<String> statusEffects,
     required List<String> Inventory,
+    required List<String> todoList,
     required int xCoord,
     required int yCoord,
     required String worldID,
@@ -30,6 +31,7 @@ class Player with _$Player {
       return Player(
         Inventory: [],
         statusEffects: [],
+        todoList: [],
         worldID: '',
         inventorySize: 0,
         actionPoints: 10,

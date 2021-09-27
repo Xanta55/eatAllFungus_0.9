@@ -3,7 +3,7 @@ import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/views/auth/loginScreen.dart';
 import 'package:eat_all_fungus/views/preGame/getIntoGameWrapper.dart';
-import 'package:eat_all_fungus/views/loadings/loadingScreen.dart';
+import 'package:eat_all_fungus/views/various/loadings/loadingScreen.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +28,10 @@ class SplashScreen extends HookWidget {
   Widget build(BuildContext context) {
     // getting/ setting up the provider
     final authControllerState = useProvider(authControllerProvider);
-    final profileControllerState = useProvider(profileControllerProvider);
 
     // checking if provider is initialized
     if (authControllerState != null) {
+      final profileControllerState = useProvider(profileControllerProvider);
       return ProviderListener(
           provider: userProfileExceptionProvider,
           onChange: (BuildContext context,

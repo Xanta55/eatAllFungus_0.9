@@ -35,11 +35,6 @@ class LoginScreen extends HookWidget {
                           .read(authRepositoryProvider)
                           .signInWithEmailAndPassword(
                               emailController.text, passwordController.text);
-                      await context.read(userProfileRepository).getProfile(
-                          id: context
-                              .read(authRepositoryProvider)
-                              .getCurrentUser()!
-                              .uid);
                     },
                     child: Container(
                         height: 50.0,

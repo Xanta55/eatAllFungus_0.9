@@ -13,7 +13,7 @@ class MapTile with _$MapTile {
   const factory MapTile({
     required String description,
     required List<String> inventory,
-    //required bool isHidden,
+    required int timesDug,
     required int xCoord,
     required int yCoord,
     String? id,
@@ -23,8 +23,18 @@ class MapTile with _$MapTile {
       _$MapTileFromJson(json);
 
   factory MapTile.fromDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
-    final data = doc.data()!;
-    return MapTile.fromJson(data).copyWith(id: doc.id);
+    final data = doc.data();
+    if (data != null) {
+      return MapTile.fromJson(data).copyWith(id: doc.id);
+    } else {
+      return MapTile(
+        description: '',
+        inventory: [],
+        timesDug: 0,
+        xCoord: 0,
+        yCoord: 0,
+      );
+    }
   }
 
   Map<String, dynamic> toDocumentNoID() => toJson()..remove('id');

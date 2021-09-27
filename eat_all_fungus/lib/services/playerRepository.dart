@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 abstract class BasePlayerRepository {
   Future<Player> getPlayer({required UserProfile profile});
+  Stream<Player> getPlayerStream({required UserProfile profile});
   Future<List<Player>?> getPlayersInWorld({required String worldID});
   Future<QuerySnapshot<Map<String, dynamic>>?> getAccordingPlayersInWorldQuery(
       {required String worldID});
@@ -77,6 +78,7 @@ class PlayerRepository implements BasePlayerRepository {
           Player(
                   statusEffects: [],
                   Inventory: [],
+                  todoList: [],
                   xCoord: 0,
                   yCoord: 0,
                   inventorySize: 8,
@@ -163,6 +165,20 @@ class PlayerRepository implements BasePlayerRepository {
           .doc(profile.id)
           .delete();
     } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Stream<Player> getPlayerStream({required UserProfile profile}) {
+    try {
+      final streamOut = _read(databaseProvider)
+          ?.collection('players')
+          .doc(profile.id)
+          .snapshots()
+          .map((event) => Player.fromDocument(event));
+      return streamOut ?? Stream.empty();
+    } on CustomException catch (error) {
       throw CustomException(message: error.message);
     }
   }
