@@ -54,8 +54,18 @@ class _buildToDoList extends HookWidget {
               stream: playerStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.active) {
-                  return buildTodoWidget(
-                      todoList: (snapshot.data as Player).todoList);
+                  return Column(
+                    children: [
+                      Text(
+                        'To-Do:',
+                        textAlign: TextAlign.center,
+                      ),
+                      Expanded(
+                        child: buildTodoWidget(
+                            todoList: (snapshot.data as Player).todoList),
+                      ),
+                    ],
+                  );
                 } else {
                   return CircularProgressIndicator();
                 }
