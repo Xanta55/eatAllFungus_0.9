@@ -4,9 +4,10 @@ import 'package:eat_all_fungus/controllers/worldController.dart';
 import 'package:eat_all_fungus/controllers/worldListController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
+import 'package:eat_all_fungus/models/news.dart';
 import 'package:eat_all_fungus/models/world.dart';
-import 'package:eat_all_fungus/views/loadings/loadingScreen.dart';
-import 'package:eat_all_fungus/views/loadings/loadingsWidget.dart';
+import 'package:eat_all_fungus/views/various/loadings/loadingScreen.dart';
+import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
 import 'package:eat_all_fungus/views/widgets/buttons/logoutButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -121,23 +122,8 @@ class NewWorldButton extends HookWidget {
     return ElevatedButton(
         onPressed: () => context
             .read(worldListControllerProvider.notifier)
-            .createEmptyWorld(
-                world: World(
-                    name: 'Tester',
-                    description:
-                        'A wholly golly World where nothing goes wrong',
-                    depth: 1,
-                    isOpen: true,
-                    currentPlayers: 0,
-                    mapTiles: [
-                  MapTile(
-                      description: 'Empty Tile',
-                      inventory: ['plank', 'plank'],
-                      timesDug: 0,
-                      xCoord: 0,
-                      yCoord: 0)
-                ])),
-        child: const Text('Create Empty World'));
+            .createTestWorld(depth: 12),
+        child: const Text('Create Test World'));
   }
 }
 

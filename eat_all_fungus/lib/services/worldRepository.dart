@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
+import 'package:eat_all_fungus/models/news.dart';
 import 'package:eat_all_fungus/models/userProfile.dart';
 import 'package:eat_all_fungus/models/world.dart';
 import 'package:eat_all_fungus/providers/firebaseProviders.dart';
@@ -17,7 +18,8 @@ abstract class BaseWorldRepository {
       required String description,
       required int depth,
       required bool isOpen,
-      required List<MapTile> mapTiles});
+      required List<MapTile> mapTiles,
+      required List<News> news});
   Future<void> updateWorld({required String id, required World worldInput});
   Future<void> updateWorldTiles(
       {required String id, required List<MapTile> mapTiles});
@@ -42,7 +44,8 @@ class WorldRepository implements BaseWorldRepository {
       required String description,
       required int depth,
       required bool isOpen,
-      required List<MapTile> mapTiles}) async {
+      required List<MapTile> mapTiles,
+      required List<News> news}) async {
     try {
       final docRef = await _read(databaseProvider)!.collection('worlds').add(
           World(
@@ -50,7 +53,6 @@ class WorldRepository implements BaseWorldRepository {
                   depth: depth,
                   description: description,
                   name: name,
-                  mapTiles: [],
                   isOpen: isOpen)
               .toDocumentNoID());
       mapTiles.forEach((element) async {
@@ -58,6 +60,14 @@ class WorldRepository implements BaseWorldRepository {
             .collection('worlds')
             .doc(docRef.id)
             .collection('mapTiles')
+            .doc('${docRef.id};${element.xCoord};${element.yCoord}')
+            .set(element.toDocumentNoID());
+      });
+      news.forEach((element) async {
+        await _read(databaseProvider)!
+            .collection('worlds')
+            .doc(docRef.id)
+            .collection('news')
             .add(element.toDocumentNoID());
       });
       return docRef.id;

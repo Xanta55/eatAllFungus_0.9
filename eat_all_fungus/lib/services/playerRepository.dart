@@ -78,6 +78,7 @@ class PlayerRepository implements BasePlayerRepository {
           Player(
                   statusEffects: [],
                   Inventory: [],
+                  todoList: [],
                   xCoord: 0,
                   yCoord: 0,
                   inventorySize: 8,
@@ -171,16 +172,6 @@ class PlayerRepository implements BasePlayerRepository {
   @override
   Stream<Player> getPlayerStream({required UserProfile profile}) {
     try {
-      /*
-      final streamOut = _read(databaseProvider)
-          ?.collection('worlds')
-          .doc(getWorldIDFromTile(id: id))
-          .collection('mapTiles')
-          .doc(id)
-          .snapshots()
-          .map((event) => MapTile.fromDocument(event));
-      return streamOut ?? Stream.empty();
-      */
       final streamOut = _read(databaseProvider)
           ?.collection('players')
           .doc(profile.id)

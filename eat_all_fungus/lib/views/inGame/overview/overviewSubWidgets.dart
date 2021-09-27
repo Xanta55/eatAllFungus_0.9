@@ -1,8 +1,9 @@
 import 'package:eat_all_fungus/controllers/playerController.dart';
 import 'package:eat_all_fungus/models/news.dart';
 import 'package:eat_all_fungus/models/player.dart';
-import 'package:eat_all_fungus/providers/newsStream.dart';
-import 'package:eat_all_fungus/providers/tileStream.dart';
+import 'package:eat_all_fungus/providers/streams/newsStream.dart';
+import 'package:eat_all_fungus/providers/streams/playerStream.dart';
+import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
 import 'package:eat_all_fungus/views/widgets/newspaper/miniNewspaper.dart';
@@ -37,19 +38,56 @@ class Panel extends StatelessWidget {
   }
 }
 
-class _buildToDoList extends StatelessWidget {
+class _buildToDoList extends HookWidget {
   const _buildToDoList();
 
   @override
   Widget build(BuildContext context) {
+    final playerStream = useProvider(playerStreamProvider);
     return Panel(
       child: Container(
         color: Colors.grey[colorIntensity],
-        child: Center(
-          child: Text('ToDo'),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Center(
+            child: StreamBuilder(
+              stream: playerStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.active) {
+                  return buildTodoWidget(
+                      todoList: (snapshot.data as Player).todoList);
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  Widget buildTodoWidget({required List<String> todoList}) {
+    if (todoList.isEmpty) {
+      return ListView(children: [
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('Seems like there is nothing to do right now'),
+          ),
+        ),
+      ]);
+    }
+    return ListView.builder(
+        itemCount: todoList.length,
+        itemBuilder: (context, index) {
+          return Card(
+            child: ListTile(
+              leading: Icon(Icons.crop_square),
+              title: Text(todoList[index]),
+            ),
+          );
+        });
   }
 }
 
