@@ -43,38 +43,36 @@ class _buildToDoList extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final playerStream = useProvider(playerStreamProvider);
-    return Panel(
-      child: Container(
-        color: Colors.grey[colorIntensity],
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-            child: StreamBuilder(
-              stream: playerStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.active) {
-                  return Column(
-                    children: [
-                      Text(
-                        'To-Do:',
-                        textAlign: TextAlign.center,
-                      ),
-                      Expanded(
-                        child: buildTodoWidget(
-                            todoList: (snapshot.data as Player).todoList),
-                      ),
-                    ],
-                  );
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
+    final playerState = useProvider(playerStreamProvider);
+    if (playerState != null) {
+      return Panel(
+        child: Container(
+          color: Colors.grey[colorIntensity],
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Column(
+                children: [
+                  Text(
+                    'To-Do:',
+                    textAlign: TextAlign.center,
+                  ),
+                  Expanded(
+                    child: buildTodoWidget(todoList: playerState.todoList),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Panel(
+        child: Container(
+          color: Colors.grey[colorIntensity],
+        ),
+      );
+    }
   }
 
   Widget buildTodoWidget({required List<String> todoList}) {
@@ -107,19 +105,14 @@ class _buildTilePreview extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tileController = useProvider(mapTileStreamProvider);
+    final tileState = useProvider(mapTileStreamProvider);
     return Panel(
       child: Container(
         color: Colors.grey[colorIntensity],
         child: Center(
-          child: StreamBuilder(
-            stream: tileController,
-            builder: (context, snapshot) {
-              return snapshot.connectionState == ConnectionState.active
-                  ? TilePreview(tile: snapshot.data as MapTile)
-                  : CircularProgressIndicator();
-            },
-          ),
+          child: tileState != null
+              ? TilePreview(tile: tileState)
+              : CircularProgressIndicator(),
         ),
       ),
     );
@@ -165,9 +158,7 @@ class _buildInventory extends HookWidget {
                 ),
               );
             },
-            loading: () => Center(
-                  child: CircularProgressIndicator(),
-                ),
+            loading: () => Container(),
             error: (error, stackTrace) => Center(
                   child: Text(error.toString()),
                 )),
@@ -181,40 +172,39 @@ class _buildTileInfo extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tileController = useProvider(mapTileStreamProvider);
-    return Panel(
-      child: Container(
-        color: Colors.grey[colorIntensity],
-        child: Center(
-          child: StreamBuilder(
-            stream: tileController,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.active) {
-                final itemWidgetList = buildTileInventoryList(
-                    tileInventory: (snapshot.data as MapTile).inventory);
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Text('Items on Tile:'),
-                      Expanded(
-                        child: ListView(
-                          shrinkWrap: true,
-                          physics: ClampingScrollPhysics(),
-                          children: itemWidgetList,
-                        ),
-                      )
-                    ],
+    final tileState = useProvider(mapTileStreamProvider);
+    if (tileState != null) {
+      final itemWidgetList =
+          buildTileInventoryList(tileInventory: tileState.inventory);
+      return Panel(
+        child: Container(
+          color: Colors.grey[colorIntensity],
+          child: Center(
+              child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Text('Items on Tile:'),
+                Expanded(
+                  child: ListView(
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                    children: itemWidgetList,
                   ),
-                );
-              } else {
-                return CircularProgressIndicator();
-              }
-            },
-          ),
+                )
+              ],
+            ),
+          )),
         ),
-      ),
-    );
+      );
+    } else {
+      return Panel(
+        child: Container(
+          color: Colors.grey[colorIntensity],
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
   }
 }
 
@@ -269,16 +259,7 @@ class _buildNews extends HookWidget {
       child: Container(
         color: Colors.grey[colorIntensity],
         child: Center(
-          child: StreamBuilder(
-            stream: newsStream,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.active) {
-                return MiniNewspaper(newsInput: snapshot.data as List<News>);
-              } else {
-                return CircularProgressIndicator();
-              }
-            },
-          ),
+          child: MiniNewspaper(newsInput: newsStream),
         ),
       ),
     );

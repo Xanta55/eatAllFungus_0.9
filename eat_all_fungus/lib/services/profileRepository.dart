@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 abstract class BaseProfileRepository {
   Future<UserProfile> getProfile({required String id});
+  Stream<UserProfile> getProfileStream({required String id});
   Future<String> createEmptyProfile({required String name});
   Future<void> updateProfile(
       {required String id, required UserProfile profile});
@@ -69,6 +70,19 @@ class ProfileRepository implements BaseProfileRepository {
   Future<void> deleteProfile({required String id}) async {
     try {
       await _read(databaseProvider)!.collection('profiles').doc(id).delete();
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Stream<UserProfile> getProfileStream({required String id}) {
+    try {
+      return _read(databaseProvider)!
+          .collection('profiles')
+          .doc(id)
+          .snapshots()
+          .map((event) => UserProfile.fromDocument(event));
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
     }
