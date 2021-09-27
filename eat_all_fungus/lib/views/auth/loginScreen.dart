@@ -1,6 +1,5 @@
 import 'package:eat_all_fungus/constValues/constSizes.dart';
 import 'package:eat_all_fungus/services/authRepository.dart';
-import 'package:eat_all_fungus/services/profileRepository.dart';
 import 'package:eat_all_fungus/views/auth/registerScreen.dart';
 import 'package:eat_all_fungus/views/widgets/inputs/textInput.dart';
 import 'package:flutter/material.dart';

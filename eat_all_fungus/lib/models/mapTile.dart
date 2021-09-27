@@ -17,6 +17,7 @@ class MapTile with _$MapTile {
     required int sporeLevel,
     required int buffShrooms,
     required List<String> visibleFor,
+    required String townOnTile,
     required int xCoord,
     required int yCoord,
     String? id,
@@ -37,6 +38,7 @@ class MapTile with _$MapTile {
         buffShrooms: 0,
         sporeLevel: 0,
         visibleFor: [],
+        townOnTile: '',
         xCoord: 0,
         yCoord: 0,
       );

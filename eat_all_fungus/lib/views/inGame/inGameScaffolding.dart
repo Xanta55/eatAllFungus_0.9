@@ -1,6 +1,8 @@
 import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/controllers/worldController.dart';
+import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/providers/inGameNavigationProvider.dart';
+import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/services/authRepository.dart';
 import 'package:eat_all_fungus/views/inGame/overview/overviewWidget.dart';
 import 'package:eat_all_fungus/views/widgets/buttons/logoutButton.dart';
@@ -14,6 +16,7 @@ class InGameScaffolding extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final navigationState = useProvider(navStateProvider);
+    final tileStream = useProvider(mapTileStreamProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(navigationState.toUpperCase()),
@@ -40,21 +43,14 @@ class InGameScaffolding extends HookWidget {
           child: ListView(
             children: <Widget>[
               _buildDrawerButton(context, 'Overview'),
-              SizedBox(height: 16.0),
               _buildDrawerButton(context, 'Map'),
-              SizedBox(height: 16.0),
               _buildDrawerButton(context, 'Town'),
-              SizedBox(height: 16.0),
               _buildDrawerButton(context, 'Player'),
-              SizedBox(height: 16.0),
               _buildDrawerButton(context, 'Radio'),
-              SizedBox(height: 16.0),
               Divider(color: Colors.amber[200]),
               SizedBox(height: 16.0),
               _buildDrawerButton(context, 'World'),
-              SizedBox(height: 16.0),
               _buildDrawerButton(context, 'Profile'),
-              SizedBox(height: 16.0),
               Divider(color: Colors.amber[200]),
               SizedBox(height: 16.0),
               ListTile(
@@ -72,15 +68,22 @@ class InGameScaffolding extends HookWidget {
     );
   }
 
-  ListTile _buildDrawerButton(BuildContext context, String navigation) {
-    return ListTile(
-      title: Text(navigation),
-      onTap: () {
-        context
-            .read(navStateProvider.notifier)
-            .setRoute(navigation.toLowerCase());
-        Navigator.pop(context);
-      },
+  Widget _buildDrawerButton(BuildContext context, String navigation) {
+    return Container(
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(navigation),
+            onTap: () {
+              context
+                  .read(navStateProvider.notifier)
+                  .setRoute(navigation.toLowerCase());
+              Navigator.pop(context);
+            },
+          ),
+          SizedBox(height: 16.0),
+        ],
+      ),
     );
   }
 

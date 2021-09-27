@@ -1,10 +1,7 @@
 import 'package:eat_all_fungus/constValues/constSizes.dart';
-import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/controllers/worldController.dart';
 import 'package:eat_all_fungus/controllers/worldListController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
-import 'package:eat_all_fungus/models/mapTile.dart';
-import 'package:eat_all_fungus/models/news.dart';
 import 'package:eat_all_fungus/models/world.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingScreen.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';

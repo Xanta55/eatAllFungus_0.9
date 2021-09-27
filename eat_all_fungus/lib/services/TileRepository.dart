@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
-import 'package:eat_all_fungus/models/world.dart';
 import 'package:eat_all_fungus/providers/firebaseProviders.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -64,6 +63,7 @@ class MapTileRepository implements BaseTileRepository {
                   buffShrooms: buffshrooms,
                   sporeLevel: sporeLevel,
                   visibleFor: [],
+                  townOnTile: '',
                   xCoord: xCoord,
                   yCoord: yCoord)
               .toDocumentNoID());
