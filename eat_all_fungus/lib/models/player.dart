@@ -18,6 +18,7 @@ class Player with _$Player {
     required String worldID,
     required int inventorySize,
     required int actionPoints,
+    required List<String> member,
     String? id,
   }) = _Player;
 
@@ -35,6 +36,7 @@ class Player with _$Player {
         worldID: '',
         inventorySize: 0,
         actionPoints: 10,
+        member: [],
         xCoord: 0,
         yCoord: 0,
       );

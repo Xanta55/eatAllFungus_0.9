@@ -83,6 +83,7 @@ class PlayerRepository implements BasePlayerRepository {
                   yCoord: 0,
                   inventorySize: 8,
                   actionPoints: 10,
+                  member: [],
                   worldID: worldID)
               .toDocumentNoID());
       await _read(userProfileRepository).updateProfile(
