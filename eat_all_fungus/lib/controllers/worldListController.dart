@@ -74,6 +74,7 @@ class WorldListController extends StateNotifier<AsyncValue<List<World>>> {
               buffShrooms: 0,
               sporeLevel: 0,
               visibleFor: (x == 0 && y == 0) ? ['all'] : [],
+              townOnTile: '',
               xCoord: x,
               yCoord: y));
         }
