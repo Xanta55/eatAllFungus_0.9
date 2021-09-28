@@ -1,5 +1,4 @@
 import 'package:eat_all_fungus/controllers/playerController.dart';
-import 'package:eat_all_fungus/models/news.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/providers/streams/newsStream.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:eat_all_fungus/controllers/worldController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/models/town.dart';

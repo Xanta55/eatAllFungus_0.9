@@ -13,6 +13,7 @@ abstract class BaseTileRepository {
       required int yCoord,
       required int sporeLevel,
       required int buffshrooms,
+      required bool isVisible,
       required String description});
   Future<void> updateTile({required MapTile tile});
   Future<void> deleteTile({required String id});
@@ -49,6 +50,7 @@ class MapTileRepository implements BaseTileRepository {
       required int yCoord,
       required int sporeLevel,
       required int buffshrooms,
+      required bool isVisible,
       required String description}) async {
     try {
       await _read(databaseProvider)!
@@ -62,7 +64,7 @@ class MapTileRepository implements BaseTileRepository {
                   timesDug: 0,
                   buffShrooms: buffshrooms,
                   sporeLevel: sporeLevel,
-                  visibleFor: [],
+                  isVisible: isVisible,
                   townOnTile: '',
                   xCoord: xCoord,
                   yCoord: yCoord)

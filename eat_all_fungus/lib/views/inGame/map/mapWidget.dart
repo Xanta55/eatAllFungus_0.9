@@ -58,22 +58,28 @@ class MapTable extends HookWidget {
         width: ((worldState.depth * 2) + 1) * 100,
         height: ((worldState.depth * 2) + 1) * 100,
         child: Table(
-          children: _buildMapTable(mapState, worldState),
+          children: _buildMapTable(mapState, worldState, playerState),
         ),
       ),
     );
   }
 
-  List<TableRow> _buildMapTable(
-      Map<int, Map<int, MapTile>> mapState, World worldState) {
+  List<TableRow> _buildMapTable(Map<int, Map<int, MapTile>> mapState,
+      World worldState, Player playerState) {
     List<TableRow> outputList = <TableRow>[];
+    String matchThis = '${playerState.xCoord}-${playerState.yCoord}';
 
     for (int x = worldState.depth * (-1); x <= worldState.depth; x++) {
       final List<Widget> newRow = [];
 
       for (int y = worldState.depth * (-1); y <= worldState.depth; y++) {
-        newRow.add(MapTileWidget(mapState[x]![y]!));
-        //print('Curent Coordinates: X:${x} Y:${y} - last Tile: ${mapState[x]![y]!.description}');
+        if ('$x-$y' == matchThis) {
+          newRow.add(UserTileWidget(mapState[x]![y]!));
+        } else if (mapState[x]![y]!.isVisible) {
+          newRow.add(MapTileWidget(mapState[x]![y]!, true));
+        } else {
+          newRow.add(MapTileWidget(mapState[x]![y]!, false));
+        }
       }
       outputList.add(TableRow(children: newRow));
       //newRow.clear();
@@ -83,10 +89,9 @@ class MapTable extends HookWidget {
   }
 }
 
-class MapTileWidget extends HookWidget {
+class UserTileWidget extends HookWidget {
   final MapTile tile;
-
-  MapTileWidget(this.tile);
+  UserTileWidget(this.tile);
 
   @override
   Widget build(BuildContext context) {
@@ -97,10 +102,35 @@ class MapTileWidget extends HookWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(5.0),
           child: Container(
-            color: Colors.amber,
-            child: Center(
-              child: Text(tile.description),
-            ),
+            color: Colors.lightGreen[400],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MapTileWidget extends HookWidget {
+  final MapTile tile;
+  final bool isVisible;
+
+  MapTileWidget(this.tile, this.isVisible);
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1.0,
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5.0),
+          child: Container(
+            color: isVisible
+                ? (tile.sporeLevel >= 7
+                    ? Colors.amber[900]
+                    : (tile.sporeLevel >= 4 ? Colors.amber : Colors.amber[100]))
+                : Colors.grey,
+            child: Container(),
           ),
         ),
       ),

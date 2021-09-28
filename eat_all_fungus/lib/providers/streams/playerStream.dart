@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/models/userProfile.dart';
