@@ -27,6 +27,7 @@ dependencies:
 # dev_dependencies are used for running generators and such and will not be present in production
 dev_dependencies:
   build_runner: ^2.1.2
+  flutter_launcher_icons: ^0.9.2
   flutter_test:
     sdk: flutter
   freezed: ^0.14.2
@@ -35,3 +36,9 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
   uses-material-design: true
+
+flutter_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: 'assets/icon.png'
