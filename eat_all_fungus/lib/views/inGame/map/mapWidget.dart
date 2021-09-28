@@ -1,0 +1,109 @@
+import 'package:eat_all_fungus/models/mapTile.dart';
+import 'package:eat_all_fungus/models/player.dart';
+import 'package:eat_all_fungus/models/world.dart';
+import 'package:eat_all_fungus/providers/streams/playerStream.dart';
+import 'package:eat_all_fungus/providers/streams/tileListStream.dart';
+import 'package:eat_all_fungus/providers/streams/worldStream.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+class MapWidget extends HookWidget {
+  @override
+  Widget build(BuildContext context) {
+    final mapState = useProvider(tileMapStreamProvider);
+    final worldState = useProvider(worldStreamProvider);
+    final playerState = useProvider(playerStreamProvider);
+    if (worldState != null && mapState != null && playerState != null) {
+      return Container(
+        child: Column(
+          children: [
+            AspectRatio(
+              aspectRatio: 1.0,
+              child: Container(
+                color: Colors.grey[900],
+                child: MapTable(mapState, worldState, playerState),
+              ),
+            ),
+            Container(
+              color: Colors.grey[900],
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
+}
+
+class MapTable extends HookWidget {
+  final Map<int, Map<int, MapTile>> mapState;
+  final World worldState;
+  final Player playerState;
+
+  final TransformationController controller = TransformationController();
+
+  MapTable(this.mapState, this.worldState, this.playerState);
+
+  @override
+  Widget build(BuildContext context) {
+    return InteractiveViewer(
+      transformationController: controller,
+      constrained: false,
+      maxScale: 5.0,
+      minScale: 0.05,
+      boundaryMargin: EdgeInsets.all(10.0),
+      child: Container(
+        width: ((worldState.depth * 2) + 1) * 100,
+        height: ((worldState.depth * 2) + 1) * 100,
+        child: Table(
+          children: _buildMapTable(mapState, worldState),
+        ),
+      ),
+    );
+  }
+
+  List<TableRow> _buildMapTable(
+      Map<int, Map<int, MapTile>> mapState, World worldState) {
+    List<TableRow> outputList = <TableRow>[];
+
+    for (int x = worldState.depth * (-1); x <= worldState.depth; x++) {
+      final List<Widget> newRow = [];
+
+      for (int y = worldState.depth * (-1); y <= worldState.depth; y++) {
+        newRow.add(MapTileWidget(mapState[x]![y]!));
+        //print('Curent Coordinates: X:${x} Y:${y} - last Tile: ${mapState[x]![y]!.description}');
+      }
+      outputList.add(TableRow(children: newRow));
+      //newRow.clear();
+    }
+    //print(outputList.length);
+    return outputList;
+  }
+}
+
+class MapTileWidget extends HookWidget {
+  final MapTile tile;
+
+  MapTileWidget(this.tile);
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1.0,
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5.0),
+          child: Container(
+            color: Colors.amber,
+            child: Center(
+              child: Text(tile.description),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

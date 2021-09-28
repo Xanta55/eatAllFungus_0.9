@@ -201,7 +201,6 @@ class _buildTileInfo extends HookWidget {
       return Panel(
         child: Container(
           color: Colors.grey[colorIntensity],
-          child: CircularProgressIndicator(),
         ),
       );
     }

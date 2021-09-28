@@ -119,4 +119,34 @@ class MapTileRepository implements BaseTileRepository {
       throw CustomException(message: error.message);
     }
   }
+
+  Stream<Map<int, Map<int, MapTile>>> getTileMapStream(
+      {required String worldID}) {
+    try {
+      final streamOut = _read(databaseProvider)
+          ?.collection('worlds')
+          .doc(worldID)
+          .collection('mapTiles')
+          .snapshots()
+          .map<Map<int, Map<int, MapTile>>>((event) {
+        // init the map
+        Map<int, Map<int, MapTile>> mapOut = Map();
+        // for every document
+        for (MapTile mt
+            in event.docs.map((e) => MapTile.fromDocument(e)).toList()) {
+          // if there is no xKey yet
+          if (!mapOut.containsKey(mt.xCoord)) {
+            mapOut[mt.xCoord] = Map<int, MapTile>();
+          }
+          // insert the entry
+          mapOut[mt.xCoord]![mt.yCoord] = mt;
+        }
+        // return the filled map
+        return mapOut;
+      });
+      return streamOut ?? Stream.empty();
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
 }
