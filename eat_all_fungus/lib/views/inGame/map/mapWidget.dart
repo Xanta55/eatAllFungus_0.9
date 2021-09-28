@@ -48,6 +48,7 @@ class MapTable extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    controllerReset();
     return InteractiveViewer(
       transformationController: controller,
       constrained: false,
@@ -62,6 +63,13 @@ class MapTable extends HookWidget {
         ),
       ),
     );
+  }
+
+  void controllerReset() {
+    double x = ((playerState.xCoord + worldState.depth) * 100 - 150) * -1;
+    double y = ((playerState.yCoord + worldState.depth) * 100 - 150) * -1;
+    controller.value = Matrix4.identity()..translate(y, x);
+    print(controller.value);
   }
 
   List<TableRow> _buildMapTable(Map<int, Map<int, MapTile>> mapState,

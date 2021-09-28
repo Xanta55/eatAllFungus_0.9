@@ -7,6 +7,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 abstract class BaseTileRepository {
   Future<MapTile> getTile({required String id});
   Stream<MapTile> getTileStream({required String id});
+  Future<Map<int, Map<int, MapTile>>> getTilesInWorld(
+      {required String worldID});
   Future<String> createEmptyTile(
       {required String worldID,
       required int xCoord,
@@ -147,6 +149,31 @@ class MapTileRepository implements BaseTileRepository {
         return mapOut;
       });
       return streamOut ?? Stream.empty();
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Future<Map<int, Map<int, MapTile>>> getTilesInWorld(
+      {required String worldID}) async {
+    try {
+      final tileQuery = await _read(databaseProvider)
+          ?.collection('worlds')
+          .doc(worldID)
+          .collection('mapTiles')
+          .get();
+      Map<int, Map<int, MapTile>> mapOut = Map();
+      for (MapTile mt
+          in tileQuery!.docs.map((e) => MapTile.fromDocument(e)).toList()) {
+        // if there is no xKey yet
+        if (!mapOut.containsKey(mt.xCoord)) {
+          mapOut[mt.xCoord] = Map<int, MapTile>();
+        }
+        // insert the entry
+        mapOut[mt.xCoord]![mt.yCoord] = mt;
+      }
+      return mapOut;
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
     }
