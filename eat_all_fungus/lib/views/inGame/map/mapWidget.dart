@@ -25,8 +25,44 @@ class MapWidget extends HookWidget {
                 child: MapTable(mapState, worldState, playerState),
               ),
             ),
-            Container(
-              color: Colors.grey[900],
+            Expanded(
+              child: Row(
+                children: [
+                  AspectRatio(
+                    aspectRatio: 1.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        color: Colors.green[200],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(0, 8.0, 8.0, 4.0),
+                            child: Container(
+                              color: Colors.yellow[200],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(0, 4.0, 8.0, 8.0),
+                            child: Container(
+                              color: Colors.red[200],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -80,12 +116,12 @@ class MapTable extends HookWidget {
       final List<Widget> newRow = [];
 
       for (int y = worldState.depth * (-1); y <= worldState.depth; y++) {
-        if ('$x-$y' == matchThis) {
-          newRow.add(UserTileWidget(mapState[x]![y]!));
-        } else if (mapState[x]![y]!.isVisible) {
-          newRow.add(MapTileWidget(mapState[x]![y]!, true));
+        if ('${y}-${x * -1}' == matchThis) {
+          newRow.add(UserTileWidget(mapState[y]![x * -1]!));
+        } else if (mapState[y]![x * -1]!.isVisible) {
+          newRow.add(MapTileWidget(mapState[y]![x * -1]!, true));
         } else {
-          newRow.add(MapTileWidget(mapState[x]![y]!, false));
+          newRow.add(MapTileWidget(mapState[y]![x * -1]!, false));
         }
       }
       outputList.add(TableRow(children: newRow));
@@ -110,6 +146,15 @@ class UserTileWidget extends HookWidget {
           borderRadius: BorderRadius.circular(5.0),
           child: Container(
             color: Colors.lightGreen[400],
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Text(
+                  '${tile.xCoord}:${tile.yCoord}',
+                  style: TextStyle(color: Colors.black87),
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -137,7 +182,15 @@ class MapTileWidget extends HookWidget {
                     ? Colors.amber[900]
                     : (tile.sporeLevel >= 4 ? Colors.amber : Colors.amber[100]))
                 : Colors.grey,
-            child: Container(),
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Text(
+                  '${tile.xCoord}:${tile.yCoord}',
+                  style: TextStyle(color: Colors.black87),
+                ),
+              ),
+            ),
           ),
         ),
       ),
