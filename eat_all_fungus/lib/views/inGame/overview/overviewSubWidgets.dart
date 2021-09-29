@@ -4,8 +4,8 @@ import 'package:eat_all_fungus/providers/streams/newsStream.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
-import 'package:eat_all_fungus/views/inGame/map/mapWidget.dart';
 import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
+import 'package:eat_all_fungus/views/widgets/mapView/mapSubWidgets.dart';
 import 'package:eat_all_fungus/views/widgets/newspaper/miniNewspaper.dart';
 import 'package:eat_all_fungus/views/widgets/status/statusWidget.dart';
 import 'package:flutter/material.dart';
@@ -120,7 +120,7 @@ class _buildTilePreview extends HookWidget {
 
   Widget TilePreview({required MapTile tile}) {
     return Container(
-      child: Panel(child: MapTileWidget(tile, true)),
+      child: MapTileWidget(tile, true),
     );
   }
 }
