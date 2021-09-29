@@ -1,7 +1,9 @@
 import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
+import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/models/userProfile.dart';
 import 'package:eat_all_fungus/models/world.dart';
+import 'package:eat_all_fungus/services/tileRepository.dart';
 import 'package:eat_all_fungus/services/worldRepository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -52,6 +54,12 @@ class WorldController extends StateNotifier<AsyncValue<World>> {
           id: world.id!,
           worldInput: world.copyWith(currentPlayers: world.currentPlayers + 1));
 
+      MapTile tempTile =
+          await _read(mapTileRepository).getTile(id: '${world.id};0;0');
+
+      await _read(mapTileRepository).updateTile(
+          tile: tempTile.copyWith(playersOnTile: tempTile.playersOnTile + 1));
+
       if (mounted) {
         state = AsyncValue.data(
             await _read(worldRepository).getWorld(id: world.id!));
@@ -76,6 +84,7 @@ class WorldController extends StateNotifier<AsyncValue<World>> {
 
   Future<void> removePlayerFromWorld() async {
     try {
+      getWorld();
       //Get profile with this world in field and update
       await _read(profileControllerProvider.notifier)
           .removePlayerFromWorld(world: state.data!.value);

@@ -66,6 +66,7 @@ class MapTileRepository implements BaseTileRepository {
                   timesDug: 0,
                   buffShrooms: buffshrooms,
                   sporeLevel: sporeLevel,
+                  playersOnTile: 0,
                   isVisible: isVisible,
                   townOnTile: '',
                   xCoord: xCoord,
@@ -95,7 +96,9 @@ class MapTileRepository implements BaseTileRepository {
   Future<void> updateTile({required MapTile tile}) async {
     try {
       await _read(databaseProvider)!
-          .collection(getWorldIDFromTile(id: tile.id!))
+          .collection('worlds')
+          .doc(getWorldIDFromTile(id: tile.id!))
+          .collection('mapTiles')
           .doc(tile.id)
           .update(tile.toDocumentNoID());
     } on FirebaseException catch (error) {

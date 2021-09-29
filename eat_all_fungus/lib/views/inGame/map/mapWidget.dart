@@ -1,6 +1,7 @@
 import 'package:eat_all_fungus/controllers/tileMapController.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/worldStream.dart';
+import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
 import 'package:eat_all_fungus/views/widgets/mapView/mapSubWidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -66,7 +67,13 @@ class MapWidget extends HookWidget {
         ),
       );
     } else {
-      return Container();
+      return Container(
+        child: Center(
+          child: LoadingWidget(
+            loadingText: 'Loading Map',
+          ),
+        ),
+      );
     }
   }
 }

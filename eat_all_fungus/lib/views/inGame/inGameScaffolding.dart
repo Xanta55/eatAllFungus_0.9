@@ -18,6 +18,7 @@ class InGameScaffolding extends HookWidget {
   Widget build(BuildContext context) {
     final navigationState = useProvider(navStateProvider);
     final tileStream = useProvider(mapTileStreamProvider);
+    final worldState = useProvider(worldControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(navigationState.toUpperCase()),

@@ -1,8 +1,12 @@
+import 'dart:math';
+
 import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/models/world.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+
+const double TileSize = 100;
 
 class MapTable extends HookWidget {
   final Map<int, Map<int, MapTile>> mapState;
@@ -23,8 +27,8 @@ class MapTable extends HookWidget {
       minScale: 0.05,
       boundaryMargin: EdgeInsets.all(10.0),
       child: Container(
-        width: ((worldState.depth * 2) + 1) * 100,
-        height: ((worldState.depth * 2) + 1) * 100,
+        width: ((worldState.depth * 2) + 1) * TileSize,
+        height: ((worldState.depth * 2) + 1) * TileSize,
         child: Table(
           children: _buildMapTable(mapState, worldState, playerState),
         ),
@@ -33,8 +37,12 @@ class MapTable extends HookWidget {
   }
 
   void controllerReset() {
-    double x = ((playerState.xCoord + worldState.depth) * 100 - 150) * -1;
-    double y = ((playerState.yCoord + worldState.depth) * 100 - 150) * -1;
+    double x = ((playerState.xCoord + worldState.depth) * TileSize -
+            (TileSize * (1.5))) *
+        -1;
+    double y = ((playerState.yCoord + worldState.depth) * TileSize -
+            (TileSize * (1.5))) *
+        -1;
     controller.value = Matrix4.identity()..translate(y, x);
   }
 
@@ -80,9 +88,17 @@ class UserTileWidget extends HookWidget {
             child: Container(
               child: Padding(
                 padding: const EdgeInsets.all(2.0),
-                child: Text(
-                  '${tile.xCoord}:${tile.yCoord}',
-                  style: TextStyle(color: Colors.black87),
+                child: Stack(
+                  children: [
+                    Text(
+                      '${tile.xCoord}:${tile.yCoord}',
+                      style: TextStyle(color: Colors.black87),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: PlayerIconStack(tile.playersOnTile),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -116,9 +132,17 @@ class MapTileWidget extends HookWidget {
             child: Container(
               child: Padding(
                 padding: const EdgeInsets.all(2.0),
-                child: Text(
-                  '${tile.xCoord}:${tile.yCoord}',
-                  style: TextStyle(color: Colors.black87),
+                child: Stack(
+                  children: [
+                    Text(
+                      '${tile.xCoord}:${tile.yCoord}',
+                      style: TextStyle(color: Colors.black87),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: PlayerIconStack(tile.playersOnTile),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -126,5 +150,38 @@ class MapTileWidget extends HookWidget {
         ),
       ),
     );
+  }
+}
+
+class PlayerIconStack extends HookWidget {
+  final int playersOnTile;
+  PlayerIconStack(this.playersOnTile);
+  @override
+  Widget build(BuildContext context) {
+    Random rng = Random();
+    if (playersOnTile != 0) {
+      return Container();
+    } else {
+      List<Widget> playerIcons = <Widget>[];
+      for (int i = 0; i < playersOnTile; i++) {
+        double x = (rng.nextInt((TileSize - TileSize * 0.2).round())) +
+            (TileSize * 0.1);
+        double y = (rng.nextInt((TileSize - TileSize * 0.2).round())) +
+            (TileSize * 0.1);
+        playerIcons.add(Positioned(
+          left: x,
+          top: y,
+          child: Container(
+            height: 5,
+            width: 5,
+            color: Colors.white,
+          ),
+        ));
+      }
+      return Stack(
+        clipBehavior: Clip.hardEdge,
+        children: playerIcons,
+      );
+    }
   }
 }
