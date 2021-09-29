@@ -73,6 +73,7 @@ class WorldListController extends StateNotifier<AsyncValue<List<World>>> {
               timesDug: 0,
               buffShrooms: 0,
               sporeLevel: 0,
+              controlPower: 0,
               isVisible: (x == 0 && y == 0),
               playersOnTile: 0,
               townOnTile: '',

@@ -1,8 +1,10 @@
 import 'package:eat_all_fungus/controllers/playerController.dart';
 import 'package:eat_all_fungus/controllers/tileMapController.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
+import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/providers/streams/worldStream.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
+import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
 import 'package:eat_all_fungus/views/widgets/mapView/mapSubWidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -46,6 +48,7 @@ class MapWidget extends HookWidget {
                               borderRadius: BorderRadius.circular(5.0),
                               child: Container(
                                 color: Colors.grey[800],
+                                //TODO: implement the "dig"/"request join" button
                               ),
                             ),
                           ),
@@ -58,6 +61,22 @@ class MapWidget extends HookWidget {
                               borderRadius: BorderRadius.circular(5.0),
                               child: Container(
                                 color: Colors.grey[800],
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        Text('Items on this Tile:'),
+                                        Expanded(
+                                          child: ListView(
+                                            scrollDirection: Axis.horizontal,
+                                            children: buildItemTiles(),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -82,14 +101,41 @@ class MapWidget extends HookWidget {
     }
   }
 
+  List<Widget> buildItemTiles() {
+    final tileState = useProvider(mapTileStreamProvider);
+    if (tileState?.townOnTile.isEmpty ?? true) {
+      print('should be getting inventory');
+      return buildTileInventoryList(tileInventory: tileState?.inventory ?? []);
+    } else {
+      return [];
+    }
+  }
+
   Widget _buildControllerButtons(BuildContext context) {
+    final playerState = useProvider(playerStreamProvider);
+    final tileState = useProvider(mapTileStreamProvider);
     return Column(
       children: [
         Expanded(
           child: Row(
             children: [
-              TestBox(
-                Container(),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5.0),
+                    child: Container(
+                      color: Colors.red[400],
+                      child: Center(
+                        child: Text(
+                          'Danger Level: \n${tileState?.buffShrooms ?? 0}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black87),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               TestBox(
                 Center(
@@ -101,8 +147,23 @@ class MapWidget extends HookWidget {
                   ),
                 ),
               ),
-              TestBox(
-                Container(),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5.0),
+                    child: Container(
+                      color: Colors.green[400],
+                      child: Center(
+                        child: Text(
+                          'Control Points: ${tileState?.controlPower ?? 0}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black87),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -121,7 +182,13 @@ class MapWidget extends HookWidget {
                 ),
               ),
               TestBox(
-                Container(),
+                Center(
+                  child: Text(
+                    'AP: ${playerState?.actionPoints ?? 0}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.amber),
+                  ),
+                ),
               ),
               TestBox(
                 Center(

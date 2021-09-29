@@ -73,7 +73,9 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
                       id: '${state.data!.value.worldID};${state.data!.value.xCoord};${state.data!.value.yCoord}');
 
                   await _read(mapTileRepository).updateTile(
-                      tile: old.copyWith(playersOnTile: old.playersOnTile - 1));
+                      tile: old.copyWith(
+                          playersOnTile: old.playersOnTile - 1,
+                          controlPower: old.controlPower - 2));
 
                   await updatePlayer(
                     updatedPlayer: value.copyWith(
@@ -89,7 +91,8 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
                   await _read(mapTileRepository).updateTile(
                       tile: next.copyWith(
                           isVisible: true,
-                          playersOnTile: next.playersOnTile + 1));
+                          playersOnTile: next.playersOnTile + 1,
+                          controlPower: next.controlPower + 2));
                 }
                 break;
               }
@@ -100,7 +103,9 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
                       id: '${state.data!.value.worldID};${state.data!.value.xCoord};${state.data!.value.yCoord}');
 
                   await _read(mapTileRepository).updateTile(
-                      tile: old.copyWith(playersOnTile: old.playersOnTile - 1));
+                      tile: old.copyWith(
+                          playersOnTile: old.playersOnTile - 1,
+                          controlPower: old.controlPower - 2));
 
                   await updatePlayer(
                     updatedPlayer: value.copyWith(
@@ -116,7 +121,8 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
                   await _read(mapTileRepository).updateTile(
                       tile: next.copyWith(
                           isVisible: true,
-                          playersOnTile: next.playersOnTile + 1));
+                          playersOnTile: next.playersOnTile + 1,
+                          controlPower: next.controlPower + 2));
                 }
                 break;
               }
@@ -127,7 +133,9 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
                       id: '${state.data!.value.worldID};${state.data!.value.xCoord};${state.data!.value.yCoord}');
 
                   await _read(mapTileRepository).updateTile(
-                      tile: old.copyWith(playersOnTile: old.playersOnTile - 1));
+                      tile: old.copyWith(
+                          playersOnTile: old.playersOnTile - 1,
+                          controlPower: old.controlPower - 2));
 
                   await updatePlayer(
                     updatedPlayer: value.copyWith(
@@ -143,7 +151,8 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
                   await _read(mapTileRepository).updateTile(
                       tile: next.copyWith(
                           isVisible: true,
-                          playersOnTile: next.playersOnTile + 1));
+                          playersOnTile: next.playersOnTile + 1,
+                          controlPower: next.controlPower + 2));
                 }
                 break;
               }
@@ -154,7 +163,9 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
                       id: '${state.data!.value.worldID};${state.data!.value.xCoord};${state.data!.value.yCoord}');
 
                   await _read(mapTileRepository).updateTile(
-                      tile: old.copyWith(playersOnTile: old.playersOnTile - 1));
+                      tile: old.copyWith(
+                          playersOnTile: old.playersOnTile - 1,
+                          controlPower: old.controlPower - 2));
 
                   await updatePlayer(
                     updatedPlayer: value.copyWith(
@@ -170,7 +181,8 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
                   await _read(mapTileRepository).updateTile(
                       tile: next.copyWith(
                           isVisible: true,
-                          playersOnTile: next.playersOnTile + 1));
+                          playersOnTile: next.playersOnTile + 1,
+                          controlPower: next.controlPower + 2));
                   break;
                 }
               }

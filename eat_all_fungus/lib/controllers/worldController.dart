@@ -58,7 +58,9 @@ class WorldController extends StateNotifier<AsyncValue<World>> {
           await _read(mapTileRepository).getTile(id: '${world.id};0;0');
 
       await _read(mapTileRepository).updateTile(
-          tile: tempTile.copyWith(playersOnTile: tempTile.playersOnTile + 1));
+          tile: tempTile.copyWith(
+              playersOnTile: tempTile.playersOnTile + 1,
+              controlPower: tempTile.controlPower + 2));
 
       if (mounted) {
         state = AsyncValue.data(

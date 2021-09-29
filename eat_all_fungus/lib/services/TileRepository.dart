@@ -66,6 +66,7 @@ class MapTileRepository implements BaseTileRepository {
                   buffShrooms: buffshrooms,
                   sporeLevel: sporeLevel,
                   playersOnTile: 0,
+                  controlPower: 0,
                   isVisible: isVisible,
                   townOnTile: '',
                   xCoord: xCoord,
