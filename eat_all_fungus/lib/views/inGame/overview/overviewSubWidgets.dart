@@ -120,7 +120,7 @@ class _buildTilePreview extends HookWidget {
 
   Widget TilePreview({required MapTile tile}) {
     return Container(
-      child: MapTileWidget(tile, true),
+      child: MapTileWidget(tile.copyWith(playersOnTile: 0), true),
     );
   }
 }

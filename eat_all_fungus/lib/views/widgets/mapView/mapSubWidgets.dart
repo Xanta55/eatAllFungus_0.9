@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/models/world.dart';
+import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 const double TileSize = 100;
 
@@ -37,10 +39,10 @@ class MapTable extends HookWidget {
   }
 
   void controllerReset() {
-    double x = ((playerState.xCoord + worldState.depth) * TileSize -
+    double x = (((playerState.yCoord * -1) + worldState.depth) * TileSize -
             (TileSize * (1.5))) *
         -1;
-    double y = ((playerState.yCoord + worldState.depth) * TileSize -
+    double y = ((playerState.xCoord + worldState.depth) * TileSize -
             (TileSize * (1.5))) *
         -1;
     controller.value = Matrix4.identity()..translate(y, x);
@@ -77,26 +79,29 @@ class UserTileWidget extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.0,
-      child: Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(5.0),
-          child: Container(
-            color: Colors.lightGreen[400],
+    final tileState = useProvider(mapTileStreamProvider);
+    if (tileState != null) {
+      return AspectRatio(
+        aspectRatio: 1.0,
+        child: Padding(
+          padding: const EdgeInsets.all(2.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(5.0),
             child: Container(
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
+              color: Colors.lightGreen[400],
+              child: Container(
                 child: Stack(
                   children: [
-                    Text(
-                      '${tile.xCoord}:${tile.yCoord}',
-                      style: TextStyle(color: Colors.black87),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        '${tileState.xCoord}:${tileState.yCoord}',
+                        style: TextStyle(color: Colors.black87),
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: PlayerIconStack(tile.playersOnTile),
+                      child: PlayerIconStack(tileState.playersOnTile),
                     ),
                   ],
                 ),
@@ -104,8 +109,10 @@ class UserTileWidget extends HookWidget {
             ),
           ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Container();
+    }
   }
 }
 
@@ -134,14 +141,14 @@ class MapTileWidget extends HookWidget {
                 padding: const EdgeInsets.all(2.0),
                 child: Stack(
                   children: [
-                    Text(
-                      '${tile.xCoord}:${tile.yCoord}',
-                      style: TextStyle(color: Colors.black87),
-                    ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: PlayerIconStack(tile.playersOnTile),
+                      child: Text(
+                        '${tile.xCoord}:${tile.yCoord}',
+                        style: TextStyle(color: Colors.black87),
+                      ),
                     ),
+                    PlayerIconStack(tile.playersOnTile),
                   ],
                 ),
               ),
@@ -159,27 +166,24 @@ class PlayerIconStack extends HookWidget {
   @override
   Widget build(BuildContext context) {
     Random rng = Random();
-    if (playersOnTile != 0) {
+    if (playersOnTile == 0) {
       return Container();
     } else {
       List<Widget> playerIcons = <Widget>[];
       for (int i = 0; i < playersOnTile; i++) {
-        double x = (rng.nextInt((TileSize - TileSize * 0.2).round())) +
-            (TileSize * 0.1);
-        double y = (rng.nextInt((TileSize - TileSize * 0.2).round())) +
-            (TileSize * 0.1);
+        double x = (rng.nextInt((TileSize - TileSize * 0.25).round())) * 1 - 5;
+        double y = (rng.nextInt((TileSize - TileSize * 0.25).round())) * 1 - 5;
         playerIcons.add(Positioned(
           left: x,
           top: y,
-          child: Container(
-            height: 5,
-            width: 5,
-            color: Colors.white,
+          child: Image(
+            image: AssetImage('assets/images/playerIcon.png'),
+            filterQuality: FilterQuality.none,
           ),
         ));
       }
       return Stack(
-        clipBehavior: Clip.hardEdge,
+        clipBehavior: Clip.none,
         children: playerIcons,
       );
     }

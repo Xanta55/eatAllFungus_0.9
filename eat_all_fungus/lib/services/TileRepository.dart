@@ -32,7 +32,6 @@ class MapTileRepository implements BaseTileRepository {
   @override
   Future<MapTile> getTile({required String id}) async {
     try {
-      print(getWorldIDFromTile(id: id));
       final snap = await _read(databaseProvider)
           ?.collection('worlds')
           .doc(getWorldIDFromTile(id: id))

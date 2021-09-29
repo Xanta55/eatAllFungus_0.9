@@ -1,10 +1,14 @@
 import 'package:eat_all_fungus/controllers/profileController.dart';
+import 'package:eat_all_fungus/controllers/tileMapController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
+import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/models/userProfile.dart';
 import 'package:eat_all_fungus/models/world.dart';
+import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/providers/streams/worldStream.dart';
 import 'package:eat_all_fungus/services/playerRepository.dart';
+import 'package:eat_all_fungus/services/tileRepository.dart';
 import 'package:eat_all_fungus/services/worldRepository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -59,49 +63,114 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
   Future<void> movePlayer({required int direction}) async {
     try {
       await getPlayer();
-      state.whenData((value) {
-        if (value.actionPoints > 0) {
+      state.whenData((value) async {
+        if (value.actionPoints >= 0) {
           switch (direction) {
             case 1:
               {
                 if (value.yCoord < _world!.depth) {
-                  updatePlayer(
+                  final old = await _read(mapTileRepository).getTile(
+                      id: '${state.data!.value.worldID};${state.data!.value.xCoord};${state.data!.value.yCoord}');
+
+                  await _read(mapTileRepository).updateTile(
+                      tile: old.copyWith(playersOnTile: old.playersOnTile - 1));
+
+                  await updatePlayer(
                     updatedPlayer: value.copyWith(
-                        xCoord: value.yCoord + 1,
+                        yCoord: value.yCoord + 1,
                         actionPoints: value.actionPoints - 1),
                   );
+
+                  await getPlayer();
+
+                  final next = await _read(mapTileRepository).getTile(
+                      id: '${state.data!.value.worldID};${state.data!.value.xCoord};${state.data!.value.yCoord}');
+
+                  await _read(mapTileRepository).updateTile(
+                      tile: next.copyWith(
+                          isVisible: true,
+                          playersOnTile: next.playersOnTile + 1));
                 }
                 break;
               }
             case 2:
               {
                 if (value.xCoord < _world!.depth) {
-                  updatePlayer(
+                  final old = await _read(mapTileRepository).getTile(
+                      id: '${state.data!.value.worldID};${state.data!.value.xCoord};${state.data!.value.yCoord}');
+
+                  await _read(mapTileRepository).updateTile(
+                      tile: old.copyWith(playersOnTile: old.playersOnTile - 1));
+
+                  await updatePlayer(
                     updatedPlayer: value.copyWith(
                         xCoord: value.xCoord + 1,
                         actionPoints: value.actionPoints - 1),
                   );
+
+                  await getPlayer();
+
+                  final next = await _read(mapTileRepository).getTile(
+                      id: '${state.data!.value.worldID};${state.data!.value.xCoord};${state.data!.value.yCoord}');
+
+                  await _read(mapTileRepository).updateTile(
+                      tile: next.copyWith(
+                          isVisible: true,
+                          playersOnTile: next.playersOnTile + 1));
                 }
                 break;
               }
             case 3:
               {
                 if (value.yCoord > _world!.depth * -1) {
-                  updatePlayer(
+                  final old = await _read(mapTileRepository).getTile(
+                      id: '${state.data!.value.worldID};${state.data!.value.xCoord};${state.data!.value.yCoord}');
+
+                  await _read(mapTileRepository).updateTile(
+                      tile: old.copyWith(playersOnTile: old.playersOnTile - 1));
+
+                  await updatePlayer(
                     updatedPlayer: value.copyWith(
-                        xCoord: value.yCoord - 1,
+                        yCoord: value.yCoord - 1,
                         actionPoints: value.actionPoints - 1),
                   );
+
+                  await getPlayer();
+
+                  final next = await _read(mapTileRepository).getTile(
+                      id: '${state.data!.value.worldID};${state.data!.value.xCoord};${state.data!.value.yCoord}');
+
+                  await _read(mapTileRepository).updateTile(
+                      tile: next.copyWith(
+                          isVisible: true,
+                          playersOnTile: next.playersOnTile + 1));
                 }
                 break;
               }
             case 4:
               {
                 if (value.xCoord > _world!.depth * -1) {
-                  updatePlayer(
-                      updatedPlayer: value.copyWith(
-                          xCoord: value.xCoord - 1,
-                          actionPoints: value.actionPoints - 1));
+                  final old = await _read(mapTileRepository).getTile(
+                      id: '${state.data!.value.worldID};${state.data!.value.xCoord};${state.data!.value.yCoord}');
+
+                  await _read(mapTileRepository).updateTile(
+                      tile: old.copyWith(playersOnTile: old.playersOnTile - 1));
+
+                  await updatePlayer(
+                    updatedPlayer: value.copyWith(
+                        xCoord: value.xCoord - 1,
+                        actionPoints: value.actionPoints - 1),
+                  );
+
+                  await getPlayer();
+
+                  final next = await _read(mapTileRepository).getTile(
+                      id: '${state.data!.value.worldID};${state.data!.value.xCoord};${state.data!.value.yCoord}');
+
+                  await _read(mapTileRepository).updateTile(
+                      tile: next.copyWith(
+                          isVisible: true,
+                          playersOnTile: next.playersOnTile + 1));
                   break;
                 }
               }
