@@ -57,12 +57,19 @@ class MapTable extends HookWidget {
       final List<Widget> newRow = [];
 
       for (int y = worldState.depth * (-1); y <= worldState.depth; y++) {
+        // Player is on Tile
         if ('${y}-${x * -1}' == matchThis) {
-          newRow.add(UserTileWidget(mapState[y]![x * -1]!));
-        } else if (mapState[y]![x * -1]!.isVisible) {
-          newRow.add(MapTileWidget(mapState[y]![x * -1]!, true));
+          newRow.add(UserTileWidget());
+
+          // Check if Tiles exist in loaded Map
+        } else if (mapState.containsKey(y) &&
+            (mapState[y]?.containsKey(x * -1) ?? false)) {
+          newRow.add(MapTileWidget(mapState[y]![x * -1]!));
+
+          // adds a hidden Tile
         } else {
-          newRow.add(MapTileWidget(mapState[y]![x * -1]!, false));
+          newRow.add(EmptyMapTileWidget(y, x * -1));
+          //newRow.add(MapTileWidget(mapState[y]![x * -1]!, false));
         }
       }
       outputList.add(TableRow(children: newRow));
@@ -74,8 +81,7 @@ class MapTable extends HookWidget {
 }
 
 class UserTileWidget extends HookWidget {
-  final MapTile tile;
-  UserTileWidget(this.tile);
+  UserTileWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -118,9 +124,8 @@ class UserTileWidget extends HookWidget {
 
 class MapTileWidget extends HookWidget {
   final MapTile tile;
-  final bool isVisible;
 
-  MapTileWidget(this.tile, this.isVisible);
+  MapTileWidget(this.tile);
 
   @override
   Widget build(BuildContext context) {
@@ -131,11 +136,13 @@ class MapTileWidget extends HookWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(5.0),
           child: Container(
-            color: isVisible
-                ? (tile.sporeLevel >= 7
-                    ? Colors.amber[900]
-                    : (tile.sporeLevel >= 4 ? Colors.amber : Colors.amber[100]))
-                : Colors.grey,
+            color: tile.sporeLevel >= 7
+                ? Colors.amber[900]
+                : (tile.sporeLevel >= 5
+                    ? Colors.amber[600]
+                    : (tile.sporeLevel >= 1
+                        ? Colors.amber[300]
+                        : Colors.amber[100])),
             child: Container(
               child: Padding(
                 padding: const EdgeInsets.all(2.0),
@@ -149,6 +156,45 @@ class MapTileWidget extends HookWidget {
                       ),
                     ),
                     PlayerIconStack(tile.playersOnTile),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class EmptyMapTileWidget extends HookWidget {
+  final int xCoord;
+  final int yCoord;
+
+  EmptyMapTileWidget(this.xCoord, this.yCoord);
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 1.0,
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5.0),
+          child: Container(
+            color: Colors.grey,
+            child: Container(
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        '${xCoord}:${yCoord}',
+                        style: TextStyle(color: Colors.black87),
+                      ),
+                    ),
                   ],
                 ),
               ),
