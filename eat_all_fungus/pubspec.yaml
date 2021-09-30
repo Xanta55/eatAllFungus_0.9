@@ -39,6 +39,7 @@ flutter:
 
   assets:
     - assets/images/playerIcon.png
+    - assets/images/buffshroomIcon.png
 
 flutter_icons:
   android: true
