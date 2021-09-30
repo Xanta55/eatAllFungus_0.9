@@ -165,6 +165,7 @@ class MapTileRepository implements BaseTileRepository {
           ?.collection('worlds')
           .doc(worldID)
           .collection('mapTiles')
+          .where('isVisible', isEqualTo: true)
           .get();
       Map<int, Map<int, MapTile>> mapOut = Map();
       for (MapTile mt

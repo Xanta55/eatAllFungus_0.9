@@ -63,8 +63,10 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
   Future<void> movePlayer({required int direction}) async {
     try {
       await getPlayer();
+      final currTile = await _read(mapTileStreamProvider)!;
       state.whenData((value) async {
-        if (value.actionPoints >= 0) {
+        if (value.actionPoints > 0 &&
+            currTile.buffShrooms <= currTile.controlPower) {
           switch (direction) {
             case 1:
               {
