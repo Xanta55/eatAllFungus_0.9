@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:eat_all_fungus/controllers/worldController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
+import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/models/town.dart';
 import 'package:eat_all_fungus/models/world.dart';
+import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/providers/streams/worldStream.dart';
 import 'package:eat_all_fungus/services/tileRepository.dart';
@@ -14,17 +15,20 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 final townStreamProvider = StateNotifierProvider<TownStream, Town?>((ref) {
   final tile = ref.watch(mapTileStreamProvider);
   final world = ref.watch(worldStreamProvider);
-  return TownStream(ref.read, tile, world);
+  final player = ref.watch(playerStreamProvider);
+  return TownStream(ref.read, tile, world, player);
 });
 
 class TownStream extends StateNotifier<Town?> {
   final Reader _read;
   final MapTile? _currTile;
   final World? _currWorld;
+  final Player? _player;
 
   StreamSubscription<Town>? _townSubscription;
 
-  TownStream(this._read, this._currTile, this._currWorld) : super(null) {
+  TownStream(this._read, this._currTile, this._currWorld, this._player)
+      : super(null) {
     if (_currTile != null && _currWorld != null) {
       _townSubscription?.cancel();
       getTownStream();
@@ -43,6 +47,14 @@ class TownStream extends StateNotifier<Town?> {
     } on CustomException catch (error) {
       print('TileStream - ${error.message}');
       state = null;
+    }
+  }
+
+  Future<void> requestJoin() async {
+    if (state != null && _player != null) {
+      await _read(townRepository).updateTown(
+          town: state!.copyWith(
+              requestsToJoin: state!.requestsToJoin..add(_player!.id!)));
     }
   }
 

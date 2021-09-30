@@ -1,11 +1,11 @@
 import 'package:eat_all_fungus/controllers/playerController.dart';
-import 'package:eat_all_fungus/models/news.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/providers/streams/newsStream.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
+import 'package:eat_all_fungus/views/widgets/mapView/mapSubWidgets.dart';
 import 'package:eat_all_fungus/views/widgets/newspaper/miniNewspaper.dart';
 import 'package:eat_all_fungus/views/widgets/status/statusWidget.dart';
 import 'package:flutter/material.dart';
@@ -120,13 +120,7 @@ class _buildTilePreview extends HookWidget {
 
   Widget TilePreview({required MapTile tile}) {
     return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('X: ${tile.xCoord} - Y: ${tile.yCoord}'),
-          Text('${tile.description}')
-        ],
-      ),
+      child: MapTileWidget(tile.copyWith(playersOnTile: 0), true),
     );
   }
 }
@@ -174,34 +168,41 @@ class _buildTileInfo extends HookWidget {
   Widget build(BuildContext context) {
     final tileState = useProvider(mapTileStreamProvider);
     if (tileState != null) {
-      final itemWidgetList =
-          buildTileInventoryList(tileInventory: tileState.inventory);
-      return Panel(
-        child: Container(
-          color: Colors.grey[colorIntensity],
+      if (tileState.townOnTile.isEmpty) {
+        final itemWidgetList =
+            buildTileInventoryList(tileInventory: tileState.inventory);
+        return Panel(
+          child: Container(
+            color: Colors.grey[colorIntensity],
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Text('Items on Tile:'),
+                  Expanded(
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
+                      children: itemWidgetList,
+                    ),
+                  )
+                ],
+              ),
+            )),
+          ),
+        );
+      } else {
+        return Panel(
           child: Center(
-              child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Text('Items on Tile:'),
-                Expanded(
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
-                    children: itemWidgetList,
-                  ),
-                )
-              ],
-            ),
-          )),
-        ),
-      );
+            child: Text('Town'),
+          ),
+        );
+      }
     } else {
       return Panel(
         child: Container(
           color: Colors.grey[colorIntensity],
-          child: CircularProgressIndicator(),
         ),
       );
     }

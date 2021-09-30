@@ -319,3 +319,11 @@ fabric.properties
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,flutter,dart,android,androidstudio
+eat_all_fungus/android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+eat_all_fungus/android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+eat_all_fungus/android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+eat_all_fungus/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+eat_all_fungus/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+eat_all_fungus/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+eat_all_fungus/ios/Runner/Assets.xcassets/AppIcon.appiconset/*
+eat_all_fungus/ios/Runner.xcodeproj/project.pbxproj

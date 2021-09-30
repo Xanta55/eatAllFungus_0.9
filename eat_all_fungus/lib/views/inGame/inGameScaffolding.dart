@@ -1,12 +1,10 @@
+import 'package:eat_all_fungus/controllers/authController.dart';
 import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/controllers/worldController.dart';
-import 'package:eat_all_fungus/models/mapTile.dart';
-import 'package:eat_all_fungus/models/town.dart';
 import 'package:eat_all_fungus/providers/inGameNavigationProvider.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
-import 'package:eat_all_fungus/providers/streams/townStream.dart';
 import 'package:eat_all_fungus/services/authRepository.dart';
-import 'package:eat_all_fungus/services/townRepository.dart';
+import 'package:eat_all_fungus/views/inGame/map/mapWidget.dart';
 import 'package:eat_all_fungus/views/inGame/overview/overviewWidget.dart';
 import 'package:eat_all_fungus/views/inGame/town/townWidget.dart';
 import 'package:eat_all_fungus/views/widgets/buttons/logoutButton.dart';
@@ -21,6 +19,7 @@ class InGameScaffolding extends HookWidget {
   Widget build(BuildContext context) {
     final navigationState = useProvider(navStateProvider);
     final tileStream = useProvider(mapTileStreamProvider);
+    final worldState = useProvider(worldControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(navigationState.toUpperCase()),
@@ -63,7 +62,7 @@ class InGameScaffolding extends HookWidget {
                 title: Text('Sign Out'),
                 onTap: () {
                   context.read(navStateProvider.notifier).setRoute('overview');
-                  context.read(authRepositoryProvider).signOut();
+                  context.read(authControllerProvider.notifier).signOut();
                 },
               ),
             ],
@@ -104,11 +103,7 @@ class InGameScaffolding extends HookWidget {
           ),
         );
       case 'map':
-        return Container(
-          child: Center(
-            child: Text('Map'),
-          ),
-        );
+        return MapWidget();
       case 'town':
         return TownWidget();
       case 'radio':

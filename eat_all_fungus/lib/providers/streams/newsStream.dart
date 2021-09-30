@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:eat_all_fungus/controllers/worldController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/news.dart';
 import 'package:eat_all_fungus/models/world.dart';

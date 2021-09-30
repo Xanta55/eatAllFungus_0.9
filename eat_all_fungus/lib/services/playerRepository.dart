@@ -11,6 +11,7 @@ abstract class BasePlayerRepository {
   Future<Player> getPlayer({required UserProfile profile});
   Stream<Player> getPlayerStream({required UserProfile profile});
   Future<List<Player>?> getPlayersInWorld({required String worldID});
+  Stream<List<Player>>? getPlayersInWorldStream({required String worldID});
   Future<QuerySnapshot<Map<String, dynamic>>?> getAccordingPlayersInWorldQuery(
       {required String worldID});
   Future<String> createPlayerInWorld(
@@ -177,10 +178,22 @@ class PlayerRepository implements BasePlayerRepository {
           ?.collection('players')
           .doc(profile.id)
           .snapshots()
-          .map((event) => Player.fromDocument(event));
+          .map((playerDoc) => Player.fromDocument(playerDoc));
       return streamOut ?? Stream.empty();
     } on CustomException catch (error) {
       throw CustomException(message: error.message);
     }
+  }
+
+  @override
+  Stream<List<Player>> getPlayersInWorldStream({required String worldID}) {
+    return _read(databaseProvider)
+            ?.collection('players')
+            .where('worldID', isEqualTo: worldID)
+            .snapshots()
+            .map((playerQuery) => playerQuery.docs
+                .map((playerDoc) => Player.fromDocument(playerDoc))
+                .toList()) ??
+        Stream.empty();
   }
 }

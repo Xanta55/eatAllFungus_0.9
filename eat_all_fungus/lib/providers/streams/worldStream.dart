@@ -5,7 +5,6 @@ import 'package:eat_all_fungus/models/userProfile.dart';
 import 'package:eat_all_fungus/models/world.dart';
 import 'package:eat_all_fungus/providers/streams/profileStream.dart';
 import 'package:eat_all_fungus/services/worldRepository.dart';
-import 'package:firebase_database/ui/utils/stream_subscriber_mixin.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final worldStreamProvider = StateNotifierProvider<WorldStream, World?>((ref) {
