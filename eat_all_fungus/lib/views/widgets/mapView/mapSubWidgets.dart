@@ -213,7 +213,6 @@ class PlayerIconStack extends HookWidget {
   PlayerIconStack(this.playersOnTile, this.buffshroomsOnTile);
   @override
   Widget build(BuildContext context) {
-    print(buffshroomsOnTile);
     Random rng = Random();
     if (playersOnTile == 0 && buffshroomsOnTile == 0) {
       return Container();
