@@ -107,7 +107,8 @@ class UserTileWidget extends HookWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: PlayerIconStack(tileState.playersOnTile),
+                      child: PlayerIconStack(
+                          tileState.playersOnTile, tileState.buffShrooms),
                     ),
                   ],
                 ),
@@ -155,7 +156,7 @@ class MapTileWidget extends HookWidget {
                         style: TextStyle(color: Colors.black87),
                       ),
                     ),
-                    PlayerIconStack(tile.playersOnTile),
+                    PlayerIconStack(tile.playersOnTile, tile.buffShrooms),
                   ],
                 ),
               ),
@@ -208,18 +209,21 @@ class EmptyMapTileWidget extends HookWidget {
 
 class PlayerIconStack extends HookWidget {
   final int playersOnTile;
-  PlayerIconStack(this.playersOnTile);
+  final int buffshroomsOnTile;
+  PlayerIconStack(this.playersOnTile, this.buffshroomsOnTile);
   @override
   Widget build(BuildContext context) {
+    print(buffshroomsOnTile);
     Random rng = Random();
-    if (playersOnTile == 0) {
+    if (playersOnTile == 0 && buffshroomsOnTile == 0) {
       return Container();
     } else {
-      List<Widget> playerIcons = <Widget>[];
+      List<Widget> icons = <Widget>[];
+
       for (int i = 0; i < playersOnTile; i++) {
         double x = (rng.nextInt((TileSize - TileSize * 0.25).round())) * 1 - 5;
         double y = (rng.nextInt((TileSize - TileSize * 0.25).round())) * 1 - 5;
-        playerIcons.add(Positioned(
+        icons.add(Positioned(
           left: x,
           top: y,
           child: Image(
@@ -228,9 +232,23 @@ class PlayerIconStack extends HookWidget {
           ),
         ));
       }
+      for (int i = 0;
+          i < (buffshroomsOnTile > 9 ? 9 : buffshroomsOnTile);
+          i++) {
+        double x = (rng.nextInt((TileSize - TileSize * 0.25).round())) * 1 - 5;
+        double y = (rng.nextInt((TileSize - TileSize * 0.25).round())) * 1 - 5;
+        icons.add(Positioned(
+          left: x,
+          top: y,
+          child: Image(
+            image: AssetImage('assets/images/buffshroomIcon.png'),
+            filterQuality: FilterQuality.none,
+          ),
+        ));
+      }
       return Stack(
         clipBehavior: Clip.none,
-        children: playerIcons,
+        children: icons,
       );
     }
   }
