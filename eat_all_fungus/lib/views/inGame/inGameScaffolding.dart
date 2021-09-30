@@ -1,3 +1,4 @@
+import 'package:eat_all_fungus/controllers/authController.dart';
 import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/controllers/worldController.dart';
 import 'package:eat_all_fungus/providers/inGameNavigationProvider.dart';
@@ -61,7 +62,7 @@ class InGameScaffolding extends HookWidget {
                 title: Text('Sign Out'),
                 onTap: () {
                   context.read(navStateProvider.notifier).setRoute('overview');
-                  context.read(authRepositoryProvider).signOut();
+                  context.read(authControllerProvider.notifier).signOut();
                 },
               ),
             ],

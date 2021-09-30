@@ -66,7 +66,7 @@ class MapWidget extends HookWidget {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Column(
                                       children: [
-                                        Text('Items on this Tile:'),
+                                        Text('On this Tile:'),
                                         Expanded(
                                           child: ListView(
                                             scrollDirection: Axis.horizontal,
@@ -107,7 +107,11 @@ class MapWidget extends HookWidget {
       print('should be getting inventory');
       return buildTileInventoryList(tileInventory: tileState?.inventory ?? []);
     } else {
-      return [];
+      return [
+        Center(
+          child: Text('A Town obviously'),
+        )
+      ];
     }
   }
 
