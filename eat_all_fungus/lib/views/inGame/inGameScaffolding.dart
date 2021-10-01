@@ -6,6 +6,7 @@ import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/services/authRepository.dart';
 import 'package:eat_all_fungus/views/inGame/map/mapWidget.dart';
 import 'package:eat_all_fungus/views/inGame/overview/overviewWidget.dart';
+import 'package:eat_all_fungus/views/inGame/player/playerWidget.dart';
 import 'package:eat_all_fungus/views/inGame/town/townWidget.dart';
 import 'package:eat_all_fungus/views/widgets/buttons/logoutButton.dart';
 import 'package:flutter/material.dart';
@@ -97,11 +98,7 @@ class InGameScaffolding extends HookWidget {
       case 'overview':
         return OverviewWidget();
       case 'player':
-        return Container(
-          child: Center(
-            child: Text('Player'),
-          ),
-        );
+        return PlayerWidget();
       case 'map':
         return MapWidget();
       case 'town':
