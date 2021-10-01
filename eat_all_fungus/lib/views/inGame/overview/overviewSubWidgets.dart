@@ -15,10 +15,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 const List<Widget> overviewTiles = <Widget>[
   _buildToDoList(),
   _buildTilePreview(),
-  _buildTileInfo(),
-  _buildInventory(),
-  _buildPlayerStatus(),
-  _buildNews()
+  OverviewTileInfo(),
+  OverviewInventory(),
+  OverviewPlayerStatus(),
+  OverviewNews()
 ];
 
 const int colorIntensity = 900;
@@ -125,8 +125,8 @@ class _buildTilePreview extends HookWidget {
   }
 }
 
-class _buildInventory extends HookWidget {
-  const _buildInventory();
+class OverviewInventory extends HookWidget {
+  const OverviewInventory();
 
   @override
   Widget build(BuildContext context) {
@@ -161,8 +161,8 @@ class _buildInventory extends HookWidget {
   }
 }
 
-class _buildTileInfo extends HookWidget {
-  const _buildTileInfo();
+class OverviewTileInfo extends HookWidget {
+  const OverviewTileInfo();
 
   @override
   Widget build(BuildContext context) {
@@ -209,8 +209,8 @@ class _buildTileInfo extends HookWidget {
   }
 }
 
-class _buildPlayerStatus extends HookWidget {
-  const _buildPlayerStatus();
+class OverviewPlayerStatus extends HookWidget {
+  const OverviewPlayerStatus();
 
   @override
   Widget build(BuildContext context) {
@@ -250,8 +250,8 @@ class _buildPlayerStatus extends HookWidget {
   }
 }
 
-class _buildNews extends HookWidget {
-  const _buildNews();
+class OverviewNews extends HookWidget {
+  const OverviewNews();
 
   @override
   Widget build(BuildContext context) {
