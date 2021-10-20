@@ -9,6 +9,7 @@ abstract class BaseAuthRepository {
   Future<void> signInWithEmailAndPassword(String email, String password);
   Future<void> signInAnonymously();
   Future<void> signUp(String email, String password);
+  Stream<bool> getLockStream();
   User? getCurrentUser();
   Future<void> signOut();
 }
@@ -75,6 +76,21 @@ class AuthRepository implements BaseAuthRepository {
   Future<void> signOut() async {
     try {
       await _read(firebaseAuthProvider).signOut();
+    } on FirebaseAuthException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Stream<bool> getLockStream() {
+    try {
+      final streamOut = _read(databaseProvider)
+          ?.collection('locks')
+          .doc('mainLock')
+          .snapshots()
+          .map((lock) =>
+              lock.data()?['isLocked'].toString() == 'false' ? false : true);
+      return streamOut ?? Stream.empty();
     } on FirebaseAuthException catch (error) {
       throw CustomException(message: error.message);
     }
