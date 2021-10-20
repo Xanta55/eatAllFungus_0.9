@@ -51,6 +51,7 @@ class WorldRepository implements BaseWorldRepository {
       final docRef = await _read(databaseProvider)!.collection('worlds').add(
           World(
                   currentPlayers: 0,
+                  daysRunning: 0,
                   depth: depth,
                   description: description,
                   name: name,
