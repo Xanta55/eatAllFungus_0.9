@@ -1,7 +1,5 @@
 import 'package:eat_all_fungus/controllers/profileController.dart';
-import 'package:eat_all_fungus/controllers/tileMapController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
-import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/models/userProfile.dart';
 import 'package:eat_all_fungus/models/world.dart';
