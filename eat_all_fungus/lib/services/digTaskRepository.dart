@@ -49,7 +49,6 @@ class DigTaskRepository implements BaseDigTaskRepository {
       final streamOut = snapRef?.snapshots();
 
       return streamOut?.map((snapshot) {
-            print(snapshot.data());
             if (snapshot.data() != null) {
               return DateTime.fromMillisecondsSinceEpoch(
                   (snapshot.data()?['refreshAt'] as Timestamp)

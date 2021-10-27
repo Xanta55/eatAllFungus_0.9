@@ -105,7 +105,6 @@ class MapWidget extends HookWidget {
   List<Widget> buildItemTiles() {
     final tileState = useProvider(mapTileStreamProvider);
     if (tileState?.townOnTile.isEmpty ?? true) {
-      print('should be getting inventory');
       return buildTileInventoryList(tileInventory: tileState?.inventory ?? []);
     } else {
       return [
