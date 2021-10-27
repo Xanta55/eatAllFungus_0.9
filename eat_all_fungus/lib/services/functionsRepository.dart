@@ -16,8 +16,7 @@ class FunctionRepository {
     try {
       HttpsCallable callable =
           _read(firebaseFunctionProvider)!.httpsCallable('digCall');
-      final result = await callable({tileDescription, playerID});
-      print(result);
+      callable.call({'tileDescription': tileDescription, 'playerID': playerID});
     } on FirebaseFunctionsException catch (error) {
       throw CustomException(message: error.message);
     }
