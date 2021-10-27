@@ -4,7 +4,6 @@ import 'package:eat_all_fungus/controllers/worldController.dart';
 import 'package:eat_all_fungus/providers/inGameNavigationProvider.dart';
 import 'package:eat_all_fungus/providers/streams/lockStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
-import 'package:eat_all_fungus/services/authRepository.dart';
 import 'package:eat_all_fungus/views/inGame/map/mapWidget.dart';
 import 'package:eat_all_fungus/views/inGame/overview/overviewWidget.dart';
 import 'package:eat_all_fungus/views/inGame/player/playerWidget.dart';

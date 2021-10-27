@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/services/authRepository.dart';
-import 'package:firebase_database/ui/utils/stream_subscriber_mixin.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final lockStreamProvider = StateNotifierProvider<LockStream, bool?>((ref) {

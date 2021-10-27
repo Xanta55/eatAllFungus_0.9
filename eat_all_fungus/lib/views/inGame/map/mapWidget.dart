@@ -4,6 +4,7 @@ import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/providers/streams/worldStream.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
+import 'package:eat_all_fungus/views/widgets/buttons/digButton.dart';
 import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
 import 'package:eat_all_fungus/views/widgets/mapView/mapSubWidgets.dart';
 import 'package:flutter/material.dart';
@@ -47,8 +48,8 @@ class MapWidget extends HookWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(5.0),
                               child: Container(
-                                color: Colors.grey[800],
-                                //TODO: implement the "dig"/"request join" button
+                                width: double.infinity,
+                                child: DigButton(),
                               ),
                             ),
                           ),
@@ -104,7 +105,6 @@ class MapWidget extends HookWidget {
   List<Widget> buildItemTiles() {
     final tileState = useProvider(mapTileStreamProvider);
     if (tileState?.townOnTile.isEmpty ?? true) {
-      print('should be getting inventory');
       return buildTileInventoryList(tileInventory: tileState?.inventory ?? []);
     } else {
       return [
