@@ -1,5 +1,4 @@
 import 'package:eat_all_fungus/controllers/authController.dart';
-import 'package:eat_all_fungus/services/authRepository.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
