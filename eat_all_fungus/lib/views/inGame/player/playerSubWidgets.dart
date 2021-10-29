@@ -124,7 +124,7 @@ class PlayerTileInteractionsWidget extends HookWidget {
       if (tileState.townOnTile.isEmpty) {
         switch (tileState.description) {
           case 'Empty Tile':
-            return InteractPanel(
+            return interactPanel(
                 buttonDesc: 'Construct a Town',
                 needsToComplete: {'plank': 15, 'rock': 5},
                 onTap: () {
@@ -154,7 +154,7 @@ class PlayerTileInteractionsWidget extends HookWidget {
     }
   }
 
-  Widget InteractPanel(
+  Widget interactPanel(
       {Map<String, int>? needsToComplete,
       required String buttonDesc,
       required Function onTap}) {
