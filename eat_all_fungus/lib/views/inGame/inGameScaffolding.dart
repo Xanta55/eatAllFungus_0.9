@@ -87,6 +87,7 @@ class InGameScaffolding extends HookWidget {
                     : Container(),
                 _buildDrawerButton(context, 'Player'),
                 _buildDrawerButton(context, 'Radio'),
+                _buildDrawerButton(context, 'Messages'),
                 Divider(color: Colors.amber[200]),
                 SizedBox(height: 16.0),
                 _buildDrawerButton(context, 'World'),
@@ -144,6 +145,12 @@ class InGameScaffolding extends HookWidget {
         return Container(
           child: Center(
             child: Text('Radio'),
+          ),
+        );
+      case 'messages':
+        return Container(
+          child: Center(
+            child: Text('Messages'),
           ),
         );
       case 'world':
