@@ -20,7 +20,7 @@ class InGameScaffolding extends HookWidget {
   Widget build(BuildContext context) {
     final navigationState = useProvider(navStateProvider);
     final tileStream = useProvider(mapTileStreamProvider);
-    final worldState = useProvider(worldControllerProvider);
+    //final worldState = useProvider(worldControllerProvider);
     final lockState = useProvider(lockStreamProvider);
     if (lockState == null || lockState) {
       return Scaffold(

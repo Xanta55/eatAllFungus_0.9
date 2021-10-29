@@ -19,7 +19,7 @@ class LockStream extends StateNotifier<bool?> {
 
   Future<void> getLockStream() async {
     try {
-      _lockStreamSubscription = await _read(authRepositoryProvider)
+      _lockStreamSubscription = _read(authRepositoryProvider)
           .getLockStream()
           .listen((lockState) => state = lockState);
     } on CustomException catch (error) {

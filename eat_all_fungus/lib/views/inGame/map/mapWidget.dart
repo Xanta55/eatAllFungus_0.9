@@ -141,7 +141,7 @@ class MapWidget extends HookWidget {
                   ),
                 ),
               ),
-              TestBox(
+              testBox(
                 Center(
                   child: IconButton(
                     onPressed: () => context
@@ -175,7 +175,7 @@ class MapWidget extends HookWidget {
         Expanded(
           child: Row(
             children: [
-              TestBox(
+              testBox(
                 Center(
                   child: IconButton(
                     onPressed: () => context
@@ -185,7 +185,7 @@ class MapWidget extends HookWidget {
                   ),
                 ),
               ),
-              TestBox(
+              testBox(
                 Center(
                   child: Text(
                     'AP: ${playerState?.actionPoints ?? 0}',
@@ -194,7 +194,7 @@ class MapWidget extends HookWidget {
                   ),
                 ),
               ),
-              TestBox(
+              testBox(
                 Center(
                   child: IconButton(
                     onPressed: () => context
@@ -210,10 +210,10 @@ class MapWidget extends HookWidget {
         Expanded(
           child: Row(
             children: [
-              TestBox(
+              testBox(
                 Container(),
               ),
-              TestBox(
+              testBox(
                 Center(
                   child: IconButton(
                     onPressed: () => context
@@ -223,7 +223,7 @@ class MapWidget extends HookWidget {
                   ),
                 ),
               ),
-              TestBox(
+              testBox(
                 Container(),
               ),
             ],
@@ -233,7 +233,7 @@ class MapWidget extends HookWidget {
     );
   }
 
-  Widget TestBox(Widget widget) {
+  Widget testBox(Widget widget) {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(2.0),

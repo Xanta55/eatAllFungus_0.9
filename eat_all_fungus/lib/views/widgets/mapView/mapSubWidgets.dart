@@ -58,7 +58,7 @@ class MapTable extends HookWidget {
 
       for (int y = worldState.depth * (-1); y <= worldState.depth; y++) {
         // Player is on Tile
-        if ('${y}-${x * -1}' == matchThis) {
+        if ('$y-${x * -1}' == matchThis) {
           newRow.add(UserTileWidget());
 
           // Check if Tiles exist in loaded Map
@@ -192,7 +192,7 @@ class EmptyMapTileWidget extends HookWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        '${xCoord}:${yCoord}',
+                        '$xCoord:$yCoord',
                         style: TextStyle(color: Colors.black87),
                       ),
                     ),
