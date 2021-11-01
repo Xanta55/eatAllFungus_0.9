@@ -45,7 +45,9 @@ class TownStream extends StateNotifier<Town?> {
         _townSubscription = _read(townRepository)
             .getTownStream(worldID: _currWorld!.id!, townID: tempTown.id!)
             .listen((event) {
-          state = event;
+          if (mounted) {
+            state = event;
+          }
         });
       } else {
         state = null;
