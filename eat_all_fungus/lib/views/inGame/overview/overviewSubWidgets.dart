@@ -181,7 +181,7 @@ class OverviewTileInfo extends HookWidget {
                   Text('Items on Tile:'),
                   Expanded(
                     child: ListView(
-                      shrinkWrap: true,
+                      //shrinkWrap: true,
                       physics: ClampingScrollPhysics(),
                       children: itemWidgetList,
                     ),
