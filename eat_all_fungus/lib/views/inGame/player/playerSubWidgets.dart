@@ -1,3 +1,5 @@
+import 'package:eat_all_fungus/constValues/callableFunctions.dart';
+import 'package:eat_all_fungus/models/recipeBlueprint.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/views/inGame/overview/overviewSubWidgets.dart';
@@ -76,11 +78,10 @@ class PlayerTileInteractionsWidget extends HookWidget {
         switch (tileState.description) {
           case 'Empty Tile':
             return InteractPanel(
-                buttonDesc: 'Construct a Town',
-                needsToComplete: {'plank': 15, 'rock': 5},
-                onTap: () {
-                  print('Button worked, duh!');
-                });
+                recipe: RecipeBlueprint(
+                    needsToComplete: {'plank': 10, 'rock': 5},
+                    description: 'Construct a Town',
+                    onTap: 'printError'));
           default:
             return Panel(
               child: ElevatedButton(
@@ -105,19 +106,16 @@ class PlayerTileInteractionsWidget extends HookWidget {
     }
   }
 
-  Widget InteractPanel(
-      {Map<String, int>? needsToComplete,
-      required String buttonDesc,
-      required Function onTap}) {
+  Widget InteractPanel({required RecipeBlueprint recipe}) {
     final List<Widget> itemRequirements = <Widget>[];
-    if (needsToComplete != null) {
-      for (String s in needsToComplete.keys) {
+    if (recipe.needsToComplete.isNotEmpty) {
+      for (String s in recipe.needsToComplete.keys) {
         itemRequirements.add(
           Container(
             child: Row(
               children: [
                 ItemBox(item: s),
-                Text('x ${needsToComplete[s]}'),
+                Text('x ${recipe.needsToComplete[s]}'),
               ],
             ),
           ),
@@ -139,9 +137,9 @@ class PlayerTileInteractionsWidget extends HookWidget {
                   child: Panel(
                     child: ElevatedButton(
                       onPressed: () {
-                        onTap();
+                        recipeFunctions[recipe.onTap];
                       },
-                      child: Text('$buttonDesc'),
+                      child: Text('${recipe.description}'),
                     ),
                   ),
                 ),
