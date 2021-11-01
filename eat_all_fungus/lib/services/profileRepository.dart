@@ -33,6 +33,7 @@ class ProfileRepository implements BaseProfileRepository {
             currentWorld: '',
             description: '',
             friends: [],
+            hasLoggedIn: true,
             name: name,
             survivedDays: 0,
           ).toDocumentNoID());

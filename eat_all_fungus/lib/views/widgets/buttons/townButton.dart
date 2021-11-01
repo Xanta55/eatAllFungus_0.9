@@ -48,7 +48,6 @@ class RequestJoinButton extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('can this player still request: $canRequest');
     if (canRequest) {
       return Container(
         child: ElevatedButton(

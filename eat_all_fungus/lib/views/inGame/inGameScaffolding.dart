@@ -75,11 +75,11 @@ class InGameScaffolding extends HookWidget {
                   _buildDrawerButton(context, 'Player'),
                   _buildDrawerButton(context, 'Radio'),
                   _buildDrawerButton(context, 'Messages'),
-                  Divider(color: Colors.amber[200]),
+                  Divider(color: Colors.amber[300]),
                   SizedBox(height: 16.0),
                   _buildDrawerButton(context, 'World'),
                   _buildDrawerButton(context, 'Profile'),
-                  Divider(color: Colors.amber[200]),
+                  Divider(color: Colors.amber[300]),
                   SizedBox(height: 16.0),
                   ListTile(
                     title: Text('Sign Out'),

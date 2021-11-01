@@ -193,8 +193,16 @@ class OverviewTileInfo extends HookWidget {
         );
       } else {
         return Panel(
-          child: Center(
-            child: Text('Town'),
+          child: Container(
+            color: Colors.grey[colorIntensity],
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                  child: Text(
+                'A town exists on this tile',
+                textAlign: TextAlign.center,
+              )),
+            ),
           ),
         );
       }

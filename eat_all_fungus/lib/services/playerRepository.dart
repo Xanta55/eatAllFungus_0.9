@@ -25,6 +25,7 @@ abstract class BasePlayerRepository {
   Future<void> addPlayerStatusEffect(
       {required Player player, required String status});
   Future<void> deletePlayer({required UserProfile profile});
+  Future<void> addMembership({required Player player, required String townID});
 }
 
 final playerRepository =
@@ -195,5 +196,20 @@ class PlayerRepository implements BasePlayerRepository {
                 .map((playerDoc) => Player.fromDocument(playerDoc))
                 .toList()) ??
         Stream.empty();
+  }
+
+  @override
+  Future<void> addMembership(
+      {required Player player, required String townID}) async {
+    try {
+      await _read(databaseProvider)
+          ?.collection('players')
+          .doc(player.id)
+          .update({
+        'member': FieldValue.arrayUnion([townID])
+      });
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
   }
 }

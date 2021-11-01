@@ -12,6 +12,7 @@ abstract class BaseTownRepository {
   Future<String> createTown({required Town town});
   Future<void> updateTown({required Town town});
   Future<void> deleteTown({required Town town});
+  Future<void> addRequest({required Town town, required String playerID});
 }
 
 final townRepository =
@@ -141,6 +142,7 @@ class TownRepository implements BaseTownRepository {
     }
   }
 
+  @override
   Future<void> addRequest(
       {required Town town, required String playerID}) async {
     try {

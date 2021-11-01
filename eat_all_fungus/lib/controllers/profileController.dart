@@ -40,6 +40,12 @@ class ProfileController extends StateNotifier<AsyncValue<UserProfile>> {
     }
   }
 
+  Future<String> getNameFromID({required String playerID}) {
+    return _read(userProfileRepository)
+        .getProfile(id: playerID)
+        .then((value) => value.name);
+  }
+
   Future<void> insertEmptyProfile({required String name}) async {
     try {
       await _read(userProfileRepository).createEmptyProfile(name: name);

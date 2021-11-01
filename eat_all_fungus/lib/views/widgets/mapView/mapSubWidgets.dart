@@ -75,7 +75,6 @@ class MapTable extends HookWidget {
       outputList.add(TableRow(children: newRow));
       //newRow.clear();
     }
-    //print(outputList.length);
     return outputList;
   }
 }
