@@ -1,3 +1,4 @@
+import 'package:eat_all_fungus/constValues/constValues.dart';
 import 'package:eat_all_fungus/controllers/functionsController.dart';
 import 'package:eat_all_fungus/providers/streams/digTaskStream.dart';
 import 'package:eat_all_fungus/views/inGame/overview/overviewSubWidgets.dart';

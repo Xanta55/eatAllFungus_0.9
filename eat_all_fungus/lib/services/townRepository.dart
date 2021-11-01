@@ -141,4 +141,20 @@ class TownRepository implements BaseTownRepository {
       throw CustomException(message: error.message);
     }
   }
+
+  Future<void> addRequest(
+      {required Town town, required String playerID}) async {
+    try {
+      await _read(databaseProvider)
+          ?.collection('worlds')
+          .doc(town.worldID)
+          .collection('towns')
+          .doc(town.id)
+          .update({
+        'requestsToJoin': FieldValue.arrayUnion([playerID])
+      });
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
 }

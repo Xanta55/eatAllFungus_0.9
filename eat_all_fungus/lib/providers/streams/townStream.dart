@@ -37,44 +37,30 @@ class TownStream extends StateNotifier<Town?> {
 
   Future<void> getTownStream() async {
     try {
-      final tempTown = await _read(townRepository).getTownOnTile(
-          worldID: _currWorld!.id!, x: _currTile!.xCoord, y: _currTile!.yCoord);
-      _townSubscription = _read(townRepository)
-          .getTownStream(worldID: _currWorld!.id!, townID: tempTown.id!)
-          .listen((event) {
-        state = event;
-      });
+      if (_currTile!.townOnTile.isNotEmpty) {
+        final tempTown = await _read(townRepository).getTownOnTile(
+            worldID: _currWorld!.id!,
+            x: _currTile!.xCoord,
+            y: _currTile!.yCoord);
+        _townSubscription = _read(townRepository)
+            .getTownStream(worldID: _currWorld!.id!, townID: tempTown.id!)
+            .listen((event) {
+          state = event;
+        });
+      } else {
+        state = null;
+      }
     } on CustomException catch (error) {
-      print('TileStream - ${error.message}');
+      print('TownStream - ${error.message}');
       state = null;
     }
   }
 
   Future<void> requestJoin() async {
     if (state != null && _player != null) {
-      await _read(townRepository).updateTown(
-          town: state!.copyWith(
-              requestsToJoin: state!.requestsToJoin..add(_player!.id!)));
+      await _read(townRepository)
+          .addRequest(town: state!, playerID: _player?.id! ?? '');
     }
-  }
-
-  Future<void> createNewTestTown() async {
-    final Town testTown = Town(
-        alliances: [],
-        buildings: ['Watchtower'],
-        elders: [],
-        inventory: ['plank', 'plank'],
-        members: [],
-        requestsToJoin: [],
-        distanceOfSight: 5,
-        name: 'Golly Oldfield',
-        wallStrength: 15,
-        worldID: _currWorld!.id!,
-        xCoord: 5,
-        yCoord: 5);
-    final docRef = await _read(townRepository).createTown(town: testTown);
-    await _read(mapTileRepository)
-        .updateTile(tile: _currTile!.copyWith(townOnTile: docRef));
   }
 
   @override

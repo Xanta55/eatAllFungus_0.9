@@ -1,3 +1,4 @@
+import 'package:eat_all_fungus/constValues/constValues.dart';
 import 'package:eat_all_fungus/controllers/playerController.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/providers/streams/newsStream.dart';
@@ -20,8 +21,6 @@ const List<Widget> overviewTiles = <Widget>[
   OverviewPlayerStatus(),
   OverviewNews()
 ];
-
-const int colorIntensity = 900;
 
 class Panel extends StatelessWidget {
   final Widget child;

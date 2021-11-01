@@ -5,6 +5,7 @@ import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/providers/streams/worldStream.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
 import 'package:eat_all_fungus/views/widgets/buttons/digButton.dart';
+import 'package:eat_all_fungus/views/widgets/buttons/mapButton.dart';
 import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
 import 'package:eat_all_fungus/views/widgets/mapView/mapSubWidgets.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,7 @@ class MapWidget extends HookWidget {
                               borderRadius: BorderRadius.circular(5.0),
                               child: Container(
                                 width: double.infinity,
-                                child: DigButton(),
+                                child: MapButton(),
                               ),
                             ),
                           ),
@@ -109,7 +110,7 @@ class MapWidget extends HookWidget {
     } else {
       return [
         Center(
-          child: Text('A Town obviously'),
+          child: Text('A town'),
         )
       ];
     }
