@@ -1,7 +1,11 @@
+import 'package:eat_all_fungus/constValues/constValues.dart';
+import 'package:eat_all_fungus/controllers/townController.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/views/inGame/overview/overviewSubWidgets.dart';
+import 'package:eat_all_fungus/views/widgets/buttons/townButton.dart';
 import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
+import 'package:eat_all_fungus/views/widgets/items/townStash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -72,11 +76,7 @@ class PlayerTileInventoryWidget extends HookWidget {
           ),
         );
       } else {
-        return Panel(
-          child: Center(
-            child: Text('Town'),
-          ),
-        );
+        return Panel(child: TownStash());
       }
     } else {
       return Panel(
@@ -128,7 +128,9 @@ class PlayerTileInteractionsWidget extends HookWidget {
                 buttonDesc: 'Construct a Town',
                 needsToComplete: {'plank': 15, 'rock': 5},
                 onTap: () {
-                  print('Button worked, duh!');
+                  context
+                      .read(townControllerProvider.notifier)
+                      .constructTown(name: 'Bobby Town');
                 });
           default:
             return Panel(
@@ -139,11 +141,7 @@ class PlayerTileInteractionsWidget extends HookWidget {
             );
         }
       } else {
-        return Panel(
-            child: ElevatedButton(
-          onPressed: () => print('There is a Town on this Tile'),
-          child: Text('Tile with a Town'),
-        ));
+        return Panel(child: TownButton());
       }
     } else {
       return Panel(
