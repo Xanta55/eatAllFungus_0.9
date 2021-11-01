@@ -27,7 +27,7 @@ class ProfileStream extends StateNotifier<UserProfile?> {
 
   Future<void> getProfileStream() async {
     try {
-      _profileStreamSubscription = _read(userProfileRepository)
+      _profileStreamSubscription = await _read(userProfileRepository)
           .getProfileStream(id: _userID!)
           .listen((profile) => state = profile);
     } on CustomException catch (error) {

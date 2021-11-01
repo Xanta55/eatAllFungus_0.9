@@ -35,7 +35,7 @@ const List<Widget> _playerViewTiles = <Widget>[
   PlayerActionPointsWidget(),
   OverviewPlayerStatus(),
   OverviewInventory(),
-  PlayerTileInventoryWidget(),
+  OverviewTileInfo(),
   PlayerInteractionsWidget(),
   PlayerTileInteractionsWidget(),
 ];

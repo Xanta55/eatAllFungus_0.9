@@ -27,7 +27,7 @@ class WorldStream extends StateNotifier<World?> {
 
   Future<void> getWorldStream() async {
     try {
-      _worldStreamSubscription = _read(worldRepository)
+      _worldStreamSubscription = await _read(worldRepository)
           .getWorldStream(id: _profile!.currentWorld)
           .listen((world) => state = world);
     } on CustomException catch (error) {

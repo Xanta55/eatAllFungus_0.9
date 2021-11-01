@@ -1,5 +1,5 @@
 name: eat_all_fungus
-description: A Multiplayer Mobile Game.
+description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -12,7 +12,6 @@ environment:
 
 dependencies:
   cloud_firestore: ^2.5.3
-  cloud_functions: ^3.0.5
   cupertino_icons: ^1.0.2
   firebase_auth: ^3.1.1
   firebase_core: ^1.6.0

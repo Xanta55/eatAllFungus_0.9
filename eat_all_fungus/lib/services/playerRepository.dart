@@ -78,7 +78,7 @@ class PlayerRepository implements BasePlayerRepository {
       await _read(databaseProvider)!.collection('players').doc(profile.id).set(
           Player(
                   statusEffects: [],
-                  inventory: [],
+                  Inventory: [],
                   todoList: [],
                   xCoord: 0,
                   yCoord: 0,
@@ -113,7 +113,7 @@ class PlayerRepository implements BasePlayerRepository {
       required List<String> playerInventory}) async {
     try {
       await updatePlayer(
-          player: playerToUpdate.copyWith(inventory: playerInventory));
+          player: playerToUpdate.copyWith(Inventory: playerInventory));
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
     }
@@ -123,7 +123,7 @@ class PlayerRepository implements BasePlayerRepository {
   Future<bool> addItemToPlayer(
       {required Player player, required String item}) async {
     try {
-      final newInventory = player.inventory..add(item);
+      final newInventory = player.Inventory..add(item);
       if (newInventory.length > player.inventorySize) {
         return false;
       }

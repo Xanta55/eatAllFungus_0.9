@@ -10,8 +10,8 @@ List<Widget> buildPlayerInventoryList() {
   playerState.when(
       data: (data) {
         for (int i = 0; i < data.inventorySize; i++) {
-          if (i < data.inventory.length) {
-            outputList.add(ItemBox(item: data.inventory[i]));
+          if (i < data.Inventory.length) {
+            outputList.add(ItemBox(item: data.Inventory[i]));
           } else {
             outputList.add(ItemBox(item: ''));
           }

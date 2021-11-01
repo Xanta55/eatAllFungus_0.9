@@ -117,11 +117,9 @@ class NewWorldButton extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: () =>
-            {} /*context
+        onPressed: () => context
             .read(worldListControllerProvider.notifier)
-            .createTestWorld(depth: 12)*/
-        ,
+            .createTestWorld(depth: 12),
         child: const Text('Create Test World'));
   }
 }

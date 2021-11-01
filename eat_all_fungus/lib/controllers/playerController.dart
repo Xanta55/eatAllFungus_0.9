@@ -1,5 +1,7 @@
 import 'package:eat_all_fungus/controllers/profileController.dart';
+import 'package:eat_all_fungus/controllers/tileMapController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
+import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/models/userProfile.dart';
 import 'package:eat_all_fungus/models/world.dart';
@@ -61,7 +63,7 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
   Future<void> movePlayer({required int direction}) async {
     try {
       await getPlayer();
-      final currTile = _read(mapTileStreamProvider)!;
+      final currTile = await _read(mapTileStreamProvider)!;
       state.whenData((value) async {
         if (value.actionPoints > 0 &&
             currTile.buffShrooms <= currTile.controlPower) {
