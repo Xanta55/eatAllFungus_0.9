@@ -41,6 +41,55 @@ class PlayerActionPointsWidget extends HookWidget {
   }
 }
 
+class PlayerTileInventoryWidget extends HookWidget {
+  const PlayerTileInventoryWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    final tileState = useProvider(mapTileStreamProvider);
+    if (tileState != null) {
+      if (tileState.townOnTile.isEmpty) {
+        final itemWidgetList =
+            buildTileInventoryList(tileInventory: tileState.inventory);
+        return Panel(
+          child: Container(
+            color: Colors.grey[colorIntensity],
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Text('Items on Tile:'),
+                  Expanded(
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
+                      children: itemWidgetList,
+                    ),
+                  )
+                ],
+              ),
+            )),
+          ),
+        );
+      } else {
+        return Panel(
+          child: Center(
+            child: Text('Town'),
+          ),
+        );
+      }
+    } else {
+      return Panel(
+        child: Container(
+          color: Colors.grey[colorIntensity],
+        ),
+      );
+    }
+  }
+}
+
 class PlayerInteractionsWidget extends HookWidget {
   const PlayerInteractionsWidget();
   // TODO pretty much loading all item interactions

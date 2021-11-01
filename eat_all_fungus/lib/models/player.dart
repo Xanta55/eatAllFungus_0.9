@@ -11,7 +11,7 @@ class Player with _$Player {
 
   const factory Player({
     required List<String> statusEffects,
-    required List<String> Inventory,
+    required List<String> inventory,
     required List<String> todoList,
     required int xCoord,
     required int yCoord,
@@ -30,7 +30,7 @@ class Player with _$Player {
       return Player.fromJson(data).copyWith(id: doc?.id);
     } else {
       return Player(
-        Inventory: [],
+        inventory: [],
         statusEffects: [],
         todoList: [],
         worldID: '',

@@ -13,8 +13,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 const List<Widget> overviewTiles = <Widget>[
-  _buildToDoList(),
-  _buildTilePreview(),
+  _BuildToDoList(),
+  _BuildTilePreview(),
   OverviewTileInfo(),
   OverviewInventory(),
   OverviewPlayerStatus(),
@@ -38,8 +38,8 @@ class Panel extends StatelessWidget {
   }
 }
 
-class _buildToDoList extends HookWidget {
-  const _buildToDoList();
+class _BuildToDoList extends HookWidget {
+  const _BuildToDoList();
 
   @override
   Widget build(BuildContext context) {
@@ -100,8 +100,8 @@ class _buildToDoList extends HookWidget {
   }
 }
 
-class _buildTilePreview extends HookWidget {
-  const _buildTilePreview();
+class _BuildTilePreview extends HookWidget {
+  const _BuildTilePreview();
 
   @override
   Widget build(BuildContext context) {
@@ -111,14 +111,14 @@ class _buildTilePreview extends HookWidget {
         color: Colors.grey[colorIntensity],
         child: Center(
           child: tileState != null
-              ? TilePreview(tile: tileState)
+              ? tilePreview(tile: tileState)
               : CircularProgressIndicator(),
         ),
       ),
     );
   }
 
-  Widget TilePreview({required MapTile tile}) {
+  Widget tilePreview({required MapTile tile}) {
     return Container(
       child: MapTileWidget(tile.copyWith(playersOnTile: 0)),
     );
@@ -141,7 +141,7 @@ class OverviewInventory extends HookWidget {
                 child: Column(
                   children: [
                     Text(
-                        'Inventory: ${player.Inventory.length}/${player.inventorySize}'),
+                        'Inventory: ${player.inventory.length}/${player.inventorySize}'),
                     Expanded(
                       child: ListView(
                         scrollDirection: Axis.horizontal,
