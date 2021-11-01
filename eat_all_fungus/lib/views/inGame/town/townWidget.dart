@@ -13,11 +13,19 @@ class TownWidget extends HookWidget {
     //final tileStream = useProvider(mapTileStreamProvider);
     final townStream = useProvider(townStreamProvider);
     final playerStream = useProvider(playerStreamProvider);
+
+    final tabController = useTabController(initialLength: 6);
+    final tabIndex = useState(0);
+    tabController.addListener(() {
+      tabIndex.value = tabController.index;
+    });
+
     if (townStream != null) {
       if (townStream.members.contains(playerStream?.id)) {
-        return Container(
-          child: Center(
-            child: Text('$townStream'),
+        return Scaffold(
+          appBar: TabBar(
+            controller: tabController,
+            tabs: list,
           ),
         );
       } else {
@@ -42,4 +50,13 @@ class TownWidget extends HookWidget {
       );
     }
   }
+
+  final List<Widget> list = const [
+    const Tab(icon: Icon(Icons.house)),
+    const Tab(icon: Icon(Icons.house)),
+    const Tab(icon: Icon(Icons.house)),
+    const Tab(icon: Icon(Icons.house)),
+    const Tab(icon: Icon(Icons.house)),
+    const Tab(icon: Icon(Icons.house)),
+  ];
 }

@@ -41,7 +41,7 @@ class ItemBox extends HookWidget {
   Widget build(BuildContext context) {
     final imageProvider = useProvider(imageRepository);
     return Padding(
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(8.0),
       child: AspectRatio(
         aspectRatio: 1.0,
         child: item != ''
