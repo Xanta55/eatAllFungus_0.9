@@ -31,11 +31,10 @@ class EnterTownButton extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(primary: Colors.blue[600]),
-        onPressed: () => print('Enter town'),
+      child: Container(
+        color: Colors.grey[colorIntensity],
         child: Center(
-          child: Text('Enter town'),
+          child: Text('You have access to this town'),
         ),
       ),
     );

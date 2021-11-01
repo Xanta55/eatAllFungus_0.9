@@ -1,6 +1,7 @@
 //import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/townStream.dart';
+import 'package:eat_all_fungus/views/inGame/town/townSubWidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -27,6 +28,10 @@ class TownWidget extends HookWidget {
             controller: tabController,
             tabs: list,
           ),
+          body: TabBarView(
+            controller: tabController,
+            children: townWidgetTabs,
+          ),
         );
       } else {
         return Container(
@@ -52,11 +57,11 @@ class TownWidget extends HookWidget {
   }
 
   final List<Widget> list = const [
-    const Tab(icon: Icon(Icons.house)),
-    const Tab(icon: Icon(Icons.house)),
-    const Tab(icon: Icon(Icons.house)),
-    const Tab(icon: Icon(Icons.house)),
-    const Tab(icon: Icon(Icons.house)),
-    const Tab(icon: Icon(Icons.house)),
+    const Tab(icon: Icon(Icons.list_alt)),
+    const Tab(icon: Icon(Icons.account_balance)),
+    const Tab(icon: Icon(Icons.business_center)),
+    const Tab(icon: Icon(Icons.carpenter)),
+    const Tab(icon: Icon(Icons.markunread_mailbox)),
+    const Tab(icon: Icon(Icons.people)),
   ];
 }

@@ -98,6 +98,16 @@ class UserTileWidget extends HookWidget {
               child: Container(
                 child: Stack(
                   children: [
+                    tileState.townOnTile.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child:
+                                LayoutBuilder(builder: (context, constraint) {
+                              return Icon(Icons.home,
+                                  size: constraint.biggest.width);
+                            }),
+                          )
+                        : Container(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
@@ -149,6 +159,19 @@ class MapTileWidget extends HookWidget {
                 padding: const EdgeInsets.all(2.0),
                 child: Stack(
                   children: [
+                    tile.townOnTile.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child:
+                                LayoutBuilder(builder: (context, constraint) {
+                              return Icon(
+                                Icons.home,
+                                size: constraint.biggest.width,
+                                color: Colors.brown[300],
+                              );
+                            }),
+                          )
+                        : Container(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(

@@ -71,6 +71,7 @@ class MapWidget extends HookWidget {
                                         Text('On this Tile:'),
                                         Expanded(
                                           child: ListView(
+                                            shrinkWrap: true,
                                             scrollDirection: Axis.horizontal,
                                             children: buildItemTiles(),
                                           ),
@@ -110,7 +111,7 @@ class MapWidget extends HookWidget {
     } else {
       return [
         Center(
-          child: Text('A town'),
+          child: Icon(Icons.home),
         )
       ];
     }
