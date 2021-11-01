@@ -77,6 +77,25 @@ class TownStream extends StateNotifier<Town?> {
         .updateTile(tile: _currTile!.copyWith(townOnTile: docRef));
   }
 
+  Future<void> createNewTown({required String name}) async {
+    final Town town = Town(
+        alliances: [],
+        buildings: [],
+        elders: [_player!.id!],
+        inventory: [],
+        members: [_player!.id!],
+        requestsToJoin: [],
+        distanceOfSight: 3,
+        name: name,
+        wallStrength: 10,
+        worldID: _currWorld!.id!,
+        xCoord: _player!.xCoord,
+        yCoord: _player!.yCoord);
+    await _read(townRepository).createTown(town: town);
+    await _read(mapTileRepository)
+        .updateTile(tile: _currTile!.copyWith(townOnTile: name));
+  }
+
   @override
   void dispose() {
     _townSubscription?.cancel();
