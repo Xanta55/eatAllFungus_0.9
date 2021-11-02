@@ -51,8 +51,8 @@ class PlayerTileInventoryWidget extends HookWidget {
     final tileState = useProvider(mapTileStreamProvider);
     if (tileState != null) {
       if (tileState.townOnTile.isEmpty) {
-        final itemWidgetList =
-            buildTileInventoryList(tileInventory: tileState.inventory);
+        final itemWidgetList = buildTileInventoryList(
+            tileInventory: tileState.inventory, canTap: true);
         return Panel(
           child: Container(
             color: Colors.grey[colorIntensity],

@@ -42,13 +42,17 @@ class TownStream extends StateNotifier<Town?> {
             worldID: _currWorld!.id!,
             x: _currTile!.xCoord,
             y: _currTile!.yCoord);
-        _townSubscription = _read(townRepository)
-            .getTownStream(worldID: _currWorld!.id!, townID: tempTown.id!)
-            .listen((event) {
-          if (mounted) {
-            state = event;
-          }
-        });
+        if (tempTown.name.isNotEmpty) {
+          _townSubscription = _read(townRepository)
+              .getTownStream(worldID: _currWorld!.id!, townID: tempTown.id!)
+              .listen((event) {
+            if (mounted) {
+              state = event;
+            }
+          });
+        } else {
+          state = null;
+        }
       } else {
         state = null;
       }
@@ -60,8 +64,41 @@ class TownStream extends StateNotifier<Town?> {
 
   Future<void> requestJoin() async {
     if (state != null && _player != null) {
-      await _read(townRepository)
-          .addRequest(town: state!, playerID: _player?.id! ?? '');
+      await _read(townRepository).modifyCommunityArray(
+        town: state!,
+        playerID: _player?.id! ?? 'error',
+        arrayToModify: 'requestsToJoin',
+        isRemoving: false,
+      );
+      //.addRequest(town: state!, playerID: _player?.id! ?? '');
+    }
+  }
+
+  Future<void> removeRequestToJoin({required String playerIDToRemove}) async {
+    if (state != null && _player != null) {
+      // Only elders are allowed to modify Requests
+      if (state!.elders.contains(_player!.id!)) {
+        await _read(townRepository).modifyCommunityArray(
+          town: state!,
+          playerID: playerIDToRemove,
+          arrayToModify: 'requestsToJoin',
+          isRemoving: true,
+        );
+      }
+    }
+  }
+
+  Future<void> acceptRequestToJoin({required String playerIDToAccept}) async {
+    if (state != null && _player != null) {
+      // Only elders are allowed to modify Requests
+      if (state!.elders.contains(_player!.id!)) {
+        await removeRequestToJoin(playerIDToRemove: playerIDToAccept);
+        await _read(townRepository).modifyCommunityArray(
+          town: state!,
+          playerID: playerIDToAccept,
+          arrayToModify: 'members',
+        );
+      }
     }
   }
 

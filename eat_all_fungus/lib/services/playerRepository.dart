@@ -3,6 +3,7 @@ import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/models/userProfile.dart';
 import 'package:eat_all_fungus/providers/firebaseProviders.dart';
+import 'package:eat_all_fungus/providers/streams/townStream.dart';
 import 'package:eat_all_fungus/services/profileRepository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

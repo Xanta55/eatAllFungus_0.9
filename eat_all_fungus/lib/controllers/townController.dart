@@ -53,13 +53,30 @@ class TownController extends StateNotifier<Town?> {
           cArray.remove(key);
         }
       });
-      final townID = await createNewTown(name: name);
-      _read(mapTileRepository).updateTile(
+      await _read(mapTileRepository).updateTile(
           tile: _tile!.copyWith(inventory: cArray, townOnTile: name));
-      _read(playerRepository).addMembership(player: _player!, townID: townID);
+      final tempTown = await createNewTown(name: name);
+      await _read(playerRepository)
+          .addMembership(player: _player!, townID: tempTown.id!);
+      await _read(townRepository)
+          .initItemStash(town: tempTown, playerID: _player!.id!);
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<void> depositItem({required String item}) async {
+    if (_town!.members.contains(_player!.id!)) {
+      _read(townRepository)
+          .addItemToStash(town: _town!, playerID: _player!.id!, item: item);
+    }
+  }
+
+  Future<void> depositItemToBank({required String item}) async {
+    if (_town!.members.contains(_player!.id!)) {
+      _read(townRepository).updateTown(
+          town: _town!.copyWith(inventory: _town!.inventory..add(item)));
     }
   }
 
@@ -80,12 +97,15 @@ class TownController extends StateNotifier<Town?> {
     await _read(townRepository).createTown(town: testTown);
   }
 
-  Future<String> createNewTown({required String name}) async {
+  Future<Town> createNewTown({required String name}) async {
+    final tileInventory = _tile!.inventory;
+    await _read(mapTileRepository)
+        .updateTile(tile: _tile!.copyWith(inventory: [], townOnTile: name));
     final Town town = Town(
         alliances: [],
         buildings: [],
         elders: [_player!.id!],
-        inventory: [],
+        inventory: tileInventory,
         members: [_player!.id!],
         requestsToJoin: [],
         distanceOfSight: 3,
@@ -94,6 +114,7 @@ class TownController extends StateNotifier<Town?> {
         worldID: _player!.worldID,
         xCoord: _player!.xCoord,
         yCoord: _player!.yCoord);
-    return await _read(townRepository).createTown(town: town);
+    final townID = await _read(townRepository).createTown(town: town);
+    return town.copyWith(id: townID);
   }
 }

@@ -1,9 +1,12 @@
 import 'package:eat_all_fungus/controllers/profileController.dart';
+import 'package:eat_all_fungus/controllers/townController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/models/userProfile.dart';
 import 'package:eat_all_fungus/models/world.dart';
+import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
+import 'package:eat_all_fungus/providers/streams/townStream.dart';
 import 'package:eat_all_fungus/providers/streams/worldStream.dart';
 import 'package:eat_all_fungus/services/playerRepository.dart';
 import 'package:eat_all_fungus/services/tileRepository.dart';
@@ -191,6 +194,32 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
       });
     } on CustomException catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
+    }
+  }
+
+  Future<void> dropItem({required String item}) async {
+    try {
+      final playerState = _read(playerStreamProvider)!;
+      final tile = _read(mapTileStreamProvider)!;
+      if (playerState.inventory.contains(item)) {
+        if (tile.townOnTile.isNotEmpty) {
+          // drop in Stash
+          final townState = _read(townStreamProvider)!;
+          if (townState.members.contains(playerState.id)) {
+            _read(townControllerProvider.notifier).depositItem(item: item);
+          }
+        } else {
+          // drop on Tile
+          _read(playerRepository).updatePlayer(
+              player: playerState.copyWith(
+                  inventory: playerState.inventory..remove(item)));
+          _read(mapTileRepository).updateTile(
+              tile: tile.copyWith(inventory: tile.inventory..add(item)));
+        }
+      }
+      getPlayer();
+    } on CustomException catch (error, stackTrace) {
+      print('PlayerController - Error: $error ## $stackTrace');
     }
   }
 

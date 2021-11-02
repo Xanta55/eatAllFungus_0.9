@@ -34,7 +34,7 @@ const List<StaggeredTile> _staggeredTiles = <StaggeredTile>[
 const List<Widget> _playerViewTiles = <Widget>[
   PlayerActionPointsWidget(),
   OverviewPlayerStatus(),
-  OverviewInventory(),
+  OverviewInventory(canTap: true),
   PlayerTileInventoryWidget(),
   PlayerInteractionsWidget(),
   PlayerTileInteractionsWidget(),

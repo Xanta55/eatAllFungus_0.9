@@ -125,7 +125,8 @@ class _BuildTilePreview extends HookWidget {
 }
 
 class OverviewInventory extends HookWidget {
-  const OverviewInventory();
+  final bool canTap;
+  const OverviewInventory({this.canTap = false});
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +145,7 @@ class OverviewInventory extends HookWidget {
                     Expanded(
                       child: ListView(
                         scrollDirection: Axis.horizontal,
-                        children: buildPlayerInventoryList(),
+                        children: buildPlayerInventoryList(canTap: canTap),
                       ),
                     ),
                   ],
