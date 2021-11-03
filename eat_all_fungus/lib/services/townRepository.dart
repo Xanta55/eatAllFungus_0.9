@@ -267,10 +267,9 @@ class TownRepository implements BaseTownRepository {
             .collection('stashes')
             .doc(playerID)
             .snapshots()
-            .map((event) {
-          final output = event.data()?['inventory'];
-          return output as List<String>;
-        }) ??
+            .map((event) => (event.data()?['inventory'] as List<dynamic>)
+                .map((e) => e.toString())
+                .toList()) ??
         Stream.empty();
   }
 }

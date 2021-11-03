@@ -17,9 +17,9 @@ class TownStash extends HookWidget {
     final townStream = useProvider(townStreamProvider);
     final playerStream = useProvider(playerStreamProvider);
     if (townStream?.members.contains(playerStream?.id) ?? false) {
-      //final stashState = useProvider(stashStreamProvider);
-      //final itemWidgetList =
-      //    buildTileInventoryList(tileInventory: stashState ?? []);
+      final stashState = useProvider(stashStreamProvider);
+      final itemWidgetList =
+          buildTileInventoryList(tileInventory: stashState ?? []);
       return Container(
         color: Colors.grey[colorIntensity],
         child: Center(
@@ -33,7 +33,7 @@ class TownStash extends HookWidget {
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
                   physics: ClampingScrollPhysics(),
-                  //children: itemWidgetList,
+                  children: itemWidgetList,
                 ),
               )
             ],
