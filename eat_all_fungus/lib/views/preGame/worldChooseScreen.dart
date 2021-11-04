@@ -4,7 +4,6 @@ import 'package:eat_all_fungus/controllers/worldListController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/world.dart';
 import 'package:eat_all_fungus/providers/streams/worldListStream.dart';
-import 'package:eat_all_fungus/views/various/loadings/loadingScreen.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
 import 'package:eat_all_fungus/views/widgets/buttons/logoutButton.dart';
 import 'package:flutter/material.dart';

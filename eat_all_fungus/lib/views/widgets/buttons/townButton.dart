@@ -1,7 +1,6 @@
 import 'package:eat_all_fungus/constValues/constValues.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/townStream.dart';
-import 'package:eat_all_fungus/views/inGame/overview/overviewSubWidgets.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';

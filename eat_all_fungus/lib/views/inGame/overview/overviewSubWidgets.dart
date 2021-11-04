@@ -5,7 +5,9 @@ import 'package:eat_all_fungus/providers/streams/newsStream.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
-import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
+import 'package:eat_all_fungus/views/widgets/constWidgets/panel.dart';
+import 'package:eat_all_fungus/views/widgets/items/inventories/playerInventory.dart';
+import 'package:eat_all_fungus/views/widgets/items/inventories/tileInventory.dart';
 import 'package:eat_all_fungus/views/widgets/mapView/mapSubWidgets.dart';
 import 'package:eat_all_fungus/views/widgets/newspaper/miniNewspaper.dart';
 import 'package:eat_all_fungus/views/widgets/status/statusWidget.dart';
@@ -21,21 +23,6 @@ const List<Widget> overviewTiles = <Widget>[
   OverviewPlayerStatus(),
   OverviewNews()
 ];
-
-class Panel extends StatelessWidget {
-  final Widget child;
-  const Panel({required this.child});
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(2.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15.0),
-        child: child,
-      ),
-    );
-  }
-}
 
 class _BuildToDoList extends HookWidget {
   const _BuildToDoList();

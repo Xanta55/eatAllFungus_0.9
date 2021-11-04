@@ -19,6 +19,10 @@ abstract class BaseTownRepository {
   Future<String> initItemStash({required Town town, required String playerID});
   Future<void> addItemToStash(
       {required Town town, required String playerID, required String item});
+  Future<void> updateItemStash(
+      {required Town town,
+      required String playerID,
+      required List<String> stash});
   Future<void> modifyCommunityArray(
       {required Town town,
       required String playerID,
@@ -271,5 +275,24 @@ class TownRepository implements BaseTownRepository {
                 .map((e) => e.toString())
                 .toList()) ??
         Stream.empty();
+  }
+
+  @override
+  Future<void> updateItemStash(
+      {required Town town,
+      required String playerID,
+      required List<String> stash}) async {
+    try {
+      await _read(databaseProvider)
+          ?.collection('worlds')
+          .doc(town.worldID)
+          .collection('towns')
+          .doc(town.id)
+          .collection('stashes')
+          .doc(playerID)
+          .update({'inventory': stash});
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
   }
 }

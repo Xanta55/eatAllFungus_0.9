@@ -6,6 +6,7 @@ import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/models/town.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
+import 'package:eat_all_fungus/providers/streams/stashStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/providers/streams/townStream.dart';
 import 'package:eat_all_fungus/services/playerRepository.dart';
@@ -70,6 +71,18 @@ class TownController extends StateNotifier<Town?> {
     if (_town!.members.contains(_player!.id!)) {
       _read(townRepository)
           .addItemToStash(town: _town!, playerID: _player!.id!, item: item);
+    }
+  }
+
+  Future<void> withdrawItem({required String item}) async {
+    if (_town!.members.contains(_player!.id!)) {
+      if (await _read(playerControllerProvider.notifier)
+          .addItemToInventory(item: item)) {
+        // remove item from stash
+        final stash = _read(stashStreamProvider) ?? [];
+        _read(townRepository).updateItemStash(
+            town: _town!, playerID: _player!.id!, stash: stash..remove(item));
+      }
     }
   }
 
