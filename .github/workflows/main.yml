@@ -33,7 +33,6 @@ jobs:
       - name: Flutter Plugin
         uses: subosito/flutter-action@v1
         with:
-          flutter-version: 'pubspec'
           channel: 'dev'
 
       - run: flutter pub get
