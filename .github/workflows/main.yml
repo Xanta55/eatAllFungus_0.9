@@ -35,7 +35,7 @@ jobs:
         with:
           channel: 'stable'
 
-      - run: cd eat_all_fungus
+      - run: cd ./eat_all_fungus/
       - run: ls
       - run: flutter pub get
       #- run: flutter test
