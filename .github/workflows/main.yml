@@ -35,6 +35,7 @@ jobs:
         with:
           channel: 'dev'
       
+      - run: cd ./eat_all_fungus
       - run: flutter pub get
       #- run: flutter test
       - run: flutter build apk
