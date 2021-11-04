@@ -38,8 +38,8 @@ jobs:
         with:
           channel: 'stable'
 
-      - run: ls
       - run: flutter pub get
+      - run: flutter pub run build_runner build
       #- run: flutter test
       - run: flutter build apk
       - run: flutter build appbundle
