@@ -33,8 +33,9 @@ jobs:
       - name: Flutter Plugin
         uses: subosito/flutter-action@v1
         with:
-          channel: 'dev'
+          channel: 'stable'
 
+      - run: cd .\eat_all_fungus\
       - run: ls
       - run: flutter pub get
       #- run: flutter test
