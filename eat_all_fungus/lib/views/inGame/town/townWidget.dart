@@ -26,7 +26,7 @@ class TownWidget extends HookWidget {
         return Scaffold(
           appBar: TabBar(
             controller: tabController,
-            tabs: list,
+            tabs: iconList,
           ),
           body: TabBarView(
             controller: tabController,
@@ -55,13 +55,4 @@ class TownWidget extends HookWidget {
       );
     }
   }
-
-  final List<Widget> list = const [
-    const Tab(icon: Icon(Icons.list_alt)),
-    const Tab(icon: Icon(Icons.account_balance)),
-    const Tab(icon: Icon(Icons.business_center)),
-    const Tab(icon: Icon(Icons.carpenter)),
-    const Tab(icon: Icon(Icons.markunread_mailbox)),
-    const Tab(icon: Icon(Icons.people)),
-  ];
 }

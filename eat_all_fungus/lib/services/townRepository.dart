@@ -226,7 +226,6 @@ class TownRepository implements BaseTownRepository {
           .doc(playerID)
           .get()
           .then((value) => value['inventory']);
-      print(oldInventory);
       await _read(databaseProvider)
           ?.collection('worlds')
           .doc(town.worldID)
