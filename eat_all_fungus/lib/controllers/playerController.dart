@@ -198,7 +198,7 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
   }
 
   /// returns [true] on successfull transaction
-  /// return [false] if invetory is full or something went wrong
+  /// return [false] if inventory is full or something went wrong
   Future<bool> addItemToInventory({required String item}) async {
     try {
       final playerState = _read(playerStreamProvider)!;
@@ -210,7 +210,29 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
         getPlayer();
         return true;
       } else {
+        //getPlayer();
+        return false;
+      }
+    } on CustomException catch (error, stackTrace) {
+      print('PlayerController - Error: $error ## $stackTrace');
+      return false;
+    }
+  }
+
+  /// returns [true] on successfull transaction
+  /// return [false] if item is not in inventory
+  Future<bool> removeItemFromInventory({required String item}) async {
+    try {
+      final playerState = _read(playerStreamProvider)!;
+      if (playerState.inventory.contains(item)) {
+        _read(playerRepository).updatePlayerInventory(
+          playerToUpdate: playerState,
+          playerInventory: playerState.inventory..remove(item),
+        );
         getPlayer();
+        return true;
+      } else {
+        //getPlayer();
         return false;
       }
     } on CustomException catch (error, stackTrace) {
@@ -232,7 +254,8 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
           // drop in Stash
           final townState = _read(townStreamProvider)!;
           if (townState.members.contains(playerState.id)) {
-            _read(townControllerProvider.notifier).depositItem(item: item);
+            _read(townControllerProvider.notifier)
+                .depositItemToStash(item: item);
           }
         } else {
           // drop on Tile

@@ -19,7 +19,7 @@ const List<Widget> overviewTiles = <Widget>[
   _BuildToDoList(),
   _BuildTilePreview(),
   OverviewTileInfo(),
-  OverviewInventory(),
+  PlayerInventory(),
   OverviewPlayerStatus(),
   OverviewNews()
 ];

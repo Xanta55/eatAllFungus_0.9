@@ -67,14 +67,14 @@ class TownController extends StateNotifier<Town?> {
     }
   }
 
-  Future<void> depositItem({required String item}) async {
+  Future<void> depositItemToStash({required String item}) async {
     if (_town!.members.contains(_player!.id!)) {
       _read(townRepository)
           .addItemToStash(town: _town!, playerID: _player!.id!, item: item);
     }
   }
 
-  Future<void> withdrawItem({required String item}) async {
+  Future<void> withdrawItemFromStash({required String item}) async {
     if (_town!.members.contains(_player!.id!)) {
       if (await _read(playerControllerProvider.notifier)
           .addItemToInventory(item: item)) {
@@ -88,8 +88,23 @@ class TownController extends StateNotifier<Town?> {
 
   Future<void> depositItemToBank({required String item}) async {
     if (_town!.members.contains(_player!.id!)) {
-      _read(townRepository).updateTown(
-          town: _town!.copyWith(inventory: _town!.inventory..add(item)));
+      if (await _read(playerControllerProvider.notifier)
+          .removeItemFromInventory(item: item)) {
+        //add item in Townbank
+        _read(townRepository).updateTown(
+            town: _town!.copyWith(inventory: _town!.inventory..add(item)));
+      }
+    }
+  }
+
+  Future<void> withdrawItemFromBank({required String item}) async {
+    if (_town!.members.contains(_player!.id!)) {
+      if (await _read(playerControllerProvider.notifier)
+          .addItemToInventory(item: item)) {
+        // remove item from stash
+        _read(townRepository).updateTown(
+            town: _town!.copyWith(inventory: _town!.inventory..remove(item)));
+      }
     }
   }
 
