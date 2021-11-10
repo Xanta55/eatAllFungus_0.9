@@ -30,12 +30,16 @@ class MapTileStreamer extends StateNotifier<MapTile?> {
 
   Future<void> getTileStream() async {
     try {
-      final tileID =
-          '${_player!.worldID};${_player!.xCoord};${_player!.yCoord}';
-      _mapTileSubscription =
-          _read(mapTileRepository).getTileStream(id: tileID).listen((tile) {
-        state = tile;
-      });
+      if (_player!.worldID.isNotEmpty) {
+        final tileID =
+            '${_player!.worldID};${_player!.xCoord};${_player!.yCoord}';
+        _mapTileSubscription =
+            _read(mapTileRepository).getTileStream(id: tileID).listen((tile) {
+          state = tile;
+        });
+      } else {
+        state = null;
+      }
     } on CustomException catch (error) {
       print('TileStream - ${error.message}');
       state = null;

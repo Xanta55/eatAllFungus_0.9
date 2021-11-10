@@ -86,7 +86,7 @@ class WorldController extends StateNotifier<AsyncValue<World>> {
 
   Future<void> removePlayerFromWorld() async {
     try {
-      getWorld();
+      await getWorld();
       //Get profile with this world in field and update
       await _read(profileControllerProvider.notifier)
           .removePlayerFromWorld(world: state.data!.value);

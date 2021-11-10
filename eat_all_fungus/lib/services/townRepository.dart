@@ -12,6 +12,22 @@ abstract class BaseTownRepository {
   Future<String> createTown({required Town town});
   Future<void> updateTown({required Town town});
   Future<void> deleteTown({required Town town});
+  Stream<List<String>> getTownStashStream(
+      {required String worldID,
+      required String townID,
+      required String playerID});
+  Future<String> initItemStash({required Town town, required String playerID});
+  Future<void> addItemToStash(
+      {required Town town, required String playerID, required String item});
+  Future<void> updateItemStash(
+      {required Town town,
+      required String playerID,
+      required List<String> stash});
+  Future<void> modifyCommunityArray(
+      {required Town town,
+      required String playerID,
+      required bool isRemoving,
+      required String arrayToModify});
 }
 
 final townRepository =
@@ -62,7 +78,11 @@ class TownRepository implements BaseTownRepository {
           .where('xCoord', isEqualTo: x)
           .where('yCoord', isEqualTo: y)
           .get();
-      return Town.fromDocument(query.docs.single);
+      if (query.docs.length == 1) {
+        return Town.fromDocument(query.docs.single);
+      } else {
+        return Town.dummyTown();
+      }
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
     }
@@ -141,6 +161,7 @@ class TownRepository implements BaseTownRepository {
     }
   }
 
+/*
   Future<void> addRequest(
       {required Town town, required String playerID}) async {
     try {
@@ -152,6 +173,123 @@ class TownRepository implements BaseTownRepository {
           .update({
         'requestsToJoin': FieldValue.arrayUnion([playerID])
       });
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+  */
+
+  /// Only use valid Arraynames from the Database for [arrayToModify]. These are (currently):
+  /// * elders
+  /// * members
+  /// * requestsToJoin
+  ///
+  /// The value [isRemoving] toggles the order, which to perform:
+  /// * true = FieldValue.arrayRemove([playerID]);
+  /// * false = FieldValue.arrayUnion([playerID]); // default
+  @override
+  Future<void> modifyCommunityArray(
+      {required Town town,
+      required String playerID,
+      bool isRemoving = false,
+      required String arrayToModify}) async {
+    try {
+      final order = isRemoving
+          ? FieldValue.arrayRemove([playerID])
+          : FieldValue.arrayUnion([playerID]);
+      await _read(databaseProvider)
+          ?.collection('worlds')
+          .doc(town.worldID)
+          .collection('towns')
+          .doc(town.id)
+          .update({arrayToModify: order});
+      if (!isRemoving) {
+        await initItemStash(town: town, playerID: playerID);
+      }
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Future<void> addItemToStash(
+      {required Town town,
+      required String playerID,
+      required String item}) async {
+    try {
+      final oldInventory = await _read(databaseProvider)
+          ?.collection('worlds')
+          .doc(town.worldID)
+          .collection('towns')
+          .doc(town.id)
+          .collection('stashes')
+          .doc(playerID)
+          .get()
+          .then((value) => value['inventory']);
+      await _read(databaseProvider)
+          ?.collection('worlds')
+          .doc(town.worldID)
+          .collection('towns')
+          .doc(town.id)
+          .collection('stashes')
+          .doc(playerID)
+          .update({'inventory': oldInventory..add(item)});
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Future<String> initItemStash(
+      {required Town town, required String playerID}) async {
+    try {
+      await _read(databaseProvider)
+          ?.collection('worlds')
+          .doc(town.worldID)
+          .collection('towns')
+          .doc(town.id)
+          .collection('stashes')
+          .doc(playerID)
+          .set({'inventory': <String>[]});
+      return town.name;
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Stream<List<String>> getTownStashStream(
+      {required String worldID,
+      required String townID,
+      required String playerID}) {
+    return _read(databaseProvider)
+            ?.collection('worlds')
+            .doc(worldID)
+            .collection('towns')
+            .doc(townID)
+            .collection('stashes')
+            .doc(playerID)
+            .snapshots()
+            .map((event) => (event.data()?['inventory'] as List<dynamic>)
+                .map((e) => e.toString())
+                .toList()) ??
+        Stream.empty();
+  }
+
+  @override
+  Future<void> updateItemStash(
+      {required Town town,
+      required String playerID,
+      required List<String> stash}) async {
+    try {
+      await _read(databaseProvider)
+          ?.collection('worlds')
+          .doc(town.worldID)
+          .collection('towns')
+          .doc(town.id)
+          .collection('stashes')
+          .doc(playerID)
+          .update({'inventory': stash});
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
     }

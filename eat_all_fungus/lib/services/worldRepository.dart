@@ -12,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 abstract class BaseWorldRepository {
   Future<World> getWorld({required String id});
   Stream<World> getWorldStream({required String id});
+  Stream<List<World>?> getWorldListStream();
   Future<QuerySnapshot<Map<String, dynamic>>?> getAvailableWorldsQuery();
   Future<List<World>?> getAvailableWorlds();
   Future<String> createEmptyWorld(
@@ -237,6 +238,21 @@ class WorldRepository implements BaseWorldRepository {
           .doc(id)
           .snapshots()
           .map((event) => World.fromDocument(event));
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Stream<List<World>?> getWorldListStream() {
+    try {
+      return _read(databaseProvider)!
+          .collection('worlds')
+          .where('isOpen', isEqualTo: true)
+          .snapshots()
+          .map((event) => event.docs
+              .map((element) => World.fromDocument(element))
+              .toList());
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
     }

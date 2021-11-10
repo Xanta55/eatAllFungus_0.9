@@ -1,12 +1,15 @@
 import 'package:eat_all_fungus/constValues/constRecipes.dart';
 import 'package:eat_all_fungus/constValues/helperFunctions.dart';
+import 'package:eat_all_fungus/controllers/playerController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/models/town.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
+import 'package:eat_all_fungus/providers/streams/stashStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/providers/streams/townStream.dart';
+import 'package:eat_all_fungus/services/playerRepository.dart';
 import 'package:eat_all_fungus/services/tileRepository.dart';
 import 'package:eat_all_fungus/services/townRepository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -43,7 +46,6 @@ class TownController extends StateNotifier<Town?> {
     cArray.sort();
     bool canBuild = true;
     TownRequirements.forEach((key, value) {
-      print('Amount of $key: ${countAmountOfItems(cArray, key)}');
       if (countAmountOfItems(cArray, key) < value) canBuild = false;
     });
     if (canBuild) {
@@ -52,12 +54,57 @@ class TownController extends StateNotifier<Town?> {
           cArray.remove(key);
         }
       });
-      createNewTown(name: name);
-      _read(mapTileRepository).updateTile(
+      await _read(mapTileRepository).updateTile(
           tile: _tile!.copyWith(inventory: cArray, townOnTile: name));
+      final tempTown = await createNewTown(name: name);
+      await _read(playerRepository)
+          .addMembership(player: _player!, townID: tempTown.id!);
+      await _read(townRepository)
+          .initItemStash(town: tempTown, playerID: _player!.id!);
       return true;
     } else {
       return false;
+    }
+  }
+
+  Future<void> depositItemToStash({required String item}) async {
+    if (_town!.members.contains(_player!.id!)) {
+      _read(townRepository)
+          .addItemToStash(town: _town!, playerID: _player!.id!, item: item);
+    }
+  }
+
+  Future<void> withdrawItemFromStash({required String item}) async {
+    if (_town!.members.contains(_player!.id!)) {
+      if (await _read(playerControllerProvider.notifier)
+          .addItemToInventory(item: item)) {
+        // remove item from stash
+        final stash = _read(stashStreamProvider) ?? [];
+        _read(townRepository).updateItemStash(
+            town: _town!, playerID: _player!.id!, stash: stash..remove(item));
+      }
+    }
+  }
+
+  Future<void> depositItemToBank({required String item}) async {
+    if (_town!.members.contains(_player!.id!)) {
+      if (await _read(playerControllerProvider.notifier)
+          .removeItemFromInventory(item: item)) {
+        //add item in Townbank
+        _read(townRepository).updateTown(
+            town: _town!.copyWith(inventory: _town!.inventory..add(item)));
+      }
+    }
+  }
+
+  Future<void> withdrawItemFromBank({required String item}) async {
+    if (_town!.members.contains(_player!.id!)) {
+      if (await _read(playerControllerProvider.notifier)
+          .addItemToInventory(item: item)) {
+        // remove item from stash
+        _read(townRepository).updateTown(
+            town: _town!.copyWith(inventory: _town!.inventory..remove(item)));
+      }
     }
   }
 
@@ -78,12 +125,15 @@ class TownController extends StateNotifier<Town?> {
     await _read(townRepository).createTown(town: testTown);
   }
 
-  Future<void> createNewTown({required String name}) async {
+  Future<Town> createNewTown({required String name}) async {
+    final tileInventory = _tile!.inventory;
+    await _read(mapTileRepository)
+        .updateTile(tile: _tile!.copyWith(inventory: [], townOnTile: name));
     final Town town = Town(
         alliances: [],
         buildings: [],
         elders: [_player!.id!],
-        inventory: [],
+        inventory: tileInventory,
         members: [_player!.id!],
         requestsToJoin: [],
         distanceOfSight: 3,
@@ -92,6 +142,7 @@ class TownController extends StateNotifier<Town?> {
         worldID: _player!.worldID,
         xCoord: _player!.xCoord,
         yCoord: _player!.yCoord);
-    await _read(townRepository).createTown(town: town);
+    final townID = await _read(townRepository).createTown(town: town);
+    return town.copyWith(id: townID);
   }
 }

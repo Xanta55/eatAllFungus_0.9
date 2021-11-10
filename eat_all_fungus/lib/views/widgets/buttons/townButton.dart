@@ -1,7 +1,6 @@
 import 'package:eat_all_fungus/constValues/constValues.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/townStream.dart';
-import 'package:eat_all_fungus/views/inGame/overview/overviewSubWidgets.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -31,11 +30,10 @@ class EnterTownButton extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(primary: Colors.blue[600]),
-        onPressed: () => print('Enter town'),
+      child: Container(
+        color: Colors.grey[colorIntensity],
         child: Center(
-          child: Text('Enter town'),
+          child: Text('You have access to this town'),
         ),
       ),
     );
@@ -49,7 +47,6 @@ class RequestJoinButton extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('can this player still request: $canRequest');
     if (canRequest) {
       return Container(
         child: ElevatedButton(

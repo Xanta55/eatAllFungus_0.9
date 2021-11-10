@@ -13,6 +13,7 @@ class UserProfile with _$UserProfile {
     required String description,
     required String currentWorld,
     required int survivedDays,
+    required bool hasLoggedIn,
     String? id,
     required List<dynamic> friends,
   }) = _UserProfile;
@@ -27,6 +28,7 @@ class UserProfile with _$UserProfile {
       return UserProfile.fromJson(data).copyWith(id: doc?.id);
     } else {
       return UserProfile(
+        hasLoggedIn: true,
         currentWorld: '',
         description: '',
         friends: [],
