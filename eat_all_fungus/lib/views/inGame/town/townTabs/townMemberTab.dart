@@ -1,6 +1,7 @@
 import 'package:eat_all_fungus/constValues/constValues.dart';
 import 'package:eat_all_fungus/constValues/helperFunctions.dart';
 import 'package:eat_all_fungus/providers/streams/townStream.dart';
+import 'package:eat_all_fungus/views/widgets/buttons/profileButton.dart';
 import 'package:eat_all_fungus/views/widgets/constWidgets/panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -166,6 +167,12 @@ class NameList extends HookWidget {
                                             ),
                                           ]
                                         : [],
+
+                                    SizedBox(
+                                      width: 15.0,
+                                    ),
+                                    buildProfileButton(context,
+                                        profileID: idList[index]),
                                     // ...?extraWidgets,
                                   ],
                                 ),
