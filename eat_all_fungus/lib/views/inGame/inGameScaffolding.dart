@@ -10,6 +10,7 @@ import 'package:eat_all_fungus/views/inGame/player/playerWidget.dart';
 import 'package:eat_all_fungus/views/inGame/town/townWidget.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
 import 'package:eat_all_fungus/views/widgets/buttons/logoutButton.dart';
+import 'package:eat_all_fungus/views/widgets/buttons/profileButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -28,7 +29,10 @@ class InGameScaffolding extends HookWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text(navigationState.toUpperCase()),
-            actions: [buildLogoutButton(context)],
+            actions: [
+              buildLogoutButton(context),
+              buildProfileButton(context),
+            ],
           ),
           body: Center(
             child: Column(
@@ -47,6 +51,7 @@ class InGameScaffolding extends HookWidget {
             title: Text(navigationState.toUpperCase()),
             actions: [
               buildLogoutButton(context),
+              buildProfileButton(context),
               IconButton(
                   onPressed: () {
                     final profile =
