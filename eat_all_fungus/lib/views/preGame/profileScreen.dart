@@ -13,93 +13,104 @@ class ProfileScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('PROFILE'),
+        ),
+        body: ProfileWidget(
+          profileID: profileID,
+        ));
+  }
+}
+
+class ProfileWidget extends HookWidget {
+  final String? profileID;
+  const ProfileWidget({Key? key, this.profileID}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     final foreignProfile = useProvider(profileControllerProvider.notifier)
         .grabProfile(
             profileID: profileID ?? useProvider(profileStreamProvider)!.id!);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('PROFILE'),
-      ),
-      body: Container(
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Panel(
-                  child: Container(
-                    color: Colors.grey[colorIntensity],
-                    child: FutureBuilder(
-                      future: foreignProfile,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          final profile = snapshot.data as UserProfile;
-                          return Center(
-                            child: Text('${profile.name}'),
-                          );
-                        } else {
-                          return Center(
-                            child: Text('Loading...'),
-                          );
-                        }
-                      },
-                    ),
+    return Container(
+      child: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Panel(
+                child: Container(
+                  color: Colors.grey[colorIntensity],
+                  child: FutureBuilder(
+                    future: foreignProfile,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        final profile = snapshot.data as UserProfile;
+                        return Center(
+                          child: Text('${profile.name}'),
+                        );
+                      } else {
+                        return Center(
+                          child: Text('Loading...'),
+                        );
+                      }
+                    },
                   ),
                 ),
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Panel(
-                  child: Container(
-                    color: Colors.grey[colorIntensity],
-                    child: FutureBuilder(
-                      future: foreignProfile,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          final profile = snapshot.data as UserProfile;
-                          return Center(
-                            child: Text('${profile.description}'),
-                          );
-                        } else {
-                          return Center(
-                            child: Text('Loading...'),
-                          );
-                        }
-                      },
-                    ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Panel(
+                child: Container(
+                  color: Colors.grey[colorIntensity],
+                  child: FutureBuilder(
+                    future: foreignProfile,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        final profile = snapshot.data as UserProfile;
+                        return Center(
+                          child: Text('${profile.description}'),
+                        );
+                      } else {
+                        return Center(
+                          child: Text('Loading...'),
+                        );
+                      }
+                    },
                   ),
                 ),
               ),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Panel(
-                  child: Container(
-                    color: Colors.grey[colorIntensity],
-                    child: FutureBuilder(
-                      future: foreignProfile,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.done) {
-                          final profile = snapshot.data as UserProfile;
-                          return Center(
-                            child: Text('${profile.survivedDays}'),
-                          );
-                        } else {
-                          return Center(
-                            child: Text('Loading...'),
-                          );
-                        }
-                      },
-                    ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Panel(
+                child: Container(
+                  color: Colors.grey[colorIntensity],
+                  child: FutureBuilder(
+                    future: foreignProfile,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        final profile = snapshot.data as UserProfile;
+                        return Center(
+                          child: Text('${profile.survivedDays}'),
+                        );
+                      } else {
+                        return Center(
+                          child: Text('Loading...'),
+                        );
+                      }
+                    },
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
