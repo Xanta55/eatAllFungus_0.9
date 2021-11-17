@@ -1,6 +1,7 @@
 import 'package:eat_all_fungus/constValues/constRecipes.dart';
 import 'package:eat_all_fungus/constValues/helperFunctions.dart';
 import 'package:eat_all_fungus/controllers/playerController.dart';
+import 'package:eat_all_fungus/controllers/radioController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
 import 'package:eat_all_fungus/models/player.dart';
@@ -59,8 +60,6 @@ class TownController extends StateNotifier<Town?> {
       final tempTown = await createNewTown(name: name);
       await _read(playerRepository)
           .addMembership(player: _player!, townID: tempTown.id!);
-      await _read(townRepository)
-          .initItemStash(town: tempTown, playerID: _player!.id!);
       return true;
     } else {
       return false;
