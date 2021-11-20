@@ -5,6 +5,18 @@ import 'package:flutter/foundation.dart';
 part 'radioPost.freezed.dart';
 part 'radioPost.g.dart';
 
+class TimestampConverter implements JsonConverter<DateTime, Timestamp> {
+  const TimestampConverter();
+
+  @override
+  DateTime fromJson(Timestamp timestamp) {
+    return timestamp.toDate();
+  }
+
+  @override
+  Timestamp toJson(DateTime date) => Timestamp.fromDate(date);
+}
+
 @freezed
 class RadioPost with _$RadioPost {
   const RadioPost._();
@@ -12,7 +24,7 @@ class RadioPost with _$RadioPost {
   const factory RadioPost({
     required String playerID,
     required String content,
-    required DateTime timeOfPost,
+    @TimestampConverter() required DateTime timeOfPost,
     String? id,
   }) = _RadioPost;
 
@@ -22,7 +34,9 @@ class RadioPost with _$RadioPost {
   factory RadioPost.fromDocument(DocumentSnapshot<Map<String, dynamic>>? doc) {
     final data = doc?.data();
     if (data != null) {
-      return RadioPost.fromJson(data).copyWith(id: doc?.id);
+      return RadioPost.fromJson(data).copyWith(
+          id: doc?.id,
+          timeOfPost: (doc?.data()?['timeOfPost'] as Timestamp).toDate());
     } else {
       return RadioPost(
         playerID: '',

@@ -7,6 +7,7 @@ import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/views/inGame/map/mapWidget.dart';
 import 'package:eat_all_fungus/views/inGame/overview/overviewWidget.dart';
 import 'package:eat_all_fungus/views/inGame/player/playerWidget.dart';
+import 'package:eat_all_fungus/views/inGame/radio/radioWidget.dart';
 import 'package:eat_all_fungus/views/inGame/town/townWidget.dart';
 import 'package:eat_all_fungus/views/preGame/profileScreen.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
@@ -151,11 +152,7 @@ class InGameScaffolding extends HookWidget {
       case 'town':
         return TownWidget();
       case 'radio':
-        return Container(
-          child: Center(
-            child: Text('Radio'),
-          ),
-        );
+        return RadioWidget();
       case 'messages':
         return Container(
           child: Center(

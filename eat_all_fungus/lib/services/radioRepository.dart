@@ -1,15 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eat_all_fungus/models/customException.dart';
-import 'package:eat_all_fungus/models/radioPost.dart';
+import 'package:eat_all_fungus/models/radio/forum.dart';
+import 'package:eat_all_fungus/models/radio/radioPost.dart';
+import 'package:eat_all_fungus/models/radio/thread.dart';
 import 'package:eat_all_fungus/providers/firebaseProviders.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 abstract class BaseRadioRepository {
-  Future<void> createForum({
+  Future<List<Forum>> getForums({
+    required List<String> forumIDs,
     required String worldID,
-    required String forumID,
-    required String forumTitle,
   });
+
   Future<void> createForumThread({
     required String worldID,
     required String forumID,
@@ -17,9 +19,22 @@ abstract class BaseRadioRepository {
     required String threadID,
     required RadioPost post,
   });
-  Future<List<String>?> getForumThreads({
+
+  Future<List<Thread>?> getForumThreads({
     required String worldID,
     required String forumID,
+  });
+
+  Future<Thread> getThread({
+    required String worldID,
+    required String forumID,
+    required String threadID,
+  });
+
+  Future<List<RadioPost>> getThreadPosts({
+    required String worldID,
+    required String forumID,
+    required String threadID,
   });
 }
 
@@ -32,35 +47,17 @@ class RadioRepository implements BaseRadioRepository {
   const RadioRepository(this._read);
 
   @override
-  Future<void> createForum({
-    required String worldID,
-    required String forumID,
-    required String forumTitle,
-  }) async {
-    try {
-      final docRef = _read(databaseProvider)!
-          .collection('worlds')
-          .doc(worldID)
-          .collection('forums')
-          .doc(forumID)
-          .set({'title': forumTitle});
-    } on FirebaseException catch (error) {
-      throw CustomException(message: error.message);
-    }
-  }
-
-  @override
-  Future<List<String>?> getForumThreads(
+  Future<List<Thread>?> getForumThreads(
       {required String worldID, required String forumID}) async {
     try {
       final docRef = await _read(databaseProvider)!
           .collection('worlds')
           .doc(worldID)
           .collection('forums')
-          .doc(forumID)
+          .doc(forumID == 'Global' ? forumID.toLowerCase() : forumID)
           .collection('threads')
           .get();
-      return docRef.docs.map((snapshot) => snapshot.id).toList();
+      return docRef.docs.map((doc) => Thread.fromDocument(doc)).toList();
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
     }
@@ -84,6 +81,65 @@ class RadioRepository implements BaseRadioRepository {
           .doc(threadID)
           .collection('posts')
           .add(post.toDocumentNoID());
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Future<Thread> getThread(
+      {required String worldID,
+      required String forumID,
+      required String threadID}) async {
+    try {
+      final threadDoc = await _read(databaseProvider)!
+          .collection('worlds')
+          .doc(worldID)
+          .collection('forums')
+          .doc(forumID)
+          .collection('threads')
+          .doc(threadID)
+          .get();
+      return Thread.fromDocument(threadDoc);
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Future<List<RadioPost>> getThreadPosts(
+      {required String worldID,
+      required String forumID,
+      required String threadID}) async {
+    try {
+      final docs = await _read(databaseProvider)!
+          .collection('worlds')
+          .doc(worldID)
+          .collection('forums')
+          .doc(forumID)
+          .collection('threads')
+          .doc(threadID)
+          .collection('posts')
+          .get();
+      return docs.docs.map((doc) => RadioPost.fromDocument(doc)).toList();
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Future<List<Forum>> getForums({
+    required List<String> forumIDs,
+    required String worldID,
+  }) async {
+    try {
+      final docs = await _read(databaseProvider)!
+          .collection('worlds')
+          .doc(worldID)
+          .collection('forums')
+          .where(FieldPath.documentId, whereNotIn: forumIDs)
+          .get();
+      return docs.docs.map((doc) => Forum.fromDocument(doc)).toList();
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
     }
