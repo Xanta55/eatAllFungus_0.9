@@ -12,29 +12,34 @@ abstract class BaseRadioRepository {
     required String worldID,
   });
 
-  Future<void> createForumThread({
+  Future<String> createThread({
     required String worldID,
-    required String forumID,
-    required String forumTitle,
-    required String threadID,
-    required RadioPost post,
+    required Forum forumInput,
+    required Thread threadInput,
   });
 
   Future<List<Thread>?> getForumThreads({
     required String worldID,
-    required String forumID,
+    required Forum forumInput,
   });
 
   Future<Thread> getThread({
     required String worldID,
-    required String forumID,
+    required Forum forumInput,
     required String threadID,
   });
 
   Future<List<RadioPost>> getThreadPosts({
     required String worldID,
-    required String forumID,
+    required Forum forumInput,
     required String threadID,
+  });
+
+  Future<void> createPost({
+    required String worldID,
+    required Forum forumInput,
+    required Thread threadInput,
+    required RadioPost postInput,
   });
 }
 
@@ -47,14 +52,18 @@ class RadioRepository implements BaseRadioRepository {
   const RadioRepository(this._read);
 
   @override
-  Future<List<Thread>?> getForumThreads(
-      {required String worldID, required String forumID}) async {
+  Future<List<Thread>?> getForumThreads({
+    required String worldID,
+    required Forum forumInput,
+  }) async {
     try {
       final docRef = await _read(databaseProvider)!
           .collection('worlds')
           .doc(worldID)
           .collection('forums')
-          .doc(forumID == 'Global' ? forumID.toLowerCase() : forumID)
+          .doc(forumInput.title == 'Global'
+              ? forumInput.title.toLowerCase()
+              : forumInput.id)
           .collection('threads')
           .get();
       return docRef.docs.map((doc) => Thread.fromDocument(doc)).toList();
@@ -64,39 +73,37 @@ class RadioRepository implements BaseRadioRepository {
   }
 
   @override
-  Future<void> createForumThread({
+  Future<String> createThread({
     required String worldID,
-    required String forumID,
-    required String forumTitle,
-    required String threadID,
-    required RadioPost post,
+    required Forum forumInput,
+    required Thread threadInput,
   }) async {
     try {
-      await _read(databaseProvider)!
+      final docRef = await _read(databaseProvider)!
           .collection('worlds')
           .doc(worldID)
           .collection('forums')
-          .doc(forumID)
+          .doc(forumInput.id)
           .collection('threads')
-          .doc(threadID)
-          .collection('posts')
-          .add(post.toDocumentNoID());
+          .add(threadInput.toDocumentNoID());
+      return docRef.id;
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
     }
   }
 
   @override
-  Future<Thread> getThread(
-      {required String worldID,
-      required String forumID,
-      required String threadID}) async {
+  Future<Thread> getThread({
+    required String worldID,
+    required Forum forumInput,
+    required String threadID,
+  }) async {
     try {
       final threadDoc = await _read(databaseProvider)!
           .collection('worlds')
           .doc(worldID)
           .collection('forums')
-          .doc(forumID)
+          .doc(forumInput.id)
           .collection('threads')
           .doc(threadID)
           .get();
@@ -107,16 +114,17 @@ class RadioRepository implements BaseRadioRepository {
   }
 
   @override
-  Future<List<RadioPost>> getThreadPosts(
-      {required String worldID,
-      required String forumID,
-      required String threadID}) async {
+  Future<List<RadioPost>> getThreadPosts({
+    required String worldID,
+    required Forum forumInput,
+    required String threadID,
+  }) async {
     try {
       final docs = await _read(databaseProvider)!
           .collection('worlds')
           .doc(worldID)
           .collection('forums')
-          .doc(forumID)
+          .doc(forumInput.id)
           .collection('threads')
           .doc(threadID)
           .collection('posts')
@@ -140,6 +148,28 @@ class RadioRepository implements BaseRadioRepository {
           .where(FieldPath.documentId, whereNotIn: forumIDs)
           .get();
       return docs.docs.map((doc) => Forum.fromDocument(doc)).toList();
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Future<void> createPost({
+    required String worldID,
+    required Forum forumInput,
+    required Thread threadInput,
+    required RadioPost postInput,
+  }) async {
+    try {
+      await _read(databaseProvider)!
+          .collection('worlds')
+          .doc(worldID)
+          .collection('forums')
+          .doc(forumInput.id)
+          .collection('threads')
+          .doc(threadInput.id)
+          .collection('posts')
+          .add(postInput.toDocumentNoID());
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
     }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eat_all_fungus/constValues/constConverter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
@@ -11,6 +12,7 @@ class Thread with _$Thread {
 
   const factory Thread({
     required String title,
+    @TimestampConverter() required DateTime lastUpdate,
     String? id,
   }) = _Thread;
 
@@ -21,9 +23,7 @@ class Thread with _$Thread {
     if (data != null) {
       return Thread.fromJson(data).copyWith(id: doc?.id);
     } else {
-      return Thread(
-        title: '',
-      );
+      return Thread(title: '', lastUpdate: DateTime.now());
     }
   }
 

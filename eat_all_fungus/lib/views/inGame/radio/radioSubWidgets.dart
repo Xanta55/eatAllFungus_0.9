@@ -3,11 +3,15 @@ import 'package:eat_all_fungus/controllers/radioController.dart';
 import 'package:eat_all_fungus/models/radio/forum.dart';
 import 'package:eat_all_fungus/models/radio/radioPost.dart';
 import 'package:eat_all_fungus/models/radio/thread.dart';
+import 'package:eat_all_fungus/views/inGame/radio/createPopups/radioPostPopup.dart';
+import 'package:eat_all_fungus/views/inGame/radio/createPopups/radioThreadPopup.dart';
 import 'package:eat_all_fungus/views/inGame/radio/radioWidget.dart';
+import 'package:eat_all_fungus/views/widgets/constWidgets/heroWidget.dart';
 import 'package:eat_all_fungus/views/widgets/constWidgets/panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class RadioSubWidget extends HookWidget {
   const RadioSubWidget({
@@ -109,9 +113,8 @@ class ForumSubWidget extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentForum = useProvider(currentForumProvider).state;
-    final threads = useProvider(radioControllerProvider.notifier)
-        .getThreadsInForum(forumID: currentForum.id ?? '');
+    final threads =
+        useProvider(radioControllerProvider.notifier).getThreadsInForum();
     return Column(
       children: [
         Container(
@@ -136,6 +139,7 @@ class ForumSubWidget extends HookWidget {
           ),
         ),
         Expanded(
+          flex: 8,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Panel(
@@ -166,6 +170,12 @@ class ForumSubWidget extends HookWidget {
                                       //color: Colors.grey[colorIntensity],
                                       child: ListTile(
                                         title: Text(readyThreads[index].title),
+                                        subtitle: Text(
+                                          '${DateFormat('EEEE').format(readyThreads[index].lastUpdate)} ${readyThreads[index].lastUpdate.day}-${readyThreads[index].lastUpdate.month} ${readyThreads[index].lastUpdate.hour.toString().padLeft(2, '0')}:${readyThreads[index].lastUpdate.minute.toString().padLeft(2, '0')}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -201,6 +211,32 @@ class ForumSubWidget extends HookWidget {
             ),
           ),
         ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Panel(
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context)
+                      .push(HeroDialogRoute(builder: (context) {
+                    return RadioThreadPopup();
+                  }));
+                },
+                child: Container(
+                  color: Colors.amber,
+                  width: double.infinity,
+                  child: Center(
+                    child: Text(
+                      'Create new topic',
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -223,14 +259,17 @@ class ThreadSubWidget extends HookWidget {
               IconButton(
                   onPressed: () {
                     context.read(currentThreadProvider).state =
-                        Thread(title: '', id: '');
+                        Thread(title: '', id: '', lastUpdate: DateTime.now());
                   },
                   icon: Icon(Icons.arrow_back)),
-              Center(
+              Flexible(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     thread.title,
+                    softWrap: false,
+                    maxLines: 1,
+                    overflow: TextOverflow.fade,
                     style: Theme.of(context).textTheme.headline4,
                   ),
                 ),
@@ -239,6 +278,7 @@ class ThreadSubWidget extends HookWidget {
           ),
         ),
         Expanded(
+          flex: 8,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Panel(
@@ -262,7 +302,6 @@ class ThreadSubWidget extends HookWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Container(
-                                      //color: Colors.grey[colorIntensity],
                                       child: Column(
                                         children: [
                                           Align(
@@ -275,11 +314,16 @@ class ThreadSubWidget extends HookWidget {
                                             ),
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.all(8.0),
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0.0, 15.0, 0.0, 15.0),
                                             child: Align(
                                               alignment: Alignment.centerLeft,
                                               child: Text(
-                                                  readyPosts[index].content),
+                                                readyPosts[index].content,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1,
+                                              ),
                                             ),
                                           ),
                                           Row(
@@ -290,10 +334,9 @@ class ThreadSubWidget extends HookWidget {
                                                       Alignment.centerLeft,
                                                   child: Text(
                                                       '${readyPosts[index].timeOfPost.hour.toString().padLeft(2, '0')}:${readyPosts[index].timeOfPost.minute.toString().padLeft(2, '0')}',
-                                                      style: TextStyle(
-                                                          color:
-                                                              Colors.grey[600],
-                                                          fontSize: 20.0)),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .caption),
                                                 ),
                                               ),
                                               Expanded(
@@ -301,11 +344,10 @@ class ThreadSubWidget extends HookWidget {
                                                   alignment:
                                                       Alignment.centerRight,
                                                   child: Text(
-                                                      '${readyPosts[index].timeOfPost.day}.${readyPosts[index].timeOfPost.month}',
-                                                      style: TextStyle(
-                                                          color:
-                                                              Colors.grey[600],
-                                                          fontSize: 20.0)),
+                                                      '${readyPosts[index].timeOfPost.day}-${readyPosts[index].timeOfPost.month}-${readyPosts[index].timeOfPost.year}',
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .caption),
                                                 ),
                                               ),
                                             ],
@@ -341,6 +383,32 @@ class ThreadSubWidget extends HookWidget {
                           );
                         }
                       }),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Panel(
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context)
+                      .push(HeroDialogRoute(builder: (context) {
+                    return RadioPostPopup();
+                  }));
+                },
+                child: Container(
+                  color: Colors.amber,
+                  width: double.infinity,
+                  child: Center(
+                    child: Text(
+                      'Answer',
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
               ),
             ),

@@ -1,21 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eat_all_fungus/constValues/constConverter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
 part 'radioPost.freezed.dart';
 part 'radioPost.g.dart';
-
-class TimestampConverter implements JsonConverter<DateTime, Timestamp> {
-  const TimestampConverter();
-
-  @override
-  DateTime fromJson(Timestamp timestamp) {
-    return timestamp.toDate();
-  }
-
-  @override
-  Timestamp toJson(DateTime date) => Timestamp.fromDate(date);
-}
 
 @freezed
 class RadioPost with _$RadioPost {

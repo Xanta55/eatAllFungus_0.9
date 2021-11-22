@@ -8,8 +8,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final currentForumProvider =
     StateProvider<Forum>((ref) => Forum(id: '', title: ''));
-final currentThreadProvider =
-    StateProvider<Thread>((ref) => Thread(id: '', title: ''));
+final currentThreadProvider = StateProvider<Thread>(
+    (ref) => Thread(id: '', title: '', lastUpdate: DateTime.now()));
 
 class RadioWidget extends HookWidget {
   const RadioWidget({Key? key}) : super(key: key);
