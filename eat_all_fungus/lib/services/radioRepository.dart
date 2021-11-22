@@ -65,6 +65,7 @@ class RadioRepository implements BaseRadioRepository {
               ? forumInput.title.toLowerCase()
               : forumInput.id)
           .collection('threads')
+          .orderBy('lastUpdate', descending: true)
           .get();
       return docRef.docs.map((doc) => Thread.fromDocument(doc)).toList();
     } on FirebaseException catch (error) {
@@ -128,6 +129,7 @@ class RadioRepository implements BaseRadioRepository {
           .collection('threads')
           .doc(threadID)
           .collection('posts')
+          .orderBy('timeOfPost')
           .get();
       return docs.docs.map((doc) => RadioPost.fromDocument(doc)).toList();
     } on FirebaseException catch (error) {
