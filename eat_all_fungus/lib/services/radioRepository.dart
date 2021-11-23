@@ -61,9 +61,7 @@ class RadioRepository implements BaseRadioRepository {
           .collection('worlds')
           .doc(worldID)
           .collection('forums')
-          .doc(forumInput.title == 'Global'
-              ? forumInput.title.toLowerCase()
-              : forumInput.id)
+          .doc(forumInput.id)
           .collection('threads')
           .orderBy('lastUpdate', descending: true)
           .get();

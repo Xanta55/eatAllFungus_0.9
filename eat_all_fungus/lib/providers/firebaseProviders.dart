@@ -13,5 +13,5 @@ final databaseProvider =
 final fireStoreProvider =
     Provider<FirebaseStorage?>((ref) => FirebaseStorage.instance);
 
-final firebaseFunctionProvider =
-    Provider<FirebaseFunctions?>((ref) => FirebaseFunctions.instance);
+final firebaseFunctionProvider = Provider<FirebaseFunctions?>(
+    (ref) => FirebaseFunctions.instanceFor(region: 'europe-west1'));
