@@ -1,4 +1,5 @@
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:eat_all_fungus/constValues/constFBFunctionNames.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/providers/firebaseProviders.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -15,7 +16,7 @@ class FunctionRepository {
       String tileDescription, String playerID) async {
     try {
       HttpsCallable callable =
-          _read(firebaseFunctionProvider)!.httpsCallable('digCall');
+          _read(firebaseFunctionProvider)!.httpsCallable(digCall);
       callable.call({'tileDescription': tileDescription, 'playerID': playerID});
     } on FirebaseFunctionsException catch (error) {
       throw CustomException(message: error.message);
