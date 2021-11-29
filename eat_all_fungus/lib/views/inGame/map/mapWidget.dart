@@ -31,11 +31,13 @@ class MapWidget extends HookWidget {
             Expanded(
               child: Row(
                 children: [
-                  AspectRatio(
-                    aspectRatio: 1.0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: _buildControllerButtons(context),
+                  Expanded(
+                    child: AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: _buildControllerButtons(context),
+                      ),
                     ),
                   ),
                   Expanded(
