@@ -100,6 +100,7 @@ class ProfileRepository implements BaseProfileRepository {
           .collection('profiles')
           .doc(id)
           .collection('messages')
+          .orderBy('sentAt', descending: true)
           .snapshots()
           .map(
             (event) => event.docs

@@ -14,6 +14,7 @@ class Message with _$Message {
     required String header,
     required String content,
     required String sender,
+    String? senderID,
     @TimestampConverter() required DateTime sentAt,
     String? id,
   }) = _Message;

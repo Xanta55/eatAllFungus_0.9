@@ -52,6 +52,7 @@ class MessageStreamer extends StateNotifier<List<Message>?> {
             header: header,
             content: content,
             sender: _profile!.name,
+            senderID: _profile!.id!,
             sentAt: DateTime.now(),
           ));
     } on CustomException catch (error) {
