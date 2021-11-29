@@ -9,7 +9,8 @@ import 'package:eat_all_fungus/views/inGame/overview/overviewWidget.dart';
 import 'package:eat_all_fungus/views/inGame/player/playerWidget.dart';
 import 'package:eat_all_fungus/views/inGame/radio/radioWidget.dart';
 import 'package:eat_all_fungus/views/inGame/town/townWidget.dart';
-import 'package:eat_all_fungus/views/preGame/profileScreen.dart';
+import 'package:eat_all_fungus/views/metaGame/messageScreen.dart';
+import 'package:eat_all_fungus/views/metaGame/profileScreen.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
 import 'package:eat_all_fungus/views/widgets/buttons/logoutButton.dart';
 import 'package:eat_all_fungus/views/widgets/buttons/profileButton.dart';
@@ -154,11 +155,7 @@ class InGameScaffolding extends HookWidget {
       case 'radio':
         return RadioWidget();
       case 'messages':
-        return Container(
-          child: Center(
-            child: Text('Mesages'),
-          ),
-        );
+        return MessageWidget();
       case 'world':
         return Container(
           child: Center(
