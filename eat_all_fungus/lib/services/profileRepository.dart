@@ -1,5 +1,6 @@
 import 'package:eat_all_fungus/controllers/authController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
+import 'package:eat_all_fungus/models/message.dart';
 import 'package:eat_all_fungus/models/userProfile.dart';
 import 'package:eat_all_fungus/providers/firebaseProviders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +13,9 @@ abstract class BaseProfileRepository {
   Future<void> updateProfile(
       {required String id, required UserProfile profile});
   Future<void> deleteProfile({required String id});
+  Stream<List<Message>> getMessageStream({required String id});
+  Future<void> sendMessage(
+      {required String receiverID, required Message message});
 }
 
 final userProfileRepository =
@@ -84,6 +88,40 @@ class ProfileRepository implements BaseProfileRepository {
           .doc(id)
           .snapshots()
           .map((event) => UserProfile.fromDocument(event));
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Stream<List<Message>> getMessageStream({required String id}) {
+    try {
+      return _read(databaseProvider)!
+          .collection('profiles')
+          .doc(id)
+          .collection('messages')
+          .snapshots()
+          .map(
+            (event) => event.docs
+                .map(
+                  (e) => Message.fromDocument(e),
+                )
+                .toList(),
+          );
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Future<void> sendMessage(
+      {required String receiverID, required Message message}) async {
+    try {
+      await _read(databaseProvider)!
+          .collection('profiles')
+          .doc(receiverID)
+          .collection('messages')
+          .add(message.toDocumentNoID());
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
     }

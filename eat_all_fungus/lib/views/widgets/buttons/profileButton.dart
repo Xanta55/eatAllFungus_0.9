@@ -1,7 +1,6 @@
 import 'package:eat_all_fungus/controllers/authController.dart';
-import 'package:eat_all_fungus/views/preGame/profileScreen.dart';
+import 'package:eat_all_fungus/views/metaGame/profileScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 /// This is an IconButton, mostly for Appbars
 IconButton buildProfileButton(BuildContext context, {String? profileID}) {
