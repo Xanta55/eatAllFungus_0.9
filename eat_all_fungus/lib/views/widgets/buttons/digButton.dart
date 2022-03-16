@@ -31,7 +31,7 @@ class DigButton extends HookWidget {
         color: Colors.grey[colorIntensity],
         child: Center(
           child: Text(
-            'You have dug here not so long ago. Try again at ${digTaskStream?.hour ?? "00"}:${digTaskStream?.minute ?? "00"}',
+            'You have dug here not so long ago. Try again at ${digTaskStream?.hour ?? "00"}:${(digTaskStream?.minute ?? "00").toString().padLeft(2, "0")}',
             textAlign: TextAlign.center,
           ),
         ),

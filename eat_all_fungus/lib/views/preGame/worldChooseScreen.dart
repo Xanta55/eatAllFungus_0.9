@@ -54,7 +54,7 @@ class WorldList extends HookWidget {
       return ListView.builder(
         itemCount: worldList.length + 1,
         itemBuilder: (BuildContext context, int index) {
-          if (index == worldList.length) {
+          if (worldList.length <= 2 && index == worldList.length) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: NewWorldButton(),

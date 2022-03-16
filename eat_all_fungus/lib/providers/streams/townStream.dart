@@ -50,7 +50,7 @@ class TownStream extends StateNotifier<Town?> {
             }
           });
         } else {
-          state = null;
+          if (mounted) state = null;
         }
       } else {
         state = null;
