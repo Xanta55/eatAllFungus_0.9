@@ -20,6 +20,7 @@ abstract class BaseWorldRepository {
       required String description,
       required int depth,
       required bool isOpen,
+      required int startAmount,
       required List<MapTile> mapTiles,
       required List<News> news});
   Future<void> updateWorld({required String id, required World worldInput});
@@ -46,8 +47,9 @@ class WorldRepository implements BaseWorldRepository {
       required String description,
       required int depth,
       required bool isOpen,
-      required List<MapTile> mapTiles,
-      required List<News> news}) async {
+      required int startAmount,
+      List<MapTile>? mapTiles,
+      List<News>? news}) async {
     try {
       final docRef = await _read(databaseProvider)!.collection('worlds').add(
           World(
@@ -56,23 +58,28 @@ class WorldRepository implements BaseWorldRepository {
                   depth: depth,
                   description: description,
                   name: name,
+                  startAmount: startAmount,
                   isOpen: isOpen)
               .toDocumentNoID());
-      mapTiles.forEach((element) async {
-        await _read(databaseProvider)!
-            .collection('worlds')
-            .doc(docRef.id)
-            .collection('mapTiles')
-            .doc('${docRef.id};${element.xCoord};${element.yCoord}')
-            .set(element.toDocumentNoID());
-      });
-      news.forEach((element) async {
-        await _read(databaseProvider)!
-            .collection('worlds')
-            .doc(docRef.id)
-            .collection('news')
-            .add(element.toDocumentNoID());
-      });
+      if (mapTiles != null) {
+        mapTiles.forEach((element) async {
+          await _read(databaseProvider)!
+              .collection('worlds')
+              .doc(docRef.id)
+              .collection('mapTiles')
+              .doc('${docRef.id};${element.xCoord};${element.yCoord}')
+              .set(element.toDocumentNoID());
+        });
+      }
+      if (news != null) {
+        news.forEach((element) async {
+          await _read(databaseProvider)!
+              .collection('worlds')
+              .doc(docRef.id)
+              .collection('news')
+              .add(element.toDocumentNoID());
+        });
+      }
       return docRef.id;
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
