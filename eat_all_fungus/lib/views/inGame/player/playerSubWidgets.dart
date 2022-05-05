@@ -118,15 +118,84 @@ class PlayerInteractionsWidget extends HookWidget {
     List<Widget> out = [];
     for (String s in itemsInInventory) {
       out.add(Container(
-        child: Panel(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(s),
+        child: CraftingTileWidget([
+          ItemPanel(
+            item: "plank",
+            amount: 2,
           ),
-        ),
+          ItemPanel(
+            item: "pinecone",
+            amount: 2,
+          ),
+          ItemPanel(
+            item: "watch",
+            amount: 2,
+          ),
+          ItemPanel(
+            item: "radio",
+            amount: 2,
+          ),
+        ], [
+          ItemPanel(
+            item: "plank",
+            amount: 2,
+          )
+        ]),
       ));
     }
     return out;
+  }
+
+  Widget CraftingTileWidget(
+      List<ItemPanel> inputItems, List<ItemPanel> outputItems) {
+    return Panel(
+        child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        child: Row(
+          children: [
+            Expanded(
+              child: Panel(
+                child: Container(
+                  color: Colors.grey[850],
+                  child: GridView.count(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    children:
+                        inputItems.map((e) => Container(child: e)).toList(),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              child: Center(
+                child: Icon(Icons.arrow_right_alt_outlined),
+              ),
+            ),
+            Expanded(
+              child: Panel(
+                child: Container(
+                  child: GridView.count(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    children:
+                        outputItems.map((e) => Container(child: e)).toList(),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              child: ElevatedButton(
+                onPressed: () => print('Button works, duh!'),
+                child: Icon(Icons.handyman),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ));
   }
 }
 
