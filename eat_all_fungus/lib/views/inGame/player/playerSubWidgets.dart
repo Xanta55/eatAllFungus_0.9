@@ -2,6 +2,7 @@ import 'package:eat_all_fungus/constValues/constValues.dart';
 import 'package:eat_all_fungus/controllers/townController.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
+import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
 import 'package:eat_all_fungus/views/widgets/buttons/townButton.dart';
 import 'package:eat_all_fungus/views/widgets/constWidgets/panel.dart';
 import 'package:eat_all_fungus/views/widgets/items/inventories/stashInventory.dart';
@@ -92,17 +93,40 @@ class PlayerTileInventoryWidget extends HookWidget {
 class PlayerInteractionsWidget extends HookWidget {
   const PlayerInteractionsWidget();
   // TODO pretty much loading all item interactions
+  // Not to mention all the ideas... oh the ideas!
 
   @override
   Widget build(BuildContext context) {
-    return Panel(
-      child: Container(
-        color: Colors.grey[colorIntensity],
-        child: Center(
-          child: Text('WIP'),
+    final playerState = useProvider(playerStreamProvider);
+    return playerState != null
+        ? Panel(
+            child: Container(
+              color: Colors.grey[colorIntensity],
+              child: Center(
+                child: ListView(
+                  children: _buildCraftingTiles(playerState.inventory),
+                ),
+              ),
+            ),
+          )
+        : Container(
+            child: LoadingWidget(),
+          );
+  }
+
+  List<Widget> _buildCraftingTiles(List<String> itemsInInventory) {
+    List<Widget> out = [];
+    for (String s in itemsInInventory) {
+      out.add(Container(
+        child: Panel(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(s),
+          ),
         ),
-      ),
-    );
+      ));
+    }
+    return out;
   }
 }
 
