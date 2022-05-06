@@ -1,5 +1,7 @@
 import 'package:eat_all_fungus/constValues/constValues.dart';
+import 'package:eat_all_fungus/controllers/craftingController.dart';
 import 'package:eat_all_fungus/controllers/townController.dart';
+import 'package:eat_all_fungus/models/craftingRecipe.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
@@ -115,33 +117,23 @@ class PlayerInteractionsWidget extends HookWidget {
   }
 
   List<Widget> _buildCraftingTiles(List<String> itemsInInventory) {
-    List<Widget> out = [];
-    for (String s in itemsInInventory) {
+    final craftingRecipes = useProvider(craftingControllerProvider);
+    final List<Widget> out = [];
+    final List<Recipe> matchingRecipes = [];
+    for (Recipe r in craftingRecipes) {
+      if (r.input.keys.any((element) => itemsInInventory.contains(element))) {
+        matchingRecipes.add(r);
+      }
+    }
+    for (Recipe r in matchingRecipes) {
       out.add(Container(
-        child: CraftingTileWidget([
-          ItemPanel(
-            item: "plank",
-            amount: 2,
-          ),
-          ItemPanel(
-            item: "pinecone",
-            amount: 2,
-          ),
-          ItemPanel(
-            item: "watch",
-            amount: 2,
-          ),
-          ItemPanel(
-            item: "radio",
-            amount: 2,
-          ),
-        ], [
-          ItemPanel(
-            item: "plank",
-            amount: 2,
-          )
-        ]),
-      ));
+          child: CraftingTileWidget(
+              r.input.entries
+                  .map((rec) => ItemPanel(item: rec.key, amount: rec.value))
+                  .toList(),
+              r.output.entries
+                  .map((rec) => ItemPanel(item: rec.key, amount: rec.value))
+                  .toList())));
     }
     return out;
   }
