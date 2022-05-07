@@ -4,8 +4,8 @@ import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/providers/streams/worldStream.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
-import 'package:eat_all_fungus/views/widgets/buttons/digButton.dart';
-import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
+import 'package:eat_all_fungus/views/widgets/buttons/mapButton.dart';
+import 'package:eat_all_fungus/views/widgets/items/inventories/tileInventory.dart';
 import 'package:eat_all_fungus/views/widgets/mapView/mapSubWidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -31,11 +31,13 @@ class MapWidget extends HookWidget {
             Expanded(
               child: Row(
                 children: [
-                  AspectRatio(
-                    aspectRatio: 1.0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: _buildControllerButtons(context),
+                  Expanded(
+                    child: AspectRatio(
+                      aspectRatio: 1.0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: _buildControllerButtons(context),
+                      ),
                     ),
                   ),
                   Expanded(
@@ -49,7 +51,7 @@ class MapWidget extends HookWidget {
                               borderRadius: BorderRadius.circular(5.0),
                               child: Container(
                                 width: double.infinity,
-                                child: DigButton(),
+                                child: MapButton(),
                               ),
                             ),
                           ),
@@ -70,6 +72,7 @@ class MapWidget extends HookWidget {
                                         Text('On this Tile:'),
                                         Expanded(
                                           child: ListView(
+                                            shrinkWrap: true,
                                             scrollDirection: Axis.horizontal,
                                             children: buildItemTiles(),
                                           ),
@@ -109,7 +112,7 @@ class MapWidget extends HookWidget {
     } else {
       return [
         Center(
-          child: Text('A Town obviously'),
+          child: Icon(Icons.home),
         )
       ];
     }

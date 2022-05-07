@@ -24,10 +24,16 @@ class TileMapController extends StateNotifier<Map<int, Map<int, MapTile>>?> {
 
   Future<void> getCurrentTileMap() async {
     try {
-      final tileMap = await _read(mapTileRepository)
-          .getTilesInWorld(worldID: _player!.worldID);
-      if (mounted) {
-        state = tileMap;
+      if (_player?.worldID.isNotEmpty ?? false) {
+        final tileMap = await _read(mapTileRepository)
+            .getTilesInWorld(worldID: _player?.worldID ?? 'error');
+        if (mounted) {
+          state = tileMap;
+        }
+      } else {
+        if (mounted) {
+          state = {};
+        }
       }
     } on CustomException catch (error) {
       print('TileMapController - ${error.message}');

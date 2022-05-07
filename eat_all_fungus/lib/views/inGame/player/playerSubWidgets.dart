@@ -1,7 +1,16 @@
+import 'package:eat_all_fungus/constValues/constValues.dart';
+import 'package:eat_all_fungus/controllers/craftingController.dart';
+import 'package:eat_all_fungus/controllers/playerController.dart';
+import 'package:eat_all_fungus/controllers/townController.dart';
+import 'package:eat_all_fungus/models/craftingRecipe.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
-import 'package:eat_all_fungus/views/inGame/overview/overviewSubWidgets.dart';
-import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
+import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
+import 'package:eat_all_fungus/views/widgets/buttons/townButton.dart';
+import 'package:eat_all_fungus/views/widgets/constWidgets/panel.dart';
+import 'package:eat_all_fungus/views/widgets/items/inventories/stashInventory.dart';
+import 'package:eat_all_fungus/views/widgets/items/inventories/tileInventory.dart';
+import 'package:eat_all_fungus/views/widgets/items/itemPanel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -47,8 +56,8 @@ class PlayerTileInventoryWidget extends HookWidget {
     final tileState = useProvider(mapTileStreamProvider);
     if (tileState != null) {
       if (tileState.townOnTile.isEmpty) {
-        final itemWidgetList =
-            buildTileInventoryList(tileInventory: tileState.inventory);
+        final itemWidgetList = buildTileInventoryList(
+            tileInventory: tileState.inventory, canTap: true);
         return Panel(
           child: Container(
             color: Colors.grey[colorIntensity],
@@ -72,11 +81,7 @@ class PlayerTileInventoryWidget extends HookWidget {
           ),
         );
       } else {
-        return Panel(
-          child: Center(
-            child: Text('Town'),
-          ),
-        );
+        return Panel(child: TownStash());
       }
     } else {
       return Panel(
@@ -91,17 +96,135 @@ class PlayerTileInventoryWidget extends HookWidget {
 class PlayerInteractionsWidget extends HookWidget {
   const PlayerInteractionsWidget();
   // TODO pretty much loading all item interactions
+  // Not to mention all the ideas... oh the ideas!
 
   @override
   Widget build(BuildContext context) {
+    final playerState = useProvider(playerStreamProvider);
+    return playerState != null
+        ? Panel(
+            child: Container(
+              color: Colors.grey[colorIntensity],
+              child: Center(
+                child: ListView(
+                  children: _buildCraftingTiles(playerState.inventory, context),
+                ),
+              ),
+            ),
+          )
+        : Container(
+            child: LoadingWidget(),
+          );
+  }
+
+  List<Widget> _buildCraftingTiles(
+      List<String> itemsInInventory, BuildContext context) {
+    final craftingRecipes = useProvider(craftingControllerProvider);
+    final List<Widget> out = [];
+    final List<Recipe> matchingRecipes = [];
+    for (Recipe r in craftingRecipes) {
+      if (r.input.keys.any((element) => itemsInInventory.contains(element))) {
+        matchingRecipes.add(r);
+      }
+    }
+    for (Recipe r in matchingRecipes) {
+      out.add(Container(
+          child: CraftingTileWidget(
+              r.input.entries
+                  .map((rec) => ItemPanel(item: rec.key, amount: rec.value))
+                  .toList(),
+              r.output.entries
+                  .map((rec) => ItemPanel(item: rec.key, amount: rec.value))
+                  .toList(),
+              context)));
+    }
+    return out;
+  }
+
+  Widget CraftingTileWidget(List<ItemPanel> inputItems,
+      List<ItemPanel> outputItems, BuildContext context) {
+    final playerStateController =
+        useProvider(playerControllerProvider.notifier);
+    final playerState = useProvider(playerStreamProvider);
     return Panel(
+        child: Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Container(
-        color: Colors.grey[colorIntensity],
-        child: Center(
-          child: Text('WIP'),
+        child: Row(
+          children: [
+            Expanded(
+              child: Panel(
+                child: Container(
+                  color: Colors.grey[850],
+                  child: GridView.count(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    children:
+                        inputItems.map((e) => Container(child: e)).toList(),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              child: Center(
+                child: Icon(Icons.arrow_right_alt_outlined),
+              ),
+            ),
+            Expanded(
+              child: Panel(
+                child: Container(
+                  child: GridView.count(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    children:
+                        outputItems.map((e) => Container(child: e)).toList(),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              child: ElevatedButton(
+                onPressed: () {
+                  bool canCraft = true;
+                  for (String s in inputItems.map((e) => e.item)) {
+                    if (!playerState!.inventory.contains(s)) {
+                      canCraft = false;
+                    }
+                  }
+                  if (canCraft) {
+                    final List<String> itemsToRemove = [];
+                    final List<String> itemsToAdd = [];
+                    for (ItemPanel ipIn in inputItems) {
+                      for (int i = 0; i < ipIn.amount!; i++) {
+                        itemsToRemove.add(ipIn.item);
+                      }
+                    }
+                    for (ItemPanel ipOut in outputItems) {
+                      for (int i = 0; i < ipOut.amount!; i++) {
+                        itemsToAdd.add(ipOut.item);
+                      }
+                    }
+                    playerStateController.removeItemsFromInventory(
+                        items: itemsToRemove);
+                    playerStateController.addItemsToInventory(
+                        items: itemsToAdd);
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text('Crafted!')));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content:
+                            Text('Looks like you\'re missing some items')));
+                  }
+                },
+                child: Icon(Icons.handyman),
+              ),
+            ),
+          ],
         ),
       ),
-    );
+    ));
   }
 }
 
@@ -128,7 +251,9 @@ class PlayerTileInteractionsWidget extends HookWidget {
                 buttonDesc: 'Construct a Town',
                 needsToComplete: {'plank': 15, 'rock': 5},
                 onTap: () {
-                  print('Button worked, duh!');
+                  context
+                      .read(townControllerProvider.notifier)
+                      .constructTown(name: 'Bobby Town');
                 });
           default:
             return Panel(
@@ -139,11 +264,7 @@ class PlayerTileInteractionsWidget extends HookWidget {
             );
         }
       } else {
-        return Panel(
-            child: ElevatedButton(
-          onPressed: () => print('There is a Town on this Tile'),
-          child: Text('Tile with a Town'),
-        ));
+        return Panel(child: TownButton());
       }
     } else {
       return Panel(

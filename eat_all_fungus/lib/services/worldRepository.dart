@@ -12,6 +12,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 abstract class BaseWorldRepository {
   Future<World> getWorld({required String id});
   Stream<World> getWorldStream({required String id});
+  Stream<List<World>?> getWorldListStream();
   Future<QuerySnapshot<Map<String, dynamic>>?> getAvailableWorldsQuery();
   Future<List<World>?> getAvailableWorlds();
   Future<String> createEmptyWorld(
@@ -19,6 +20,7 @@ abstract class BaseWorldRepository {
       required String description,
       required int depth,
       required bool isOpen,
+      required int startAmount,
       required List<MapTile> mapTiles,
       required List<News> news});
   Future<void> updateWorld({required String id, required World worldInput});
@@ -45,8 +47,9 @@ class WorldRepository implements BaseWorldRepository {
       required String description,
       required int depth,
       required bool isOpen,
-      required List<MapTile> mapTiles,
-      required List<News> news}) async {
+      required int startAmount,
+      List<MapTile>? mapTiles,
+      List<News>? news}) async {
     try {
       final docRef = await _read(databaseProvider)!.collection('worlds').add(
           World(
@@ -55,23 +58,28 @@ class WorldRepository implements BaseWorldRepository {
                   depth: depth,
                   description: description,
                   name: name,
+                  startAmount: startAmount,
                   isOpen: isOpen)
               .toDocumentNoID());
-      mapTiles.forEach((element) async {
-        await _read(databaseProvider)!
-            .collection('worlds')
-            .doc(docRef.id)
-            .collection('mapTiles')
-            .doc('${docRef.id};${element.xCoord};${element.yCoord}')
-            .set(element.toDocumentNoID());
-      });
-      news.forEach((element) async {
-        await _read(databaseProvider)!
-            .collection('worlds')
-            .doc(docRef.id)
-            .collection('news')
-            .add(element.toDocumentNoID());
-      });
+      if (mapTiles != null) {
+        mapTiles.forEach((element) async {
+          await _read(databaseProvider)!
+              .collection('worlds')
+              .doc(docRef.id)
+              .collection('mapTiles')
+              .doc('${docRef.id};${element.xCoord};${element.yCoord}')
+              .set(element.toDocumentNoID());
+        });
+      }
+      if (news != null) {
+        news.forEach((element) async {
+          await _read(databaseProvider)!
+              .collection('worlds')
+              .doc(docRef.id)
+              .collection('news')
+              .add(element.toDocumentNoID());
+        });
+      }
       return docRef.id;
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
@@ -237,6 +245,21 @@ class WorldRepository implements BaseWorldRepository {
           .doc(id)
           .snapshots()
           .map((event) => World.fromDocument(event));
+    } on FirebaseException catch (error) {
+      throw CustomException(message: error.message);
+    }
+  }
+
+  @override
+  Stream<List<World>?> getWorldListStream() {
+    try {
+      return _read(databaseProvider)!
+          .collection('worlds')
+          .where('isOpen', isEqualTo: true)
+          .snapshots()
+          .map((event) => event.docs
+              .map((element) => World.fromDocument(element))
+              .toList());
     } on FirebaseException catch (error) {
       throw CustomException(message: error.message);
     }

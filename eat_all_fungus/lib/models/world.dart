@@ -17,8 +17,8 @@ class World with _$World {
     required int depth,
     required int daysRunning,
     required bool isOpen,
+    int? startAmount,
     List<MapTile>? mapTiles,
-    List<News>? news,
     String? id,
   }) = _World;
 
@@ -37,7 +37,6 @@ class World with _$World {
         depth: 1,
         daysRunning: 0,
         mapTiles: [],
-        news: [],
         isOpen: false,
       );
     }

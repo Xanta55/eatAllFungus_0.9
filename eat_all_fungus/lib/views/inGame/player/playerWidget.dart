@@ -1,5 +1,6 @@
 import 'package:eat_all_fungus/views/inGame/overview/overviewSubWidgets.dart';
 import 'package:eat_all_fungus/views/inGame/player/playerSubWidgets.dart';
+import 'package:eat_all_fungus/views/widgets/items/inventories/playerInventory.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -34,7 +35,7 @@ const List<StaggeredTile> _staggeredTiles = <StaggeredTile>[
 const List<Widget> _playerViewTiles = <Widget>[
   PlayerActionPointsWidget(),
   OverviewPlayerStatus(),
-  OverviewInventory(),
+  PlayerInventory(canTap: true),
   PlayerTileInventoryWidget(),
   PlayerInteractionsWidget(),
   PlayerTileInteractionsWidget(),

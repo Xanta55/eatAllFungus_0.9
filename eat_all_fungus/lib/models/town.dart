@@ -46,6 +46,21 @@ class Town with _$Town {
           requestsToJoin: []);
     }
   }
+  factory Town.dummyTown() {
+    return Town(
+        name: '',
+        worldID: '',
+        xCoord: 0,
+        yCoord: 0,
+        wallStrength: 0,
+        alliances: [],
+        buildings: [],
+        distanceOfSight: 0,
+        elders: [],
+        inventory: [],
+        members: [],
+        requestsToJoin: []);
+  }
 
   Map<String, dynamic> toDocumentNoID() => toJson()..remove('id');
   Map<String, dynamic> toDocument() => toJson();

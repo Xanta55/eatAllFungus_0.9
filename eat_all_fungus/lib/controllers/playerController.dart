@@ -1,9 +1,12 @@
 import 'package:eat_all_fungus/controllers/profileController.dart';
+import 'package:eat_all_fungus/controllers/townController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/models/userProfile.dart';
 import 'package:eat_all_fungus/models/world.dart';
+import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
+import 'package:eat_all_fungus/providers/streams/townStream.dart';
 import 'package:eat_all_fungus/providers/streams/worldStream.dart';
 import 'package:eat_all_fungus/services/playerRepository.dart';
 import 'package:eat_all_fungus/services/tileRepository.dart';
@@ -191,6 +194,143 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
       });
     } on CustomException catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
+    }
+  }
+
+  /// returns [true] on successfull transaction
+  /// return [false] if inventory is full or something went wrong
+  Future<bool> addItemToInventory({required String item}) async {
+    try {
+      final playerState = _read(playerStreamProvider)!;
+      if (playerState.inventory.length < playerState.inventorySize) {
+        _read(playerRepository).updatePlayerInventory(
+          playerToUpdate: playerState,
+          playerInventory: playerState.inventory..add(item),
+        );
+        getPlayer();
+        return true;
+      } else {
+        //getPlayer();
+        return false;
+      }
+    } on CustomException catch (error, stackTrace) {
+      print('PlayerController - Error: $error ## $stackTrace');
+      return false;
+    }
+  }
+
+  /// returns [true] on successfull transaction
+  /// return [false] if inventory is full or something went wrong
+  Future<bool> addItemsToInventory({required List<String> items}) async {
+    try {
+      final playerState = _read(playerStreamProvider)!;
+      if (playerState.inventory.length + items.length <
+          playerState.inventorySize) {
+        _read(playerRepository).updatePlayerInventory(
+          playerToUpdate: playerState,
+          playerInventory: playerState.inventory..addAll(items),
+        );
+        getPlayer();
+        return true;
+      } else {
+        final currTile = _read(mapTileStreamProvider)!;
+        final List<String> inInventory = [];
+        final List<String> onGround = [];
+
+        // Difference between items in inventory and max size
+        final int spaceInInventory =
+            playerState.inventory.length - playerState.inventorySize;
+
+        // Sublists of the items
+        inInventory.addAll(items.sublist(0, spaceInInventory));
+        onGround.addAll(items.sublist(spaceInInventory));
+
+        // Updating Data
+        _read(playerRepository).updatePlayerInventory(
+          playerToUpdate: playerState,
+          playerInventory: playerState.inventory..addAll(inInventory),
+        );
+        _read(mapTileRepository)
+            .updateTile(tile: currTile..inventory.addAll(onGround));
+
+        // Getting Player
+        getPlayer();
+        return false;
+      }
+    } on CustomException catch (error, stackTrace) {
+      print('PlayerController - Error: $error ## $stackTrace');
+      return false;
+    }
+  }
+
+  /// returns [true] on successfull transaction
+  /// return [false] if item is not in inventory
+  Future<bool> removeItemFromInventory({required String item}) async {
+    try {
+      final playerState = _read(playerStreamProvider)!;
+      if (playerState.inventory.contains(item)) {
+        _read(playerRepository).updatePlayerInventory(
+          playerToUpdate: playerState,
+          playerInventory: playerState.inventory..remove(item),
+        );
+        getPlayer();
+        return true;
+      } else {
+        //getPlayer();
+        return false;
+      }
+    } on CustomException catch (error, stackTrace) {
+      print('PlayerController - Error: $error ## $stackTrace');
+      return false;
+    }
+  }
+
+  /// returns [true] on successfull transaction
+  /// return [false] if item is not in inventory
+  Future<bool> removeItemsFromInventory({required List<String> items}) async {
+    try {
+      final playerState = _read(playerStreamProvider)!;
+      final inventory = playerState.inventory;
+      items.forEach((element) {
+        inventory.remove(element);
+      });
+      _read(playerRepository).updatePlayerInventory(
+        playerToUpdate: playerState,
+        playerInventory: inventory,
+      );
+      getPlayer();
+      return true;
+    } on CustomException catch (error, stackTrace) {
+      print('PlayerController - Error: $error ## $stackTrace');
+      return false;
+    }
+  }
+
+  Future<void> dropItem({required String item}) async {
+    try {
+      final playerState = _read(playerStreamProvider)!;
+      final tile = _read(mapTileStreamProvider)!;
+      if (playerState.inventory.contains(item)) {
+        // remove the item either way
+        _read(playerRepository).updatePlayer(
+            player: playerState.copyWith(
+                inventory: playerState.inventory..remove(item)));
+        if (tile.townOnTile.isNotEmpty) {
+          // drop in Stash
+          final townState = _read(townStreamProvider)!;
+          if (townState.members.contains(playerState.id)) {
+            _read(townControllerProvider.notifier)
+                .depositItemToStash(item: item);
+          }
+        } else {
+          // drop on Tile
+          _read(mapTileRepository).updateTile(
+              tile: tile.copyWith(inventory: tile.inventory..add(item)));
+        }
+      }
+      getPlayer();
+    } on CustomException catch (error, stackTrace) {
+      print('PlayerController - Error: $error ## $stackTrace');
     }
   }
 

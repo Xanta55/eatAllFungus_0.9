@@ -9,7 +9,6 @@
 *.ap_
 *.aab
 
-
 ### Firebase ###
 .idea
 **/node_modules/*

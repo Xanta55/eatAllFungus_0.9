@@ -42,7 +42,8 @@ class WorldListController extends StateNotifier<AsyncValue<List<World>>> {
           depth: world.depth,
           isOpen: world.isOpen,
           mapTiles: world.mapTiles ?? [],
-          news: world.news ?? []);
+          news: [],
+          startAmount: world.startAmount ?? 10);
       getWorlds();
       state.whenData((value) => state = AsyncValue.data(value));
     } on CustomException catch (error, stackTrace) {
@@ -52,42 +53,13 @@ class WorldListController extends StateNotifier<AsyncValue<List<World>>> {
 
   Future<void> createTestWorld({required int depth}) async {
     try {
-      List<MapTile> toUpload = <MapTile>[];
-      var rng = Random();
-      String description;
-      for (int x = -depth; x <= depth; x++) {
-        for (int y = -depth; y <= depth; y++) {
-          description = 'Empty Tile';
-          if ((x > depth / 2) ||
-              (x < ((depth / 2) * -1)) ||
-              (y > depth / 2) ||
-              (y < ((depth / 2) * -1))) {
-            rng.nextInt(100) > 90
-                ? description =
-                    tileDescriptions[rng.nextInt(tileDescriptions.length)]
-                : description = 'Empty Tile';
-          }
-          toUpload.add(MapTile(
-              description: description,
-              inventory: [],
-              timesDug: 0,
-              buffShrooms: 0,
-              sporeLevel: 0,
-              controlPower: 0,
-              isVisible: (x == 0 && y == 0),
-              playersOnTile: 0,
-              townOnTile: '',
-              xCoord: x,
-              yCoord: y));
-        }
-      }
       await _read(worldRepository).createEmptyWorld(
           name: 'Crooked Rothome',
           description: 'Small 25x25 World for beginners',
           depth: depth,
           isOpen: true,
-          mapTiles: toUpload,
-          news: [News(news: 'World is still DEAD')]);
+          news: [News(news: 'World is still DEAD')],
+          startAmount: 5);
       getWorlds();
       state.whenData((value) => state = AsyncValue.data(value));
     } on CustomException catch (error, stackTrace) {

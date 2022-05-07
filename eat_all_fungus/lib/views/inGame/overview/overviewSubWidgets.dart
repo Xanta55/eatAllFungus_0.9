@@ -1,10 +1,13 @@
+import 'package:eat_all_fungus/constValues/constValues.dart';
 import 'package:eat_all_fungus/controllers/playerController.dart';
 import 'package:eat_all_fungus/models/player.dart';
 import 'package:eat_all_fungus/providers/streams/newsStream.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
 import 'package:eat_all_fungus/providers/streams/tileStream.dart';
 import 'package:eat_all_fungus/models/mapTile.dart';
-import 'package:eat_all_fungus/views/widgets/items/inventory.dart';
+import 'package:eat_all_fungus/views/widgets/constWidgets/panel.dart';
+import 'package:eat_all_fungus/views/widgets/items/inventories/playerInventory.dart';
+import 'package:eat_all_fungus/views/widgets/items/inventories/tileInventory.dart';
 import 'package:eat_all_fungus/views/widgets/mapView/mapSubWidgets.dart';
 import 'package:eat_all_fungus/views/widgets/newspaper/miniNewspaper.dart';
 import 'package:eat_all_fungus/views/widgets/status/statusWidget.dart';
@@ -16,27 +19,10 @@ const List<Widget> overviewTiles = <Widget>[
   _BuildToDoList(),
   _BuildTilePreview(),
   OverviewTileInfo(),
-  OverviewInventory(),
+  PlayerInventory(),
   OverviewPlayerStatus(),
   OverviewNews()
 ];
-
-const int colorIntensity = 900;
-
-class Panel extends StatelessWidget {
-  final Widget child;
-  const Panel({required this.child});
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(2.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15.0),
-        child: child,
-      ),
-    );
-  }
-}
 
 class _BuildToDoList extends HookWidget {
   const _BuildToDoList();
@@ -126,7 +112,8 @@ class _BuildTilePreview extends HookWidget {
 }
 
 class OverviewInventory extends HookWidget {
-  const OverviewInventory();
+  final bool canTap;
+  const OverviewInventory({this.canTap = false});
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +132,7 @@ class OverviewInventory extends HookWidget {
                     Expanded(
                       child: ListView(
                         scrollDirection: Axis.horizontal,
-                        children: buildPlayerInventoryList(),
+                        children: buildPlayerInventoryList(canTap: canTap),
                       ),
                     ),
                   ],
@@ -182,7 +169,7 @@ class OverviewTileInfo extends HookWidget {
                   Text('Items on Tile:'),
                   Expanded(
                     child: ListView(
-                      shrinkWrap: true,
+                      //shrinkWrap: true,
                       physics: ClampingScrollPhysics(),
                       children: itemWidgetList,
                     ),
@@ -194,8 +181,16 @@ class OverviewTileInfo extends HookWidget {
         );
       } else {
         return Panel(
-          child: Center(
-            child: Text('Town'),
+          child: Container(
+            color: Colors.grey[colorIntensity],
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                  child: Text(
+                'A town exists on this tile',
+                textAlign: TextAlign.center,
+              )),
+            ),
           ),
         );
       }

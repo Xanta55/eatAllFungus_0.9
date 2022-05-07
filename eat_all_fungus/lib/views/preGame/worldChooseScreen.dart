@@ -3,9 +3,10 @@ import 'package:eat_all_fungus/controllers/worldController.dart';
 import 'package:eat_all_fungus/controllers/worldListController.dart';
 import 'package:eat_all_fungus/models/customException.dart';
 import 'package:eat_all_fungus/models/world.dart';
-import 'package:eat_all_fungus/views/various/loadings/loadingScreen.dart';
+import 'package:eat_all_fungus/providers/streams/worldListStream.dart';
 import 'package:eat_all_fungus/views/various/loadings/loadingsWidget.dart';
 import 'package:eat_all_fungus/views/widgets/buttons/logoutButton.dart';
+import 'package:eat_all_fungus/views/widgets/buttons/profileButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -21,10 +22,13 @@ class WorldChooseScreen extends HookWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('CHOOSE A WORLD'),
-        actions: [buildLogoutButton(context)],
+        actions: [
+          buildLogoutButton(context),
+          buildProfileButton(context),
+        ],
       ),
       body: ProviderListener(
-          provider: worldListExceptionProvider,
+          provider: worldListStreamExceptionProvider,
           onChange: (BuildContext context,
               StateController<CustomException?> customException) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -44,40 +48,38 @@ class WorldList extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final worldListState = useProvider(worldListControllerProvider);
-    return worldListState.when(
-        data: (worlds) => worlds.isEmpty
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                        'Seems like there are no worlds (yet or just at the moment...)'),
-                    SizedBox(height: spacingSize),
-                    NewWorldButton()
-                  ],
-                ),
-              )
-            : ListView.builder(
-                itemCount: worlds.length + 1,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == worlds.length) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: NewWorldButton(),
-                    );
-                  }
-                  final world = worlds[index];
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: WorldCard(world: world),
-                  );
-                }),
-        loading: () => LoadingScreen(loadingText: 'loading Worlds'),
-        error: (error, _) => WorldListError(
-            message: error is CustomException
-                ? error.message!
-                : 'Something went wrong!'));
+    //final worldListState = useProvider(worldListControllerProvider);
+    final worldList = useProvider(worldListStreamProvider);
+    if (worldList != null && worldList.isNotEmpty) {
+      return ListView.builder(
+        itemCount: worldList.length + 1,
+        itemBuilder: (BuildContext context, int index) {
+          if (worldList.length <= 2 && index == worldList.length) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: NewWorldButton(),
+            );
+          }
+          final world = worldList[index];
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: WorldCard(world: world),
+          );
+        },
+      );
+    } else {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+                'Seems like there are no worlds (yet or just at the moment...)'),
+            SizedBox(height: spacingSize),
+            NewWorldButton()
+          ],
+        ),
+      );
+    }
   }
 }
 
