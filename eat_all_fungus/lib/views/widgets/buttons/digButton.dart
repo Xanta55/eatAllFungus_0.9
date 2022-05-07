@@ -18,7 +18,10 @@ class DigButton extends HookWidget {
       return Container(
         child: ElevatedButton(
           child: Container(
-            child: Text('Dig on this Tile!'),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('Dig on this Tile!'),
+            ),
           ),
           onPressed: () {
             isLoading.value = true;
@@ -30,9 +33,12 @@ class DigButton extends HookWidget {
       return Container(
         color: Colors.grey[colorIntensity],
         child: Center(
-          child: Text(
-            'You have dug here not so long ago. Try again at ${digTaskStream?.hour ?? "00"}:${(digTaskStream?.minute ?? "00").toString().padLeft(2, "0")}',
-            textAlign: TextAlign.center,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'You have dug here not so long ago. Try again at ${digTaskStream?.hour ?? "00"}:${(digTaskStream?.minute ?? "00").toString().padLeft(2, "0")}',
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
       );

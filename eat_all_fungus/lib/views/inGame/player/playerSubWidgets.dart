@@ -1,5 +1,6 @@
 import 'package:eat_all_fungus/constValues/constValues.dart';
 import 'package:eat_all_fungus/controllers/craftingController.dart';
+import 'package:eat_all_fungus/controllers/playerController.dart';
 import 'package:eat_all_fungus/controllers/townController.dart';
 import 'package:eat_all_fungus/models/craftingRecipe.dart';
 import 'package:eat_all_fungus/providers/streams/playerStream.dart';
@@ -106,7 +107,7 @@ class PlayerInteractionsWidget extends HookWidget {
               color: Colors.grey[colorIntensity],
               child: Center(
                 child: ListView(
-                  children: _buildCraftingTiles(playerState.inventory),
+                  children: _buildCraftingTiles(playerState.inventory, context),
                 ),
               ),
             ),
@@ -116,7 +117,8 @@ class PlayerInteractionsWidget extends HookWidget {
           );
   }
 
-  List<Widget> _buildCraftingTiles(List<String> itemsInInventory) {
+  List<Widget> _buildCraftingTiles(
+      List<String> itemsInInventory, BuildContext context) {
     final craftingRecipes = useProvider(craftingControllerProvider);
     final List<Widget> out = [];
     final List<Recipe> matchingRecipes = [];
@@ -133,13 +135,17 @@ class PlayerInteractionsWidget extends HookWidget {
                   .toList(),
               r.output.entries
                   .map((rec) => ItemPanel(item: rec.key, amount: rec.value))
-                  .toList())));
+                  .toList(),
+              context)));
     }
     return out;
   }
 
-  Widget CraftingTileWidget(
-      List<ItemPanel> inputItems, List<ItemPanel> outputItems) {
+  Widget CraftingTileWidget(List<ItemPanel> inputItems,
+      List<ItemPanel> outputItems, BuildContext context) {
+    final playerStateController =
+        useProvider(playerControllerProvider.notifier);
+    final playerState = useProvider(playerStreamProvider);
     return Panel(
         child: Padding(
       padding: const EdgeInsets.all(8.0),
@@ -180,7 +186,38 @@ class PlayerInteractionsWidget extends HookWidget {
             ),
             Container(
               child: ElevatedButton(
-                onPressed: () => print('Button works, duh!'),
+                onPressed: () {
+                  bool canCraft = true;
+                  for (String s in inputItems.map((e) => e.item)) {
+                    if (!playerState!.inventory.contains(s)) {
+                      canCraft = false;
+                    }
+                  }
+                  if (canCraft) {
+                    final List<String> itemsToRemove = [];
+                    final List<String> itemsToAdd = [];
+                    for (ItemPanel ipIn in inputItems) {
+                      for (int i = 0; i < ipIn.amount!; i++) {
+                        itemsToRemove.add(ipIn.item);
+                      }
+                    }
+                    for (ItemPanel ipOut in outputItems) {
+                      for (int i = 0; i < ipOut.amount!; i++) {
+                        itemsToAdd.add(ipOut.item);
+                      }
+                    }
+                    playerStateController.removeItemsFromInventory(
+                        items: itemsToRemove);
+                    playerStateController.addItemsToInventory(
+                        items: itemsToAdd);
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text('Crafted!')));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content:
+                            Text('Looks like you\'re missing some items')));
+                  }
+                },
                 child: Icon(Icons.handyman),
               ),
             ),

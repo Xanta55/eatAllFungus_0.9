@@ -220,6 +220,50 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
   }
 
   /// returns [true] on successfull transaction
+  /// return [false] if inventory is full or something went wrong
+  Future<bool> addItemsToInventory({required List<String> items}) async {
+    try {
+      final playerState = _read(playerStreamProvider)!;
+      if (playerState.inventory.length + items.length <
+          playerState.inventorySize) {
+        _read(playerRepository).updatePlayerInventory(
+          playerToUpdate: playerState,
+          playerInventory: playerState.inventory..addAll(items),
+        );
+        getPlayer();
+        return true;
+      } else {
+        final currTile = _read(mapTileStreamProvider)!;
+        final List<String> inInventory = [];
+        final List<String> onGround = [];
+
+        // Difference between items in inventory and max size
+        final int spaceInInventory =
+            playerState.inventory.length - playerState.inventorySize;
+
+        // Sublists of the items
+        inInventory.addAll(items.sublist(0, spaceInInventory));
+        onGround.addAll(items.sublist(spaceInInventory));
+
+        // Updating Data
+        _read(playerRepository).updatePlayerInventory(
+          playerToUpdate: playerState,
+          playerInventory: playerState.inventory..addAll(inInventory),
+        );
+        _read(mapTileRepository)
+            .updateTile(tile: currTile..inventory.addAll(onGround));
+
+        // Getting Player
+        getPlayer();
+        return false;
+      }
+    } on CustomException catch (error, stackTrace) {
+      print('PlayerController - Error: $error ## $stackTrace');
+      return false;
+    }
+  }
+
+  /// returns [true] on successfull transaction
   /// return [false] if item is not in inventory
   Future<bool> removeItemFromInventory({required String item}) async {
     try {
@@ -235,6 +279,27 @@ class PlayerController extends StateNotifier<AsyncValue<Player>> {
         //getPlayer();
         return false;
       }
+    } on CustomException catch (error, stackTrace) {
+      print('PlayerController - Error: $error ## $stackTrace');
+      return false;
+    }
+  }
+
+  /// returns [true] on successfull transaction
+  /// return [false] if item is not in inventory
+  Future<bool> removeItemsFromInventory({required List<String> items}) async {
+    try {
+      final playerState = _read(playerStreamProvider)!;
+      final inventory = playerState.inventory;
+      items.forEach((element) {
+        inventory.remove(element);
+      });
+      _read(playerRepository).updatePlayerInventory(
+        playerToUpdate: playerState,
+        playerInventory: inventory,
+      );
+      getPlayer();
+      return true;
     } on CustomException catch (error, stackTrace) {
       print('PlayerController - Error: $error ## $stackTrace');
       return false;
