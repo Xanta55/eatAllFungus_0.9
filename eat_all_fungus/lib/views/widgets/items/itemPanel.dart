@@ -1,3 +1,4 @@
+import 'package:eat_all_fungus/controllers/imageController.dart';
 import 'package:eat_all_fungus/services/imageRepository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -41,22 +42,18 @@ class ItemBox extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageProvider = useProvider(imageRepository);
+    final imageProvider = useProvider(imageControllerProvider.notifier);
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: AspectRatio(
         aspectRatio: 1.0,
         child: item != ''
             ? FutureBuilder(
-                future: imageProvider.getItemImageUrl(itemImageName: item),
+                future: imageProvider.getImage(this.item),
                 builder: (context, futureImage) {
                   if (futureImage.connectionState == ConnectionState.done) {
                     return Container(
-                      child: Image.network(
-                        futureImage.data.toString(),
-                        filterQuality: FilterQuality.none,
-                        fit: BoxFit.contain,
-                      ),
+                      child: futureImage.data as Image,
                     );
                   } else {
                     return Container(child: CircularProgressIndicator());

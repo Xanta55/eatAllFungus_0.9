@@ -1,4 +1,5 @@
 import 'package:eat_all_fungus/controllers/authController.dart';
+import 'package:eat_all_fungus/controllers/craftingController.dart';
 import 'package:eat_all_fungus/controllers/profileController.dart';
 import 'package:eat_all_fungus/controllers/worldController.dart';
 import 'package:eat_all_fungus/providers/inGameNavigationProvider.dart';
@@ -25,8 +26,9 @@ class InGameScaffolding extends HookWidget {
   Widget build(BuildContext context) {
     final navigationState = useProvider(navStateProvider);
     final tileStream = useProvider(mapTileStreamProvider);
-    //final worldState = useProvider(worldControllerProvider);
     final lockState = useProvider(lockStreamProvider);
+    // ignore: unused_local_variable
+    final recipeState = useProvider(craftingControllerProvider);
     if (lockState != null) {
       if (lockState) {
         return Scaffold(
